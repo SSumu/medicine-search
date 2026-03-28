@@ -1,0 +1,30 @@
+.search-container {
+  padding: 2rem;
+}
+
+.search-box {
+  margin-bottom: 2rem;
+}
+
+input {
+  padding: 0.5rem;
+  width: 250px;
+  margin-right: 10px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+}
+
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  width: 200px;
+  border-radius: 5px;
+}

@@ -1,0 +1,73 @@
+<div class="medicine-container">
+
+  <h2>Medicine Management</h2>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input [(ngModel)]="searchText" placeholder="Search medicine..." />
+    <button (click)="search()">Search</button>
+    <button class="refresh-btn" (click)="refreshMedicines()">Refresh</button>
+  </div>
+
+  <!-- ADD -->
+  <div class="form-section">
+    <h3>Add Medicine</h3>
+
+    <input [(ngModel)]="newMedicine.name" placeholder="Name" />
+    <input [(ngModel)]="newMedicine.manufacturer" placeholder="Manufacturer" />
+    <input [(ngModel)]="newMedicine.price" type="number" placeholder="Price" />
+    <input [(ngModel)]="newMedicine.description" placeholder="Description" />
+
+    <button (click)="addMedicine()">Add</button>
+  </div>
+
+  <!-- UPDATE -->
+  @if (selectedMedicine) {
+    <div class="form-section">
+      <h3>Update Medicine</h3>
+
+      <input [(ngModel)]="selectedMedicine.name" />
+      <input [(ngModel)]="selectedMedicine.manufacturer" />
+      <input [(ngModel)]="selectedMedicine.price" type="number" />
+      <input [(ngModel)]="selectedMedicine.description" />
+
+      <button (click)="updateMedicine()">Update</button>
+      <button (click)="selectedMedicine = null">Cancel</button>
+    </div>
+  }
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Manufacturer</th>
+      <th>Price</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+      @for (med of filteredMedicines; track med.id) {
+        <tr>
+          <td>{{ med.id }}</td>
+          <td>{{ med.name }}</td>
+          <td>{{ med.manufacturer }}</td>
+          <td>{{ med.price }}</td>
+          <td>{{ med.description }}</td>
+          <td>
+            <button (click)="getMedicineById(med.id)">Edit</button>
+            <button class="delete-btn" (click)="deleteMedicine(med.id)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (filteredMedicines.length === 0) {
+    <p>No medicines found</p>
+  }
+
+</div>
