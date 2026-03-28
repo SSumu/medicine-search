@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 export interface Medicine {
   id: number;
@@ -15,7 +16,7 @@ export interface Medicine {
 // API CONFIG (FIXED)
 // =====================
 const API_CONFIG = {
-  BASE_URL: (window as any)['env']?.API_URL || 'https://medicine-search-production.up.railway.app',
+  BASE_URL: (window as any)['env']?.API_URL || environment.apiUrl,
 };
 
 @Injectable({
