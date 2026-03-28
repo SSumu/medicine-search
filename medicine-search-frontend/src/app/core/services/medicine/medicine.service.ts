@@ -15,8 +15,7 @@ export interface Medicine {
 // API CONFIG (FIXED)
 // =====================
 const API_CONFIG = {
-  BASE_URL:
-    (window as any)['env']?.API_URL || 'https://medicine-search-backend-production.up.railway.app',
+  BASE_URL: (window as any)['env']?.API_URL || 'https://medicine-search-production.up.railway.app',
 };
 
 @Injectable({
