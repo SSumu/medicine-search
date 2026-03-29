@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://medicine-search-production.up.railway.app',
+  apiUrl: 'https://medicine-search-production.up.railway.app/',
 };
