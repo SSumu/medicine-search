@@ -13,7 +13,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/medicines")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://medicine-search-nine.vercel.app/") // allow Angular frontend
+@CrossOrigin(origins = "https://medicine-search-nine.vercel.app") // allow Angular frontend
 public class MedicineController {
 
     private final MedicineService medicineService;
