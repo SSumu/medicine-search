@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/inventory")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://medicine-search-nine.vercel.app")
 public class InventoryController {
 
     private final InventoryService inventoryService;

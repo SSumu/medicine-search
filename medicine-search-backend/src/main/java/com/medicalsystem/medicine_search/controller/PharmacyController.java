@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pharmacies")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://medicine-search-nine.vercel.app")
 public class PharmacyController {
 
     private final PharmacyService pharmacyService;
