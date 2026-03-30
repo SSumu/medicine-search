@@ -17,14 +17,14 @@ public class PharmacyController {
     private final PharmacyService pharmacyService;
 
     // ✅ Get all pharmacies
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<PharmacySearchResponseDTO>> getAllPharmacies() {
         List<PharmacySearchResponseDTO> pharmacies = pharmacyService.getAllPharmacies();
         return ResponseEntity.ok(pharmacies);
     }
 
     // ✅ Get pharmacy by ID
-    @GetMapping("/{id}")
+    @GetMapping("get-by-id/{id}")
     public ResponseEntity<PharmacySearchResponseDTO> getPharmacyById(@PathVariable Long id) {
         PharmacySearchResponseDTO pharmacy = pharmacyService.getPharmacyById(id);
         if (pharmacy == null) {

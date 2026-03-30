@@ -8,18 +8,20 @@ import java.util.Optional;
 
 public interface MedicineService {
 
-    Optional<Medicine> getMedicineById(Long id);
-    List<Medicine> getAllMedicines();
-    
+    Optional<MedicineSearchResponseDTO> getMedicineById(Long id);
 
-    List<Medicine> getMedicinesByPriceRange(double minPrice, double maxPrice);
+    List<MedicineSearchResponseDTO> getAllMedicines();
+
+    List<MedicineSearchResponseDTO> getMedicinesByPriceRange(double minPrice, double maxPrice);
 
     // Add this method:
-    Medicine saveMedicine(Medicine medicine);
+    MedicineSearchResponseDTO saveMedicine(Medicine medicine);
 
-    Medicine updateMedicine(Long id, Medicine medicine);
+    Optional<MedicineSearchResponseDTO> updateMedicine(Long id, Medicine medicine);
 
     void deleteMedicine(Long id);
 
     List<MedicineSearchResponseDTO> searchMedicinesByName(String name);
+
+    List<MedicineSearchResponseDTO> searchMedicines(String name, double minPrice, double maxPrice);
 }

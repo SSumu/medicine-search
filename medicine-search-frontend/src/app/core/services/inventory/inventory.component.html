@@ -1,0 +1,68 @@
+<div class="container">
+
+  <h2>Medicine Inventory System</h2>
+
+  <!-- SEARCH SECTION -->
+  <div class="search-box">
+
+    <input [(ngModel)]="searchMedicine" placeholder="Search Medicine" />
+    <button (click)="searchMedicineFn()">Search</button>
+
+    <input [(ngModel)]="searchLocation" placeholder="Search Location" />
+    <button (click)="searchLocationFn()">Search</button>
+
+    <input type="number" [(ngModel)]="searchId" placeholder="Search ID" />
+    <button (click)="searchById()">Get By ID</button>
+
+    <button (click)="loadAll()">Reset</button>
+    <button (click)="loadAvailable()">Available Stock</button>
+
+  </div>
+
+  <!-- FORM -->
+  <div class="form-box">
+
+    <input [(ngModel)]="formData.pharmacyName" placeholder="Pharmacy Name" />
+    <input [(ngModel)]="formData.pharmacyLocation" placeholder="Pharmacy Location" />
+    <input [(ngModel)]="formData.medicineName" placeholder="Medicine Name" />
+    <input type="number" [(ngModel)]="formData.quantity" placeholder="Quantity" />
+
+    <button (click)="save()">
+      {{ editId ? 'Update' : 'Add' }}
+    </button>
+
+    <button (click)="resetForm()">Clear</button>
+
+  </div>
+
+  <!-- TABLE -->
+  <table class="inventory-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Pharmacy</th>
+      <th>Location</th>
+      <th>Medicine</th>
+      <th>Quantity</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+      @for (item of inventories; track item.id) {
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.pharmacyName }}</td>
+          <td>{{ item.pharmacyLocation }}</td>
+          <td>{{ item.medicineName }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>
+            <button (click)="edit(item)">Edit</button>
+            <button (click)="delete(item.id)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</div>

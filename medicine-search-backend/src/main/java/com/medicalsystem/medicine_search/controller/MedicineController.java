@@ -8,39 +8,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/medicines")
+@RequestMapping("/medicine")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://medicine-search-nine.vercel.app") // allow Angular frontend
 public class MedicineController {
 
     private final MedicineService medicineService;
 
     // Get all medicines
     @GetMapping
-    public ResponseEntity<List<Medicine>> getAllMedicines() {
+    public ResponseEntity<List<MedicineSearchResponseDTO>> getAllMedicines() {
         return ResponseEntity.ok(medicineService.getAllMedicines());
     }
 
     // Get medicine by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Medicine> getMedicineById(@PathVariable Long id) {
-        Optional<Medicine> medicine = medicineService.getMedicineById(id);
-        return medicine.map(ResponseEntity::ok)   // if present, return 200 OK
+    public ResponseEntity<MedicineSearchResponseDTO> getMedicineById(@PathVariable Long id) {
+//        Optional<Medicine> medicine = medicineService.getMedicineById(id);
+        return medicineService.getMedicineById(id)
+                .map(ResponseEntity::ok)   // if present, return 200 OK
                 .orElseGet(() -> ResponseEntity.notFound().build()); // else return 404
     }
 
     // Search medicines by name
-    @GetMapping("/search")
-    public ResponseEntity<List<MedicineSearchResponseDTO>> searchMedicines(@RequestParam String name) {
+    @GetMapping("/searchByName")
+    public ResponseEntity<List<MedicineSearchResponseDTO>> searchByName(@RequestParam String name) {
         return ResponseEntity.ok(medicineService.searchMedicinesByName(name));
+    }
+
+    // Search medicines by name
+    @GetMapping("/search")
+    public ResponseEntity<List<MedicineSearchResponseDTO>> searchMedicines(@RequestParam String name, @RequestParam double minPrice, @RequestParam double maxPrice) {
+        List<MedicineSearchResponseDTO> result = medicineService.searchMedicines(name, minPrice, maxPrice);
+
+        return ResponseEntity.ok(result);
     }
 
     // Filter medicines by price range
     @GetMapping("/filter")
-    public ResponseEntity<List<Medicine>> filterByPrice(
+    public ResponseEntity<List<MedicineSearchResponseDTO>> filterByPrice(
             @RequestParam double minPrice,
             @RequestParam double maxPrice) {
         return ResponseEntity.ok(
@@ -50,16 +57,19 @@ public class MedicineController {
 
     // Add new medicine
     @PostMapping
-    public ResponseEntity<Medicine> createMedicine(@RequestBody Medicine medicine) {
-        return ResponseEntity.ok(medicineService.saveMedicine(medicine));
+    public ResponseEntity<MedicineSearchResponseDTO> createMedicine(@RequestBody Medicine medicine) {
+        return ResponseEntity.status(201)
+                .body(medicineService.saveMedicine(medicine));
     }
 
     // Update medicine
     @PutMapping("/{id}")
-    public ResponseEntity<Medicine> updateMedicine(
+    public ResponseEntity<MedicineSearchResponseDTO> updateMedicine(
             @PathVariable Long id,
             @RequestBody Medicine medicine) {
-        return ResponseEntity.ok(medicineService.updateMedicine(id, medicine));
+        return medicineService.updateMedicine(id, medicine)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Delete medicine

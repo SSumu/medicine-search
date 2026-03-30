@@ -8,6 +8,11 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Backend is running 🚀";
+        return "Medicine Search Backend is Running Successfully!";
+    }
+
+    @GetMapping("/api/health")
+    public String healthCheck() {
+        return "API is working fine!";
     }
 }

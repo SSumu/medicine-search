@@ -15,8 +15,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://medicine-search-nine.vercel.app")
-                        .allowedMethods("*");
+                        .allowedOrigins(
+                                "http://localhost:4200",
+                                "https://medicine-search-nine.vercel.app"
+                        )
+                        .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
+                        .allowedHeaders("*");
             }
         };
     }

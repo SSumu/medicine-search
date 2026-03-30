@@ -1,0 +1,32 @@
+.container {
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.search-box input {
+  margin: 5px;
+  padding: 5px;
+}
+
+.form-box input {
+  margin: 5px;
+  padding: 5px;
+  display: block;
+}
+
+button {
+  margin: 5px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}

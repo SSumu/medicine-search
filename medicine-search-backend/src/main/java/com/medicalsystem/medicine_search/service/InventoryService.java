@@ -1,24 +1,35 @@
 package com.medicalsystem.medicine_search.service;
 
+import com.medicalsystem.medicine_search.dto.InventoryResponseDTO;
 import com.medicalsystem.medicine_search.entity.Inventory;
+import com.medicalsystem.medicine_search.entity.Medicine;
+import com.medicalsystem.medicine_search.entity.Pharmacy;
 
 import java.util.List;
 
 public interface InventoryService {
 
-    List<Inventory> getAllInventory();
+    List<InventoryResponseDTO> getByMedicine(Medicine medicineId);
 
-    Inventory getInventoryById(Long id);
+    List<InventoryResponseDTO> getByPharmacy(Pharmacy pharmacyId);
 
-    List<Inventory> searchByMedicineName(String name);
+    InventoryResponseDTO getByMedicineAndPharmacy(Medicine medicineId, Pharmacy pharmacyId);
 
-    List<Inventory> searchByLocation(String location);
+    List<InventoryResponseDTO> searchByMedicineNameSorted(String name);
 
-    List<Inventory> getAvailableStock();
+    List<InventoryResponseDTO> getAllInventory();
 
-    Inventory saveInventory(Inventory inventory);
+    InventoryResponseDTO getInventoryById(Long id);
 
-    Inventory updateInventory(Long id, Inventory inventory);
+    List<InventoryResponseDTO> searchByMedicineName(String name);
+
+    List<InventoryResponseDTO> searchByLocation(String location);
+
+    List<InventoryResponseDTO> getAvailableStock();
+
+    InventoryResponseDTO saveInventory(Inventory inventory);
+
+    InventoryResponseDTO updateInventory(Long id, Inventory inventory);
 
     void deleteInventory(Long id);
 }

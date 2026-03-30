@@ -10,9 +10,11 @@ import { CommonModule } from '@angular/common';
     <header>
       <h1>{{ title }}</h1>
       <nav>
-        <a routerLink="/">Home</a> |
+        <a routerLink="/home">Home</a> |
         <a routerLink="/search">Search</a> |
-        <a routerLink="/details">Details</a>
+        <a routerLink="/details">Details</a> |
+        <a routerLink="/medicine">Medicine</a> |
+        <a routerLink="/inventory">Inventory</a>
       </nav>
     </header>
   `,

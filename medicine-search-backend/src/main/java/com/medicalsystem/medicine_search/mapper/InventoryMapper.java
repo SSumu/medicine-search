@@ -8,14 +8,35 @@ import org.springframework.stereotype.Component;
 public class InventoryMapper {
 
     public InventoryResponseDTO toDto(Inventory inventory) {
+
+        if (inventory == null) {
+            return null;
+        }
+
         return InventoryResponseDTO.builder()
                 .id(inventory.getId())
-                .pharmacyName(inventory.getPharmacy().getName())
-                .pharmacyLocation(inventory.getPharmacy().getLocation())
-                .medicineName(inventory.getMedicine().getName())
+
+                .pharmacyName(
+                        inventory.getPharmacy() != null
+                                ? inventory.getPharmacy().getName()
+                                : null
+                )
+                .pharmacyLocation(
+                        inventory.getPharmacy() != null
+                                ? inventory.getPharmacy().getLocation()
+                                : null
+                )
+
+                .medicineName(
+                        inventory.getMedicine() != null
+                                ? inventory.getMedicine().getName()
+                                : null
+                )
+
                 .quantity(inventory.getQuantity())
                 .price(inventory.getPrice())
                 .lastUpdated(inventory.getLastUpdated())
+
                 .build();
     }
 }
