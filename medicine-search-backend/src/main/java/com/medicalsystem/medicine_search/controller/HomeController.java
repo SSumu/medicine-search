@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/api")
+    @GetMapping("/")
     public String home() {
         return "Medicine Search Backend is Running Successfully!";
     }
