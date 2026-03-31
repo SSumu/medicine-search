@@ -8,7 +8,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Medicine Search Backend is Running Successfully!";
+        return "http://localhost:8080/api/swagger-ui/index.html";
     }
 
     @GetMapping("/api/health")
