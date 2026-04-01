@@ -3,14 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-
-export interface Medicine {
-  id: number;
-  name: string;
-  manufacturer: string;
-  price: number;
-  description?: string;
-}
+import { Medicine } from '../../../models/medicine/medicine.model';
 
 // =====================
 // API CONFIG (FIXED)

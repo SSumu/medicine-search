@@ -23,7 +23,7 @@ export class MedicineComponent implements OnInit {
     id: 0,
     name: '',
     manufacturer: '',
-    price: 0,
+    price: null,
     description: '',
   };
 
@@ -161,10 +161,20 @@ export class MedicineComponent implements OnInit {
   onlyPriceInput(event: KeyboardEvent): void {
     const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
 
+    // Allow control keys
     if (allowedKeys.includes(event.key)) return;
 
-    // allow numbers and dot
+    // Allow numbers
     if (/^[0-9]$/.test(event.key)) return;
+
+    // Allow only ONE dot
+    if (event.key === '.') {
+      const input = event.target as HTMLInputElement;
+      if (input.value.includes('.')) {
+        event.preventDefault();
+      }
+      return;
+    }
 
     event.preventDefault();
   }
@@ -175,10 +185,10 @@ export class MedicineComponent implements OnInit {
   validatePrice(event: any): void {
     let value = event.target.value;
 
-    // remove invalid chars
-    value = value.replace(/[^0-9]/g, '');
+    // Keep only numbers and dot
+    value = value.replace(/[^0-9.]/g, '');
 
-    // keep only first dot
+    // Allow only first dot
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');
