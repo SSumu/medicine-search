@@ -154,4 +154,43 @@ export class MedicineComponent implements OnInit {
       },
     });
   }
+
+  // =====================================================
+  // KEYDOWN -> BLOCK INVALID TYPING
+  // =====================================================
+  onlyPriceInput(event: KeyboardEvent): void {
+    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+
+    if (allowedKeys.includes(event.key)) return;
+
+    // allow numbers and dot
+    if (/^[0-9]$/.test(event.key)) return;
+
+    event.preventDefault();
+  }
+
+  // =====================================================
+  // INPUT 2 DECIMAL NUMBERS
+  // =====================================================
+  validatePrice(event: any): void {
+    let value = event.target.value;
+
+    // remove invalid chars
+    value = value.replace(/[^0-9]/g, '');
+
+    // keep only first dot
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Limit to 2 decimal places
+    if (value.includes('.')) {
+      const [integer, decimal] = value.split('.');
+      value = integer + '.' + decimal.slice(0, 2);
+    }
+
+    event.target.value = value;
+    this.newMedicine.price = value;
+  }
 }

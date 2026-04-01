@@ -13,12 +13,16 @@
   <div class="form-section">
     <h3>Add Medicine</h3>
 
+    <div class="medicine-form">
     <input [(ngModel)]="newMedicine.name" placeholder="Name" />
     <input [(ngModel)]="newMedicine.manufacturer" placeholder="Manufacturer" />
-    <input [(ngModel)]="newMedicine.price" type="number" placeholder="Price" />
+    <input [(ngModel)]="newMedicine.price" type="text" placeholder="Price" (keydown)="onlyPriceInput($event)" (input)="validatePrice($event)"/>
     <input [(ngModel)]="newMedicine.description" placeholder="Description" />
 
+      <div class="form-actions">
     <button (click)="addMedicine()">Add</button>
+      </div>
+    </div>
   </div>
 
   <!-- UPDATE -->
