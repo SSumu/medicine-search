@@ -8,10 +8,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "http://localhost:8080/api/swagger-ui/index.html";
+        return "Backend is running successfully!";
     }
 
-    @GetMapping("/api/health")
+    @GetMapping("/health")
     public String healthCheck() {
         return "API is working fine!";
     }
