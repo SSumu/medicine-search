@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory")
-@CrossOrigin(origins = "*") // add your Vercel link here if needed
+//@CrossOrigin(origins = "*") // add your Vercel link here if needed
 @RequiredArgsConstructor
 public class InventoryController {
 

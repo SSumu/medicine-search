@@ -15,7 +15,7 @@ export interface InventoryResponseDTO {
   providedIn: 'root',
 })
 export class InventoryService {
-  private baseUrl = environment.apiUrl; // change to deployed backend URL
+  private baseUrl = `${environment.apiUrl}/inventory`; // change to deployed backend URL
 
   constructor(private http: HttpClient) {}
 

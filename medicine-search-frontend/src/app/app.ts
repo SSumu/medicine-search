@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
       <h1>{{ title }}</h1>
       <nav>
         <a routerLink="/home">Home</a> |
-        <a routerLink="/search">Search</a> |
+        <a routerLink="/medicine-search">Search</a> |
         <a routerLink="/details">Details</a> |
         <a routerLink="/medicine">Medicine</a> |
         <a routerLink="/inventory">Inventory</a>
@@ -24,6 +24,11 @@ import { CommonModule } from '@angular/common';
         background-color: #4caf50;
         color: white;
         padding: 1rem;
+        text-align: center;
+        margin-top: auto;
+      }
+      h1 {
+        margin-top: auto;
       }
       nav a {
         margin: 0 0.5rem;
@@ -53,6 +58,12 @@ export class Header {
         background-color: #eee;
         padding: 1rem;
         text-align: center;
+        display: flex;
+        justify-content: center; /* horizontal center */
+        align-items: center; /* vertical center */
+      }
+      p {
+        margin: 0; /* remove default margin */
       }
     `,
   ],

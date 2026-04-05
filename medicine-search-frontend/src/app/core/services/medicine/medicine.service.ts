@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { Medicine } from '../../../models/medicine/medicine.model';
 
 // =====================
-// API CONFIG (FIXED)
+// API CONFIG
 // =====================
 const API_CONFIG = {
   BASE_URL: (window as any)['env']?.API_URL || environment.apiUrl,
@@ -17,7 +17,7 @@ const API_CONFIG = {
 })
 export class MedicineService {
   // Base endpoint
-  private apiURL = `${API_CONFIG.BASE_URL}/api/medicines`;
+  private apiUrl = `${API_CONFIG.BASE_URL}/medicine`;
 
   constructor(private http: HttpClient) {}
 
@@ -25,7 +25,7 @@ export class MedicineService {
   // GET ALL MEDICINES
   // =====================
   getAllMedicines(): Observable<Medicine[]> {
-    return this.http.get<any>(this.apiURL).pipe(
+    return this.http.get<any>(this.apiUrl).pipe(
       map((res) => {
         if (Array.isArray(res)) return res;
         if (res?.data) return res.data;
@@ -39,35 +39,35 @@ export class MedicineService {
   // GET MEDICINE BY ID
   // =====================
   getMedicineById(id: number): Observable<Medicine> {
-    return this.http.get<Medicine>(`${this.apiURL}/${id}`);
+    return this.http.get<Medicine>(`${this.apiUrl}/${id}`);
   }
 
   // =====================
   // ADD MEDICINE
   // =====================
   addMedicine(medicine: Medicine): Observable<Medicine> {
-    return this.http.post<Medicine>(this.apiURL, medicine);
+    return this.http.post<Medicine>(this.apiUrl, medicine);
   }
 
   // =====================
   // UPDATE MEDICINE
   // =====================
   updateMedicine(id: number, medicine: Medicine): Observable<Medicine> {
-    return this.http.put<Medicine>(`${this.apiURL}/${id}`, medicine);
+    return this.http.put<Medicine>(`${this.apiUrl}/${id}`, medicine);
   }
 
   // =====================
   // DELETE MEDICINE
   // =====================
   deleteMedicine(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiURL}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   // =====================
-  // SEARCH MEDICINES
+  // SEARCH MEDICINES (UPDATED)
   // =====================
-  searchMedicines(keyword: string): Observable<Medicine[]> {
-    const url = `${this.apiURL}/search?keyword=${encodeURIComponent(keyword)}`;
+  searchMedicines(name: string): Observable<Medicine[]> {
+    const url = `${this.apiUrl}/search?name=${encodeURIComponent(name)}`;
 
     return this.http.get<any>(url).pipe(
       map((res) => {

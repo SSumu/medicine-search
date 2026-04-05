@@ -13,9 +13,10 @@ import { MedicineService } from './medicine.service';
   styleUrls: ['./medicine.component.scss'],
 })
 export class MedicineComponent implements OnInit {
+  // ================================
+  // PROPERTIES
+  // ================================
   medicines: Medicine[] = [];
-  filteredMedicines: Medicine[] = [];
-  searchText: string = '';
 
   selectedMedicine: Medicine | null = null;
 
@@ -27,39 +28,39 @@ export class MedicineComponent implements OnInit {
     description: '',
   };
 
+  priceInput: string = ''; // ✅ UI binding
+
+  submitted = false;
+  isValidPrice = false;
+
+  // ================================
+  // CONSTRUCTOR
+  // ================================
   constructor(private medicineService: MedicineService) {}
 
+  // ================================
+  // LIFECYCLE
+  // ================================
   ngOnInit(): void {
+    const nav = history.state;
+
+    if (nav && nav.medicine) {
+      this.selectedMedicine = nav.medicine;
+    }
+
     this.loadMedicines();
   }
 
-  // =====================================================
+  // ================================
   // LOAD ALL MEDICINES
-  // =====================================================
+  // ================================
   loadMedicines(): void {
     this.medicineService.getAllMedicines().subscribe({
-      next: (data: Medicine[]) => {
-        this.medicines = data ?? [];
-        this.filteredMedicines = data ?? [];
+      next: (data) => {
+        this.medicines = data;
       },
       error: (err) => {
-        console.error('Error loading medicines:', err);
-        this.medicines = [];
-        this.filteredMedicines = [];
-      },
-    });
-  }
-
-  // =====================================================
-  // GET MEDICINE BY ID
-  // =====================================================
-  getMedicineById(id: number): void {
-    this.medicineService.getMedicineById(id).subscribe({
-      next: (data: Medicine) => {
-        this.selectedMedicine = data;
-      },
-      error: (err) => {
-        console.error('Error fetching medicine by ID:', err);
+        console.error('Error loading medicine:', err);
       },
     });
   }
@@ -68,96 +69,75 @@ export class MedicineComponent implements OnInit {
   // ADD MEDICINE
   // =====================================================
   addMedicine(): void {
-    this.medicineService.addMedicine(this.newMedicine).subscribe({
-      next: () => {
-        this.loadMedicines();
+    this.submitted = true;
+    this.validatePrice();
 
-        // Reset form
-        this.newMedicine = {
-          id: 0,
-          name: '',
-          manufacturer: '',
-          price: 0,
-          description: '',
-        };
-      },
-      error: (err) => {
-        console.error('Add error:', err);
-      },
-    });
-  }
-
-  // =====================================================
-  // UPDATE MEDICINE
-  // =====================================================
-  updateMedicine(): void {
-    if (!this.selectedMedicine || !this.selectedMedicine.id) return;
-
-    this.medicineService.updateMedicine(this.selectedMedicine.id, this.selectedMedicine).subscribe({
-      next: () => {
-        this.loadMedicines();
-        this.selectedMedicine = null;
-      },
-      error: (err) => {
-        console.error('Update error:', err);
-      },
-    });
-  }
-
-  // =====================================================
-  // SEARCH MEDICINES
-  // =====================================================
-  search(): void {
-    const keyword = this.searchText.trim();
-
-    if (!keyword) {
-      this.filteredMedicines = [...this.medicines];
+    if (!this.validateForm() || !this.isValidPrice) {
       return;
     }
 
-    this.medicineService.searchMedicines(keyword).subscribe({
-      next: (data: Medicine[]) => {
-        this.filteredMedicines = data ?? [];
-      },
-      error: (err) => {
-        console.error('Search error:', err);
-        this.filteredMedicines = [];
-      },
-    });
-  }
+    // ✅ Convert string → number before sending
+    this.newMedicine.price = parseFloat(this.priceInput);
 
-  // =====================================================
-  // DELETE MEDICINE
-  // =====================================================
-  deleteMedicine(id: number): void {
-    this.medicineService.deleteMedicine(id).subscribe({
+    this.medicineService.addMedicine(this.newMedicine).subscribe({
       next: () => {
+        console.log('Medicine successfully added', this.newMedicine);
         this.loadMedicines();
+        this.clearForm();
       },
       error: (err) => {
-        console.error('Delete error:', err);
+        console.error('Error adding medicine:', err);
       },
     });
   }
 
-  // =====================================================
-  // REFRESH MEDICINES
-  // =====================================================
-  refreshMedicines(): void {
-    this.medicineService.refreshMedicines().subscribe({
-      next: (data: Medicine[]) => {
-        this.medicines = data ?? [];
-        this.filteredMedicines = data ?? [];
-      },
-      error: (err) => {
-        console.error('Refresh error:', err);
-      },
-    });
+  // ================================
+  // CLEAR FORM
+  // ================================
+  clearForm(): void {
+    this.newMedicine = {
+      id: 0,
+      name: '',
+      manufacturer: '',
+      price: null,
+      description: '',
+    };
+
+    this.priceInput = '';
+    this.isValidPrice = false;
+    this.submitted = false;
   }
 
-  // =====================================================
-  // KEYDOWN -> BLOCK INVALID TYPING
-  // =====================================================
+  // ================================
+  // VALIDATION
+  // ================================
+  validateForm(): boolean {
+    if (!this.newMedicine.name.trim()) {
+      alert('Medicine name is required');
+      return false;
+    }
+
+    if (!this.newMedicine.manufacturer.trim()) {
+      alert('Manufacturer is required');
+      return false;
+    }
+
+    if (!this.priceInput || isNaN(Number(this.priceInput))) {
+      alert('Price is required');
+      return false;
+    }
+
+    if (!this.newMedicine.description?.trim()) {
+      alert('Description is required');
+      return false;
+    }
+
+    return true;
+  }
+
+  // ===========================================================
+  // KEYDOWN -> BLOCK INVALID TYPING (ALLOW ONLY NUMBERS + DOT)
+  // ===========================================================
   onlyPriceInput(event: KeyboardEvent): void {
     const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
 
@@ -180,9 +160,9 @@ export class MedicineComponent implements OnInit {
   }
 
   // =====================================================
-  // INPUT 2 DECIMAL NUMBERS
+  // FORMAT + VALIDATE PRICE (2 DECIMALS)
   // =====================================================
-  validatePrice(event: any): void {
+  formatPriceInput(event: any): void {
     let value = event.target.value;
 
     // Keep only numbers and dot
@@ -200,7 +180,17 @@ export class MedicineComponent implements OnInit {
       value = integer + '.' + decimal.slice(0, 2);
     }
 
+    this.priceInput = value;
     event.target.value = value;
-    this.newMedicine.price = value;
+
+    this.validatePrice();
+  }
+
+  // =====================================================
+  // VALIDATE PRICE VALUE
+  // =====================================================
+  validatePrice(): void {
+    const price = parseFloat(this.priceInput);
+    this.isValidPrice = !isNaN(price) && price > 0;
   }
 }

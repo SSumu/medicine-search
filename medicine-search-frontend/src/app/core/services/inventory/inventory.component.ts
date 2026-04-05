@@ -21,7 +21,7 @@ export class InventoryComponent implements OnInit {
     pharmacyName: '',
     pharmacyLocation: '',
     medicineName: '',
-    quantity: 0,
+    quantity: null,
   };
 
   editId!: number | null;

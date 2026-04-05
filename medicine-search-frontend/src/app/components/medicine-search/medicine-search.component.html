@@ -1,0 +1,161 @@
+<div class="medicine-container">
+
+  <!-- =====================================================
+       TITLE
+  ===================================================== -->
+  <h2>Medicine Management</h2>
+
+  <!-- =====================================================
+       SEARCH + ACTION BUTTONS
+  ===================================================== -->
+  <div class="search-box">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search medicine..."
+      name="searchText"
+    />
+
+    <button (click)="search()">Search</button>
+
+    <button class="refresh-btn" (click)="refreshMedicines()">
+      Refresh
+    </button>
+
+    <button (click)="loadMedicines()">
+      Load All
+    </button>
+  </div>
+
+  <!-- =====================================================
+       LOADING
+  ===================================================== -->
+  @if (isLoading) {
+    <div class="loader">Loading medicines...</div>
+  }
+
+  <!-- =====================================================
+       MEDICINE LIST TABLE
+  ===================================================== -->
+  @if (!isLoading) {
+    <table class="medicine-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Manufacturer</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+        @if (medicines.length > 0) {
+          @for (med of paginatedMedicines; track med.id) {
+            <tr>
+              <td>{{ med.id }}</td>
+              <td>{{ med.name }}</td>
+              <td>{{ med.manufacturer }}</td>
+              <td>{{ med.price }}</td>
+              <td>{{ med.description }}</td>
+              <td>
+                <button (click)="getMedicineById(med.id)">View</button>
+                <button (click)="editMedicine(med)">Edit</button>
+                <button
+                  class="delete-btn"
+                  (click)="deleteMedicine(med.id)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="6" class="empty-state">
+              No medicines found.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- ====================================================
+       PAGINATION
+    ===================================================== -->
+    @if (medicines.length > pageSize) {
+      <div class="pagination">
+        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Prev</button>
+
+        <span>Page {{ currentPage }} / {{ totalPages }}</span>
+
+        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>
+      </div>
+    }
+  }
+
+  <!-- =====================================================
+       EMPTY STATE
+  ===================================================== -->
+<!--  @if (medicines.length === 0) {-->
+<!--    <p>No medicines found</p>-->
+<!--  }-->
+
+  <!-- =====================================================
+       UPDATE MEDICINE FORM (SAFE NULL HANDLING)
+  ===================================================== -->
+  @if (selectedMedicine) {
+    @let sm = selectedMedicine;
+
+    <div class="form-section">
+      <h3>Update Medicine</h3>
+
+      <input
+        type="text"
+        [(ngModel)]="sm.name"
+        name="editName"
+      />
+
+      <input
+        type="text"
+        [(ngModel)]="sm.manufacturer"
+        name="editManufacturer"
+      />
+
+      <input
+        type="text"
+        [(ngModel)]="sm.price"
+        name="editPrice"
+        (keydown)="onlyPriceInputForSearch($event)"
+        (input)="validatePriceForSearch($event)"
+      />
+
+      <textarea
+        [(ngModel)]="sm.description"
+        name="editDescription"
+      ></textarea>
+
+      <button (click)="updateMedicine()">Update</button>
+      <button (click)="selectedMedicine = null">Cancel</button>
+    </div>
+  }
+
+  <!-- =====================================================
+       SELECTED MEDICINE DETAILS (SAFE NULL HANDLING)
+  ===================================================== -->
+  @if (selectedMedicine) {
+    @let sm = selectedMedicine;
+
+    <div class="details-section">
+      <h3>Selected Medicine Details</h3>
+
+      <p><strong>ID:</strong> {{ sm.id }}</p>
+      <p><strong>Name:</strong> {{ sm.name }}</p>
+      <p><strong>Manufacturer:</strong> {{ sm.manufacturer }}</p>
+      <p><strong>Price:</strong> {{ sm.price }}</p>
+      <p><strong>Description:</strong> {{ sm.description }}</p>
+    </div>
+  }
+
+</div>
