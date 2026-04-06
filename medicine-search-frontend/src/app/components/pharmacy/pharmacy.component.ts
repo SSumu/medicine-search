@@ -8,7 +8,7 @@ export interface InventoryForm {
   pharmacyName: string;
   pharmacyLocation: string;
   medicineName: string;
-  quantity: number;
+  quantity: number | null;
 }
 
 @Component({
@@ -27,7 +27,7 @@ export class PharmacyComponent {
     pharmacyName: '',
     pharmacyLocation: '',
     medicineName: '',
-    quantity: 0,
+    quantity: null,
   };
 
   @Input() editId: number | null = null;

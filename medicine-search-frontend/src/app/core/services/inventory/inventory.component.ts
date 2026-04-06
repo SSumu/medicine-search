@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { InventoryService, InventoryResponseDTO } from './inventory.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {PharmacyComponent} from '../../../components/pharmacy/pharmacy.component';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, PharmacyComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss'],
 })
@@ -69,20 +68,20 @@ export class InventoryComponent implements OnInit {
     this.inventoryService.getAvailable().subscribe((data) => (this.inventories = data));
   }
 
-  // Save (create or update)
-  save() {
-    if (this.editId) {
-      this.inventoryService.update(this.editId, this.formData).subscribe(() => {
-        this.loadAll();
-        this.resetForm();
-      });
-    } else {
-      this.inventoryService.create(this.formData).subscribe(() => {
-        this.loadAll();
-        this.resetForm();
-      });
-    }
-  }
+  // // Save (create or update)
+  // save() {
+  //   if (this.editId) {
+  //     this.inventoryService.update(this.editId, this.formData).subscribe(() => {
+  //       this.loadAll();
+  //       this.resetForm();
+  //     });
+  //   } else {
+  //     this.inventoryService.create(this.formData).subscribe(() => {
+  //       this.loadAll();
+  //       this.resetForm();
+  //     });
+  //   }
+  // }
 
   // Edit
   edit(item: InventoryResponseDTO) {
@@ -100,13 +99,13 @@ export class InventoryComponent implements OnInit {
     this.inventoryService.delete(id).subscribe(() => this.loadAll());
   }
 
-  resetForm() {
-    this.editId = null;
-    this.formData = {
-      pharmacyName: '',
-      pharmacyLocation: '',
-      medicineName: '',
-      quantity: 0,
-    };
-  }
+  // resetForm() {
+  //   this.editId = null;
+  //   this.formData = {
+  //     pharmacyName: '',
+  //     pharmacyLocation: '',
+  //     medicineName: '',
+  //     quantity: 0,
+  //   };
+  // }
 }
