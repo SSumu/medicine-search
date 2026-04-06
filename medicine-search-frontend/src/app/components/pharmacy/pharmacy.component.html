@@ -1,0 +1,16 @@
+<div class="form-box">
+
+  <h3>{{ editId ? 'Update Inventory' : 'Add Inventory' }}</h3>
+
+  <input [(ngModel)]="formData.pharmacyName" placeholder="Pharmacy Name" />
+  <input [(ngModel)]="formData.pharmacyLocation" placeholder="Pharmacy Location" />
+  <input [(ngModel)]="formData.medicineName" placeholder="Medicine Name" />
+  <input type="number" [(ngModel)]="formData.quantity" placeholder="Quantity" />
+
+  <button (click)="save()">
+    {{ editId ? 'Update' : 'Add' }}
+  </button>
+
+  <button (click)="resetForm()">Clear</button>
+
+</div>

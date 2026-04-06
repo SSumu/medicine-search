@@ -16,10 +16,10 @@ public class Medicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long medicineId;
 
     @Column(name = "medicine_name", nullable = false)
-    private String name;
+    private String medicineName;
 
     @Column(name = "description")
     private String description;
@@ -30,24 +30,24 @@ public class Medicine {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column(name = "quantity_available")
-    private Integer quantityAvailable;
-
-    @Column(name = "pharmacy_name")
-    private String pharmacyName;
-
-    @Column(name = "pharmacy_location")
-    private String pharmacyLocation;
-
-    @Column(name = "latitude")
-    private Double latitude;
-
-    @Column(name = "longitude")
-    private Double longitude;
-
-    @Column(name = "country")
-    private String country;
-
-    @Column(name = "is_available")
-    private Boolean isAvailable;
+//    @Column(name = "quantity_available")
+//    private Integer quantityAvailable;
+//
+//    @Column(name = "pharmacy_name")
+//    private String pharmacyName;
+//
+//    @Column(name = "pharmacy_location")
+//    private String pharmacyLocation;
+//
+//    @Column(name = "latitude")
+//    private Double latitude;
+//
+//    @Column(name = "longitude")
+//    private Double longitude;
+//
+//    @Column(name = "country")
+//    private String country;
+//
+//    @Column(name = "is_available")
+//    private Boolean isAvailable;
 }

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { InventoryService, InventoryResponseDTO } from './inventory.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {PharmacyComponent} from '../../../components/pharmacy/pharmacy.component';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PharmacyComponent],
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss'],
 })
@@ -15,7 +16,7 @@ export class InventoryComponent implements OnInit {
 
   searchMedicine = '';
   searchLocation = '';
-  searchId!: number;
+  searchPharmacy = '';
 
   formData: any = {
     pharmacyName: '',
@@ -55,10 +56,12 @@ export class InventoryComponent implements OnInit {
       .subscribe((data) => (this.inventories = data));
   }
 
-  // Get by ID
-  searchById() {
-    if (!this.searchId) return;
-    this.inventoryService.getById(this.searchId).subscribe((data) => (this.inventories = [data]));
+  // Search By PharmacyComponent
+  searchPharmacyFn() {
+    if (!this.searchPharmacy) return;
+    this.inventoryService
+      .searchByPharmacy(this.searchPharmacy)
+      .subscribe((data) => (this.inventories = [data]));
   }
 
   // Available stock

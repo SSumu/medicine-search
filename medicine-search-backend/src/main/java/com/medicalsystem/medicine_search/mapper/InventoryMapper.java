@@ -29,7 +29,7 @@ public class InventoryMapper {
 
                 .medicineName(
                         inventory.getMedicine() != null
-                                ? inventory.getMedicine().getName()
+                                ? inventory.getMedicine().getMedicineName()
                                 : null
                 )
 

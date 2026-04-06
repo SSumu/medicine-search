@@ -1,5 +1,6 @@
 package com.medicalsystem.medicine_search.service.impl;
 
+import com.medicalsystem.medicine_search.dto.MedicineRequestDTO;
 import com.medicalsystem.medicine_search.dto.MedicineSearchResponseDTO;
 import com.medicalsystem.medicine_search.entity.Medicine;
 import com.medicalsystem.medicine_search.mapper.MedicineMapper;
@@ -38,7 +39,7 @@ public class MedicineServiceImpl implements MedicineService {
     // ✅ 🔍 Search by name (Your main requirement)
     @Override
     public List<MedicineSearchResponseDTO> searchMedicinesByName(String name) {
-        return medicineRepository.findByNameContainingIgnoreCase(name)
+        return medicineRepository.findByMedicineNameContainingIgnoreCase(name)
                 .stream()
                 .map(medicineMapper::toDto)
                 .collect(Collectors.toList());
@@ -49,7 +50,7 @@ public class MedicineServiceImpl implements MedicineService {
     public List<MedicineSearchResponseDTO> searchMedicines(String name, double minPrice, double maxPrice) {
 
         return medicineRepository
-                .findByNameContainingIgnoreCaseAndPriceBetween(name, minPrice, maxPrice)
+                .findByMedicineNameContainingIgnoreCaseAndPriceBetween(name, minPrice, maxPrice)
                 .stream()
                 .map(medicineMapper::toDto)
                 .collect(Collectors.toList());
@@ -66,25 +67,34 @@ public class MedicineServiceImpl implements MedicineService {
 
     // ✅ Save new medicine
     @Override
-    public MedicineSearchResponseDTO saveMedicine(Medicine medicine) {
-        Medicine saved = medicineRepository.save(medicine);
-        return medicineMapper.toDto(saved); // ✅ use mapper
+    public MedicineSearchResponseDTO saveMedicine(MedicineRequestDTO medicineRequestDTO) {
+        Medicine medicine = MedicineMapper.toEntity(medicineRequestDTO);
+        return medicineMapper.toDto(medicineRepository.save(medicine)); // ✅ use mapper
     }
 
     // ✅ Update medicine
     @Override
-    public Optional<MedicineSearchResponseDTO> updateMedicine(Long id, Medicine updatedMedicine) {
-        return medicineRepository.findById(id)
-                .map(existing -> {
-                    existing.setName(updatedMedicine.getName());
-                    existing.setPrice(updatedMedicine.getPrice());
-                    existing.setManufacturer(updatedMedicine.getManufacturer());
-                    existing.setDescription(updatedMedicine.getDescription());
-
-                    Medicine saved = medicineRepository.save(existing);
-                    return medicineMapper.toDto(saved); // ✅ use mapper
-                });
+    public Optional<MedicineSearchResponseDTO> updateMedicine(Long id, MedicineRequestDTO medicineRequestDTO) {
+        return medicineRepository.findById(id).map(existing -> {
+            MedicineMapper.updateEntity(existing, medicineRequestDTO);
+            return medicineMapper.toDto(medicineRepository.save(existing));
+        });
     }
+
+    // ✅ Update medicine
+//    @Override
+//    public Optional<MedicineSearchResponseDTO> updateMedicine(Long id, Medicine updatedMedicine) {
+//        return medicineRepository.findById(id)
+//                .map(existing -> {
+//                    existing.setMedicineName(updatedMedicine.getMedicineName());
+//                    existing.setPrice(updatedMedicine.getPrice());
+//                    existing.setManufacturer(updatedMedicine.getManufacturer());
+//                    existing.setDescription(updatedMedicine.getDescription());
+//
+//                    Medicine saved = medicineRepository.save(existing);
+//                    return medicineMapper.toDto(saved); // ✅ use mapper
+//                });
+//    }
 
     // ✅ Delete medicine
     @Override

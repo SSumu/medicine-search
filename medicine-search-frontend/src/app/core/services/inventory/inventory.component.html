@@ -11,27 +11,11 @@
     <input [(ngModel)]="searchLocation" placeholder="Search Location" />
     <button (click)="searchLocationFn()">Search</button>
 
-    <input type="number" [(ngModel)]="searchId" placeholder="Search ID" />
-    <button (click)="searchById()">Get By ID</button>
+    <input type="number" [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
+    <button (click)="searchPharmacyFn()">Search</button>
 
     <button (click)="loadAll()">Reset</button>
     <button (click)="loadAvailable()">Available Stock</button>
-
-  </div>
-
-  <!-- FORM -->
-  <div class="form-box">
-
-    <input [(ngModel)]="formData.pharmacyName" placeholder="Pharmacy Name" />
-    <input [(ngModel)]="formData.pharmacyLocation" placeholder="Pharmacy Location" />
-    <input [(ngModel)]="formData.medicineName" placeholder="Medicine Name" />
-    <input type="number" [(ngModel)]="formData.quantity" placeholder="Quantity" />
-
-    <button (click)="save()">
-      {{ editId ? 'Update' : 'Add' }}
-    </button>
-
-    <button (click)="resetForm()">Clear</button>
 
   </div>
 
@@ -40,7 +24,7 @@
     <thead>
     <tr>
       <th>ID</th>
-      <th>Pharmacy</th>
+      <th>PharmacyComponent</th>
       <th>Location</th>
       <th>Medicine</th>
       <th>Quantity</th>

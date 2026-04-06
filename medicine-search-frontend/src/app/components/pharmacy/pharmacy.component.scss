@@ -1,0 +1,64 @@
+.form-box {
+  width: 420px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: Arial, sans-serif;
+}
+
+.form-box h3 {
+  text-align: center;
+  margin: auto;
+  color: #333;
+  font-size: 20px;
+}
+
+/* Inputs */
+.form-box input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease-in-out;
+}
+
+.form-box input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+/* Buttons */
+.form-box button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+/* Primary button (Add / Update) */
+.form-box button:first-of-type {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.form-box button:first-of-type:hover {
+  background-color: #357ab8;
+}
+
+/* Clear button */
+.form-box button:last-of-type {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.form-box button:last-of-type:hover {
+  background-color: #c7c7c7;
+}

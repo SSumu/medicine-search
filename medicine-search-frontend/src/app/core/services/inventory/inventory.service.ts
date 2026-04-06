@@ -23,12 +23,12 @@ export class InventoryService {
     return this.http.get<InventoryResponseDTO[]>(this.baseUrl);
   }
 
-  getById(id: number): Observable<InventoryResponseDTO> {
-    return this.http.get<InventoryResponseDTO>(`${this.baseUrl}/${id}`);
+  searchByPharmacy(pharmacyName: string): Observable<InventoryResponseDTO> {
+    return this.http.get<InventoryResponseDTO>(`${this.baseUrl}/search/pharmacy?medicineName${pharmacyName}`);
   }
 
-  searchByMedicine(name: string): Observable<InventoryResponseDTO[]> {
-    return this.http.get<InventoryResponseDTO[]>(`${this.baseUrl}/search/medicine?name=${name}`);
+  searchByMedicine(medicineName: string): Observable<InventoryResponseDTO[]> {
+    return this.http.get<InventoryResponseDTO[]>(`${this.baseUrl}/search/medicine?medicineName=${medicineName}`);
   }
 
   searchByLocation(location: string): Observable<InventoryResponseDTO[]> {

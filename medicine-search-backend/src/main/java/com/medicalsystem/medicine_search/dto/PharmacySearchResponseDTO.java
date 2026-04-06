@@ -18,6 +18,6 @@ public class PharmacySearchResponseDTO {
     private String country;
     private String contactNumber;
     private String email;
-    private Double latitude;
-    private Double longitude;
+//    private Double latitude;
+//    private Double longitude;
 }

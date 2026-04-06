@@ -37,10 +37,10 @@ public class Pharmacy {
     private String email;
 
     // Latitude for Google Maps
-    @Column(nullable = false)
-    private Double latitude;
-
-    // Longitude for Google Maps
-    @Column(nullable = false)
-    private Double longitude;
+//    @Column(nullable = false)
+//    private Double latitude;
+//
+//    // Longitude for Google Maps
+//    @Column(nullable = false)
+//    private Double longitude;
 }

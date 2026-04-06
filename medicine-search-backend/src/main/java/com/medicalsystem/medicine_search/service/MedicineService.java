@@ -1,5 +1,6 @@
 package com.medicalsystem.medicine_search.service;
 
+import com.medicalsystem.medicine_search.dto.MedicineRequestDTO;
 import com.medicalsystem.medicine_search.dto.MedicineSearchResponseDTO;
 import com.medicalsystem.medicine_search.entity.Medicine;
 
@@ -14,10 +15,10 @@ public interface MedicineService {
 
     List<MedicineSearchResponseDTO> getMedicinesByPriceRange(double minPrice, double maxPrice);
 
-    // Add this method:
-    MedicineSearchResponseDTO saveMedicine(Medicine medicine);
+    // ✅ Save new medicine
+    MedicineSearchResponseDTO saveMedicine(MedicineRequestDTO medicineRequestDTO);
 
-    Optional<MedicineSearchResponseDTO> updateMedicine(Long id, Medicine medicine);
+    Optional<MedicineSearchResponseDTO> updateMedicine(Long id, MedicineRequestDTO medicineRequestDTO);
 
     void deleteMedicine(Long id);
 

@@ -3,6 +3,7 @@ import { DetailsPage, HomePage } from './app';
 import { MedicineComponent } from './core/services/medicine/medicine.component';
 import { InventoryComponent } from './core/services/inventory/inventory.component';
 import { MedicineSearchComponent } from './components/medicine-search/medicine-search.component';
+import { PharmacyComponent } from './components/pharmacy/pharmacy.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomePage },
@@ -10,7 +11,8 @@ export const routes: Routes = [
   { path: 'details', component: DetailsPage },
   { path: 'medicine', component: MedicineComponent },
   { path: 'inventory', component: InventoryComponent },
-  
+  { path: 'pharmacy', component: PharmacyComponent},
+
   // Optional: redirect unknown routes
   { path: '**', redirectTo: '' }
 ];

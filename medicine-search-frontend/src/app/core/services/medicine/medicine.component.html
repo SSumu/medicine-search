@@ -14,7 +14,7 @@
     <!-- NAME -->
     <input
       type="text"
-      placeholder="Name"
+      placeholder="Medicine name"
       [(ngModel)]="newMedicine.name"
       name="name"
       [ngClass]="{
@@ -62,9 +62,19 @@
 
     <!-- BUTTONS -->
     <div class="form-actions">
-      <button class="add-btn" (click)="addMedicine()">Add Medicine</button>
+      <div>
+        <button class="add-btn" (click)="addMedicine()">Add Medicine</button>
+      </div>
       <button class="clear-btn" (click)="clearForm()">Clear</button>
     </div>
   </div>
+
+  <!-- POPUP DIALOG BOX -->
+  <app-popup
+    [visible]="popupVisible"
+    [message]="popupMessage"
+    [type]="popupType"
+    (close)="closePopup()"
+  ></app-popup>
 
 </div>

@@ -20,8 +20,8 @@ public class PharmacyMapper {
                 .country(pharmacy.getCountry())
                 .contactNumber(pharmacy.getContactNumber())
                 .email(pharmacy.getEmail())
-                .latitude(pharmacy.getLatitude())
-                .longitude(pharmacy.getLongitude())
+//                .latitude(pharmacy.getLatitude())
+//                .longitude(pharmacy.getLongitude())
                 .build();
     }
 }

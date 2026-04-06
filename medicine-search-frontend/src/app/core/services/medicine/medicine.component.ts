@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 import { Medicine } from '../../../models/medicine/medicine.model';
 import { MedicineService } from './medicine.service';
+import { PopupComponent } from '../../../components/popup/popup.component';
 
 @Component({
   selector: 'app-medicine',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PopupComponent],
   templateUrl: './medicine.component.html',
   styleUrls: ['./medicine.component.scss'],
 })
@@ -17,7 +18,6 @@ export class MedicineComponent implements OnInit {
   // PROPERTIES
   // ================================
   medicines: Medicine[] = [];
-
   selectedMedicine: Medicine | null = null;
 
   newMedicine: Medicine = {
@@ -28,10 +28,20 @@ export class MedicineComponent implements OnInit {
     description: '',
   };
 
+  // ================================
+  // PRICE HANDLING
+  // ================================
   priceInput: string = ''; // ✅ UI binding
+  isValidPrice: boolean = false;
 
-  submitted = false;
-  isValidPrice = false;
+  submitted: boolean = false;
+
+  // ================================
+  // ✅ POPUP STATE
+  // ================================
+  popupVisible: boolean = false;
+  popupMessage = '';
+  popupType: 'success' | 'error' = 'success';
 
   // ================================
   // CONSTRUCTOR
@@ -77,18 +87,36 @@ export class MedicineComponent implements OnInit {
     }
 
     // ✅ Convert string → number before sending
-    this.newMedicine.price = parseFloat(this.priceInput);
+    this.newMedicine.price = parseFloat(this.priceInput.replace(/,/g, ''));
 
     this.medicineService.addMedicine(this.newMedicine).subscribe({
       next: () => {
-        console.log('Medicine successfully added', this.newMedicine);
+        this.showPopupMessage('Medicine added successfully!', 'success');
         this.loadMedicines();
         this.clearForm();
       },
-      error: (err) => {
-        console.error('Error adding medicine:', err);
+      error: () => {
+        this.showPopupMessage('Failed to add medicine!', 'error');
       },
     });
+  }
+
+  // ================================
+  // POPUP METHODS
+  // ================================
+  showPopupMessage(message: string, type: 'success' | 'error'): void {
+    this.popupMessage = message;
+    this.popupType = type;
+    this.popupVisible = true;
+
+    // Auto close after 3 seconds
+    setTimeout(() => {
+      this.closePopup();
+    }, 3000);
+  }
+
+  closePopup(): void {
+    this.popupVisible = false;
   }
 
   // ================================
@@ -113,22 +141,22 @@ export class MedicineComponent implements OnInit {
   // ================================
   validateForm(): boolean {
     if (!this.newMedicine.name.trim()) {
-      alert('Medicine name is required');
+      this.showPopupMessage('Medicine name is required', 'error');
       return false;
     }
 
     if (!this.newMedicine.manufacturer.trim()) {
-      alert('Manufacturer is required');
+      this.showPopupMessage('Manufacturer is required', 'error');
       return false;
     }
 
     if (!this.priceInput || isNaN(Number(this.priceInput))) {
-      alert('Price is required');
+      this.showPopupMessage('Price is required', 'error');
       return false;
     }
 
     if (!this.newMedicine.description?.trim()) {
-      alert('Description is required');
+      this.showPopupMessage('Description is required', 'error');
       return false;
     }
 
@@ -136,7 +164,7 @@ export class MedicineComponent implements OnInit {
   }
 
   // ===========================================================
-  // KEYDOWN -> BLOCK INVALID TYPING (ALLOW ONLY NUMBERS + DOT)
+  // KEYDOWN -> BLOCK INVALID TYPING (ALLOW ONLY NUMBERS + SINGLE DOT)
   // ===========================================================
   onlyPriceInput(event: KeyboardEvent): void {
     const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];

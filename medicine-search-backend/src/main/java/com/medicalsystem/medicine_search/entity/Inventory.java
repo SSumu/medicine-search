@@ -18,7 +18,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relationship with Pharmacy
+    // Relationship with PharmacyComponent
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pharmacy_id", nullable = false)
     private Pharmacy pharmacy;

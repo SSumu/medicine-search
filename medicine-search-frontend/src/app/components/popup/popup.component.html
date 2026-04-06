@@ -1,0 +1,8 @@
+@if (visible) {
+  <div class="overlay">
+    <div class="dialog" [ngClass]="type">
+      <p>{{ message }}</p>
+      <button (click)="onClose()">OK</button>
+    </div>
+  </div>
+}
