@@ -5,7 +5,6 @@
   padding: 20px;
   max-width: 1200px;
   margin: auto;
-  font-family: Arial, sans-serif;
   color: #2c3e50;
   border-radius: 12px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.20);
@@ -88,11 +87,12 @@ button {
 ============================== */
 .inventory-table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  overflow: hidden;
+  border-collapse: separate;
+  //background-color: #ffffff;
+  //box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border-spacing: 15px;
+  //border-radius: 10px;
+  //overflow: hidden;
 }
 
 .inventory-table thead {
@@ -107,12 +107,37 @@ button {
   border-bottom: 1px solid #eee;
 }
 
+.inventory-table thead th {
+  border-radius: 12px;
+  margin: 10px;
+}
+
+.inventory-table tbody td {
+  background: white;
+  padding: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #dddddd;
+}
+
 .inventory-table tbody tr {
   transition: 0.2s;
 }
 
-.inventory-table tbody tr:hover {
+.inventory-table tbody tr:hover td {
   background-color: #f4f8ff;
+}
+
+.inventory-loader {
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+}
+
+.table-body {
+  padding: 20px;
+  color: #888888;
+  font-style: italic;
+  border-radius: 12px;
 }
 
 /* ==============================

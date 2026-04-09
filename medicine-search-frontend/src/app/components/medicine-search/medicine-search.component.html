@@ -31,7 +31,7 @@
        LOADING
   ===================================================== -->
   @if (isLoading) {
-    <div class="loader">Loading medicines...</div>
+    <div class="medicine-loader">Loading medicines...</div>
   }
 
   <!-- =====================================================
@@ -106,33 +106,32 @@
        UPDATE MEDICINE FORM (SAFE NULL HANDLING)
   ===================================================== -->
   @if (selectedMedicine) {
-    @let sm = selectedMedicine;
 
     <div class="form-section">
       <h3>Update Medicine</h3>
 
       <input
         type="text"
-        [(ngModel)]="sm.name"
+        [(ngModel)]="selectedMedicine.name"
         name="editName"
       />
 
       <input
         type="text"
-        [(ngModel)]="sm.manufacturer"
+        [(ngModel)]="selectedMedicine.manufacturer"
         name="editManufacturer"
       />
 
       <input
         type="text"
-        [(ngModel)]="sm.price"
+        [(ngModel)]="selectedMedicine.price"
         name="editPrice"
         (keydown)="onlyPriceInputForSearch($event)"
         (input)="validatePriceForSearch($event)"
       />
 
       <textarea
-        [(ngModel)]="sm.description"
+        [(ngModel)]="selectedMedicine.description"
         name="editDescription"
       ></textarea>
 
@@ -145,16 +144,15 @@
        SELECTED MEDICINE DETAILS (SAFE NULL HANDLING)
   ===================================================== -->
   @if (selectedMedicine) {
-    @let sm = selectedMedicine;
 
     <div class="details-section">
       <h3>Selected Medicine Details</h3>
 
-      <p><strong>ID:</strong> {{ sm.id }}</p>
-      <p><strong>Name:</strong> {{ sm.name }}</p>
-      <p><strong>Manufacturer:</strong> {{ sm.manufacturer }}</p>
-      <p><strong>Price:</strong> {{ sm.price }}</p>
-      <p><strong>Description:</strong> {{ sm.description }}</p>
+      <p><strong>ID:</strong> {{ selectedMedicine.id }}</p>
+      <p><strong>Name:</strong> {{ selectedMedicine.name }}</p>
+      <p><strong>Manufacturer:</strong> {{ selectedMedicine.manufacturer }}</p>
+      <p><strong>Price:</strong> {{ selectedMedicine.price }}</p>
+      <p><strong>Description:</strong> {{ selectedMedicine.description }}</p>
     </div>
   }
 

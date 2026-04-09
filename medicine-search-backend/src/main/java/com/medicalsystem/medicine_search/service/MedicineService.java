@@ -2,7 +2,6 @@ package com.medicalsystem.medicine_search.service;
 
 import com.medicalsystem.medicine_search.dto.MedicineRequestDTO;
 import com.medicalsystem.medicine_search.dto.MedicineSearchResponseDTO;
-import com.medicalsystem.medicine_search.entity.Medicine;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,16 +1,43 @@
-<div class="form-box">
+<div class="pharmacy-container">
 
-  <h3>{{ editId ? 'Update Pharmacy' : 'Add Pharmacy' }}</h3>
+  <!-- =====================================================
+       TITLE
+  ===================================================== -->
+  <h2>Add Pharmacy</h2>
 
-  <input [(ngModel)]="formData.pharmacyName" placeholder="Pharmacy Name" />
-  <input [(ngModel)]="formData.pharmacyLocation" placeholder="Pharmacy Location" />
-  <input [(ngModel)]="formData.medicineName" placeholder="Medicine Name" />
-  <input type="number" [(ngModel)]="formData.quantity" placeholder="Quantity" />
+  <!-- PHARMACY NAME -->
+  <input
+    type="text"
+    [(ngModel)]="newPharmacy.pharmacyName"
+    name="pharmacyName"
+    placeholder="Pharmacy name"
+  />
+  @if (submitted && errors.pharmacyName) {
+    <div class="pharmacy-error">{{ errors.pharmacyName }}</div>
+  }
 
-  <button (click)="save()">
-    {{ editId ? 'Update' : 'Add' }}
-  </button>
+  <!-- PHARMACY LOCATION -->
+  <input
+    type="text"
+    [(ngModel)]="newPharmacy.pharmacyLocation"
+    name="pharmacyLocation"
+    placeholder="Pharmacy location"
+  />
+  @if (submitted && errors.pharmacyLocation) {
+    <div class="pharmacy-error">{{ errors.pharmacyLocation }}</div>
+  }
 
-  <button (click)="resetForm()">Clear</button>
+  <div class="pharmacy-form-actions">
+    <button class="pharmacy-add-btn" (click)="createPharmacy()">Add Pharmacy</button>
+    <button class="pharmacy-clear-btn" (click)="clearForm()">Clear</button>
+  </div>
+
+  <!-- POPUP DIALOG BOX -->
+  <app-popup
+    [visible]="popupVisible"
+    [message]="popupMessage"
+    [type]="popupType"
+    (close)="closePopup()"
+  ></app-popup>
 
 </div>

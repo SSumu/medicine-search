@@ -2,7 +2,7 @@
 
   <h2>Medicine Inventory System</h2>
 
-  <!-- SEARCH SECTION -->
+  <!-- 🔍 SEARCH SECTION -->
   <div class="search-box">
 
     <input [(ngModel)]="searchMedicine" placeholder="Search Medicine" />
@@ -11,42 +11,123 @@
     <input [(ngModel)]="searchLocation" placeholder="Search Location" />
     <button (click)="searchLocationFn()">Search</button>
 
-    <input type="number" [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
+    <input [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
     <button (click)="searchPharmacyFn()">Search</button>
 
-    <button (click)="loadAll()">Reset</button>
+    <button (click)="loadInventories()">Reset</button>
     <button (click)="loadAvailable()">Available Stock</button>
 
   </div>
 
-  <!-- TABLE -->
-  <table class="inventory-table">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>PharmacyComponent</th>
-      <th>Location</th>
-      <th>Medicine</th>
-      <th>Quantity</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
+  <!-- =====================================================
+       LOADING INVENTORIES
+  ===================================================== -->
+  @if (isLoading) {
+    <div class="inventory-loader">Loading inventories...</div>
+  }
 
-    <tbody>
-      @for (item of inventories; track item.id) {
+  <!-- =====================================================
+       INVENTORY LIST TABLE
+  ===================================================== -->
+  @if (!isLoading) {
+    <table class="inventory-table">
+      <thead>
         <tr>
-          <td>{{ item.id }}</td>
-          <td>{{ item.pharmacyName }}</td>
-          <td>{{ item.pharmacyLocation }}</td>
-          <td>{{ item.medicineName }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>
-            <button (click)="edit(item)">Edit</button>
-            <button (click)="delete(item.id)">Delete</button>
-          </td>
+          <th>ID</th>
+          <th>Pharmacy</th>
+          <th>Location</th>
+          <th>Medicine</th>
+          <th>Quantity</th>
+          <th>Actions</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+
+      <tbody>
+        @if (inventories.length > 0) {
+          @for (item of paginatedInventories; track item.id) {
+            <tr (click)="selectInventory(item)">
+              <td>{{ item.id }}</td>
+              <td>{{ item.pharmacyName }}</td>
+              <td>{{ item.pharmacyLocation }}</td>
+              <td>{{ item.medicineName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>
+                <button (click)="editInventory(item); $event.stopPropagation()">Edit</button>
+                <button (click)="deleteInventory(item.id); $event.stopPropagation()">Delete</button>
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="6" class="table-body">
+              No inventories found.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- ====================================================
+       PAGINATION
+    ===================================================== -->
+    @if (inventories.length > pageSize) {
+      <div class="pagination">
+        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>
+
+        <span>Page {{ currentPage }} / {{ totalPages }}</span>
+
+        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>
+      </div>
+    }
+  }
+
+  <!-- =====================================================
+       UPDATE INVENTORY TABLE (SAFE NULL HANDLING)
+  ===================================================== -->
+  @if (selectedInventory) {
+
+    <div class="form-section">
+      <h3>Update Medicine</h3>
+
+      <input
+        type="text"
+        [(ngModel)]="selectedInventory.pharmacyName"
+      />
+
+      <input
+        type="text"
+        [(ngModel)]="selectedInventory.pharmacyLocation"
+      />
+
+      <input
+        type="text"
+        [(ngModel)]="selectedInventory.medicineName"
+      />
+
+      <input
+        type="number"
+        [(ngModel)]="selectedInventory.quantity"
+      />
+
+      <button (click)="updateInventory()">Update</button>
+      <button (click)="selectedInventory = null">Cancel</button>
+    </div>
+  }
+
+  <!-- =====================================================
+       SELECTED INVENTORY DETAILS (SAFE NULL HANDLING)
+  ===================================================== -->
+  @if (selectedInventory) {
+
+    <div class="details-section">
+      <h3>Selected Inventory Details</h3>
+
+      <p><strong>ID:</strong> {{ selectedInventory.id }}</p>
+      <p><strong>Pharmacy:</strong> {{ selectedInventory.pharmacyName }}</p>
+      <p><strong>Location:</strong> {{ selectedInventory.pharmacyLocation }}</p>
+      <p><strong>Medicine:</strong> {{ selectedInventory.medicineName }}</p>
+      <p><strong>Quantity:</strong> {{ selectedInventory.quantity }} </p>
+    </div>
+  }
 
 </div>

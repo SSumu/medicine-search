@@ -35,7 +35,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   color: var(--text);
-  //padding-top: 0;
 }
 
 /* =====================================================
@@ -166,6 +165,12 @@
   width: 90%;
   resize: vertical;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.medicine-error {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
 
 /* ================================

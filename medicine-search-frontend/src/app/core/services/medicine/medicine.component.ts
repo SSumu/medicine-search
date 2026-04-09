@@ -24,9 +24,18 @@ export class MedicineComponent implements OnInit {
     id: 0,
     name: '',
     manufacturer: '',
+    quantity: null,
     price: null,
     description: '',
   };
+
+  errors = {
+    name: '',
+    manufacturer: '',
+    quantity: '',
+    price: '',
+    description: ''
+  }
 
   // ================================
   // PRICE HANDLING
@@ -87,7 +96,7 @@ export class MedicineComponent implements OnInit {
     }
 
     // ✅ Convert string → number before sending
-    this.newMedicine.price = parseFloat(this.priceInput.replace(/,/g, ''));
+    this.newMedicine.price = parseFloat(this.priceInput);
 
     this.medicineService.addMedicine(this.newMedicine).subscribe({
       next: () => {
@@ -127,6 +136,7 @@ export class MedicineComponent implements OnInit {
       id: 0,
       name: '',
       manufacturer: '',
+      quantity: null,
       price: null,
       description: '',
     };
@@ -140,27 +150,65 @@ export class MedicineComponent implements OnInit {
   // VALIDATION
   // ================================
   validateForm(): boolean {
-    if (!this.newMedicine.name.trim()) {
-      this.showPopupMessage('Medicine name is required', 'error');
-      return false;
+    // Reset errors
+    this.errors = {
+      name: '',
+      manufacturer: '',
+      quantity: '',
+      price: '',
+      description: '',
+    };
+
+    let isValid = true;
+
+    // ✅ Name validation
+    if (
+      !this.newMedicine.name.trim() ||
+      !this.newMedicine.name.trim()
+    ) {
+      this.errors.name = 'Medicine name is required';
+      isValid = false;
     }
 
-    if (!this.newMedicine.manufacturer.trim()) {
-      this.showPopupMessage('Manufacturer is required', 'error');
-      return false;
+    // ✅ Manufacturer validation
+    if (
+      !this.newMedicine.manufacturer ||
+      !this.newMedicine.manufacturer.trim()
+    ) {
+      this.errors.manufacturer = 'Manufacturer is required';
+      isValid = false;
     }
 
-    if (!this.priceInput || isNaN(Number(this.priceInput))) {
-      this.showPopupMessage('Price is required', 'error');
-      return false;
+    // ✅ Quantity validation (ONLY > 0, no null, no NaN)
+    if (
+      this.newMedicine.quantity === null ||
+      this.newMedicine.quantity === undefined ||
+      isNaN(Number(this.newMedicine.quantity)) ||
+      Number(this.newMedicine.quantity) <= 0
+    ) {
+      this.errors.quantity = 'Quantity is required and it must be greater than 0';
+      isValid = false;
     }
 
-    if (!this.newMedicine.description?.trim()) {
-      this.showPopupMessage('Description is required', 'error');
-      return false;
+    // ✅ Price validation (ONLY > 0)
+    if (
+      !this.priceInput ||
+      isNaN(Number(this.priceInput)) ||
+      Number(this.priceInput) <= 0
+    ) {
+      this.errors.price = 'Price is required';
+      isValid = false;
     }
 
-    return true;
+    // ✅ Description validation
+    if (
+      !this.newMedicine.description?.trim()
+    ) {
+      this.errors.description = 'Description is required';
+      isValid = false;
+    }
+
+    return isValid;
   }
 
   // ===========================================================

@@ -17,11 +17,10 @@
       placeholder="Medicine name"
       [(ngModel)]="newMedicine.name"
       name="name"
-      [ngClass]="{
-      'error': submitted && !newMedicine.name,
-      'success': newMedicine.name
-      }"
     />
+    @if (submitted && errors.name) {
+      <div class="medicine-error">{{ errors.name }}</div>
+    }
 
     <!-- MANUFACTURER -->
     <input
@@ -29,11 +28,24 @@
       placeholder="Manufacturer"
       [(ngModel)]="newMedicine.manufacturer"
       name="manufacturer"
-      [ngClass]="{
-      'error': submitted && !newMedicine.manufacturer,
-      'success': newMedicine.manufacturer
-      }"
     />
+    @if (submitted && errors.manufacturer) {
+      <div class="medicine-error">{{ errors.manufacturer }}</div>
+    }
+
+    <!-- QUANTITY -->
+    <input
+      type="number"
+      [(ngModel)]="newMedicine.quantity"
+      name="quantity"
+      placeholder="Quantity"
+      min="1"
+      step="1"
+      required
+    />
+    @if (submitted && errors.quantity) {
+      <div class="medicine-error">{{ errors.quantity }}</div>
+    }
 
     <!-- PRICE -->
     <input
@@ -43,22 +55,20 @@
       name="price"
       (keydown)="onlyPriceInput($event)"
       (input)="formatPriceInput($event)"
-      [ngClass]="{
-      'error': submitted && !isValidPrice,
-      'success': isValidPrice
-      }"
     />
+    @if (submitted && errors.price) {
+      <div class="error">{{ errors.price }}</div>
+    }
 
     <!-- DESCRIPTION -->
     <textarea
       placeholder="Description"
       [(ngModel)]="newMedicine.description"
       name="description"
-      [ngClass]="{
-      'error': submitted && !newMedicine.description,
-      'success': newMedicine.description
-      }"
     ></textarea>
+    @if (submitted && errors.description) {
+      <div class="medicine-error">{{ errors.description }}</div>
+    }
 
     <!-- BUTTONS -->
     <div class="form-actions">

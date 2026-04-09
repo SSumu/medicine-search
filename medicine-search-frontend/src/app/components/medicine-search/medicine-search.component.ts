@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-medicine-search',
+  standalone: true,
   templateUrl: 'medicine-search.component.html',
   styleUrls: ['medicine-search.component.scss'],
   imports: [FormsModule],
@@ -20,6 +21,7 @@ export class MedicineSearchComponent implements OnInit {
     id: 0,
     name: '',
     manufacturer: '',
+    quantity: null,
     price: null,
     description: '',
   };
@@ -77,7 +79,7 @@ export class MedicineSearchComponent implements OnInit {
         this.filteredMedicines = data ?? [];
       },
       error: (err) => {
-        console.error('Refresh error:', err);
+        console.error('Refresh medicines error:', err);
       },
     });
   }
@@ -218,7 +220,7 @@ export class MedicineSearchComponent implements OnInit {
         this.selectedMedicine = null;
       },
       error: (err) => {
-        console.error('Update error:', err);
+        console.error('Medicine update error:', err);
       },
     });
   }

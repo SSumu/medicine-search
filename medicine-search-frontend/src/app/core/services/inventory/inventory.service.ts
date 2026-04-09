@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { Medicine } from '../../../models/medicine/medicine.model';
 
 export interface InventoryResponseDTO {
   id: number;
   pharmacyName: string;
   pharmacyLocation: string;
   medicineName: string;
-  quantity: number;
+  quantity?: Medicine;
 }
 
 @Injectable({
@@ -19,7 +20,7 @@ export class InventoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<InventoryResponseDTO[]> {
+  getAllInventories(): Observable<InventoryResponseDTO[]> {
     return this.http.get<InventoryResponseDTO[]>(this.baseUrl);
   }
 
@@ -41,15 +42,19 @@ export class InventoryService {
     return this.http.get<InventoryResponseDTO[]>(`${this.baseUrl}/available`);
   }
 
-  create(data: any): Observable<InventoryResponseDTO> {
+  createInventory(data: any): Observable<InventoryResponseDTO> {
     return this.http.post<InventoryResponseDTO>(this.baseUrl, data);
   }
 
-  update(id: number, data: any): Observable<InventoryResponseDTO> {
+  updateInventory(id: number, data: any): Observable<InventoryResponseDTO> {
     return this.http.put<InventoryResponseDTO>(`${this.baseUrl}/${id}`, data);
   }
 
-  delete(id: number): Observable<void> {
+  deleteInventory(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  refreshInventories(): Observable<InventoryResponseDTO[]> {
+    return this.getAllInventories()
   }
 }
