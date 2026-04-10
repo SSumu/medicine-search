@@ -16,13 +16,13 @@ public class Pharmacy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long pharmacyId;
 
     @Column(nullable = false)
-    private String name;
+    private String pharmacyName;
 
     @Column(nullable = false)
-    private String location;
+    private String pharmacyLocation;
 
     @Column(nullable = false)
     private String city;
@@ -36,11 +36,4 @@ public class Pharmacy {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // Latitude for Google Maps
-//    @Column(nullable = false)
-//    private Double latitude;
-//
-//    // Longitude for Google Maps
-//    @Column(nullable = false)
-//    private Double longitude;
 }

@@ -52,19 +52,19 @@
 
       <tbody>
         @if (medicines.length > 0) {
-          @for (med of paginatedMedicines; track med.id) {
+          @for (med of paginatedMedicines; track med.medicineId) {
             <tr>
-              <td>{{ med.id }}</td>
-              <td>{{ med.name }}</td>
+              <td>{{ med.medicineId }}</td>
+              <td>{{ med.medicineName }}</td>
               <td>{{ med.manufacturer }}</td>
               <td>{{ med.price }}</td>
               <td>{{ med.description }}</td>
               <td>
-                <button (click)="getMedicineById(med.id)">View</button>
+                <button (click)="getMedicineById(med.medicineId)">View</button>
                 <button (click)="editMedicine(med)">Edit</button>
                 <button
                   class="delete-btn"
-                  (click)="deleteMedicine(med.id)"
+                  (click)="deleteMedicine(med.medicineId)"
                 >
                   Delete
                 </button>
@@ -112,7 +112,7 @@
 
       <input
         type="text"
-        [(ngModel)]="selectedMedicine.name"
+        [(ngModel)]="selectedMedicine.medicineName"
         name="editName"
       />
 
@@ -148,8 +148,8 @@
     <div class="details-section">
       <h3>Selected Medicine Details</h3>
 
-      <p><strong>ID:</strong> {{ selectedMedicine.id }}</p>
-      <p><strong>Name:</strong> {{ selectedMedicine.name }}</p>
+      <p><strong>ID:</strong> {{ selectedMedicine.medicineId }}</p>
+      <p><strong>Name:</strong> {{ selectedMedicine.medicineName }}</p>
       <p><strong>Manufacturer:</strong> {{ selectedMedicine.manufacturer }}</p>
       <p><strong>Price:</strong> {{ selectedMedicine.price }}</p>
       <p><strong>Description:</strong> {{ selectedMedicine.description }}</p>

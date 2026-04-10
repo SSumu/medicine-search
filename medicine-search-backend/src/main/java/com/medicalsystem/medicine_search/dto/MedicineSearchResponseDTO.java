@@ -13,9 +13,10 @@ public class MedicineSearchResponseDTO {
 
     private Long medicineId;
     private String medicineName;
-    private String description;
     private String manufacturer;
+    private Integer quantity;
     private Double price;
+    private String description;
 
 //    private Integer quantityAvailable;
 //

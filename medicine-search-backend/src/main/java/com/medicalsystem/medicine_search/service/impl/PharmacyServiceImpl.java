@@ -33,8 +33,8 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<PharmacySearchResponseDTO> searchPharmaciesByName(String name) {
-        return pharmacyRepository.findByNameContainingIgnoreCase(name)
+    public List<PharmacySearchResponseDTO> searchPharmaciesByName(String pharmacyName) {
+        return pharmacyRepository.findByPharmacyNameContainingIgnoreCase(pharmacyName)
                 .stream()
                 .map(pharmacyMapper::toDto)
                 .collect(Collectors.toList());
@@ -57,8 +57,8 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<PharmacySearchResponseDTO> searchPharmaciesByNameAndCity(String name, String city) {
-        return pharmacyRepository.findByNameContainingIgnoreCaseAndCityContainingIgnoreCase(name, city)
+    public List<PharmacySearchResponseDTO> searchPharmaciesByNameAndCity(String pharmacyName, String city) {
+        return pharmacyRepository.findByPharmacyNameContainingIgnoreCaseAndCityContainingIgnoreCase(pharmacyName, city)
                 .stream()
                 .map(pharmacyMapper::toDto)
                 .collect(Collectors.toList());

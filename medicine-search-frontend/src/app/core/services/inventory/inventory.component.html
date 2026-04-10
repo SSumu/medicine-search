@@ -47,9 +47,9 @@
           @for (item of paginatedInventories; track item.id) {
             <tr (click)="selectInventory(item)">
               <td>{{ item.id }}</td>
-              <td>{{ item.pharmacyName }}</td>
-              <td>{{ item.pharmacyLocation }}</td>
-              <td>{{ item.medicineName }}</td>
+              <td>{{ item.pharmacy.pharmacyName }}</td>
+              <td>{{ item.pharmacy.pharmacyLocation }}</td>
+              <td>{{ item.medicine.medicineName }}</td>
               <td>{{ item.quantity }}</td>
               <td>
                 <button (click)="editInventory(item); $event.stopPropagation()">Edit</button>
@@ -91,17 +91,17 @@
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.pharmacyName"
+        [(ngModel)]="selectedInventory.pharmacy.pharmacyName"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.pharmacyLocation"
+        [(ngModel)]="selectedInventory.pharmacy.pharmacyLocation"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.medicineName"
+        [(ngModel)]="selectedInventory.medicine.medicineName"
       />
 
       <input
@@ -123,9 +123,9 @@
       <h3>Selected Inventory Details</h3>
 
       <p><strong>ID:</strong> {{ selectedInventory.id }}</p>
-      <p><strong>Pharmacy:</strong> {{ selectedInventory.pharmacyName }}</p>
-      <p><strong>Location:</strong> {{ selectedInventory.pharmacyLocation }}</p>
-      <p><strong>Medicine:</strong> {{ selectedInventory.medicineName }}</p>
+      <p><strong>Pharmacy:</strong> {{ selectedInventory.pharmacy.pharmacyName }}</p>
+      <p><strong>Location:</strong> {{ selectedInventory.pharmacy.pharmacyLocation }}</p>
+      <p><strong>Medicine:</strong> {{ selectedInventory.medicine.medicineName }}</p>
       <p><strong>Quantity:</strong> {{ selectedInventory.quantity }} </p>
     </div>
   }

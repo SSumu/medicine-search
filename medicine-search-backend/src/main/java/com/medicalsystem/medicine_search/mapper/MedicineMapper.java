@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MedicineMapper {
 
+    // =======================================
     // 🔁 From Medicine Entity → Response DTO
+    // =======================================
     public MedicineSearchResponseDTO toDto(Medicine medicine) {
         if (medicine == null) {
             return null;
@@ -36,8 +38,14 @@ public class MedicineMapper {
                 .build();
     }
 
+    // ===============================
     // Request DTO -> Medicine Entity
+    // ===============================
     public static Medicine toEntity(MedicineRequestDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
         return Medicine.builder()
                 .medicineName(dto.getMedicineName())
                 .description(dto.getDescription())
@@ -46,7 +54,9 @@ public class MedicineMapper {
                 .build();
     }
 
-    // Update existing Entity
+    // ============================
+    // 🔁 Update Existing Entity
+    // ============================
     public static void updateEntity(Medicine medicine, MedicineRequestDTO dto) {
         medicine.setMedicineName(dto.getMedicineName());
         medicine.setDescription(dto.getDescription());

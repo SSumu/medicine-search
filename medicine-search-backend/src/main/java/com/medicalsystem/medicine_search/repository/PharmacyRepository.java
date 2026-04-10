@@ -10,7 +10,7 @@ import java.util.List;
 public interface PharmacyRepository extends JpaRepository<Pharmacy, Long> {
 
     // Find pharmacies by name (case-insensitive)
-    List<Pharmacy> findByNameContainingIgnoreCase(String name);
+    List<Pharmacy> findByPharmacyNameContainingIgnoreCase(String pharmacyName);
 
     // Find pharmacies by city (case-insensitive)
     List<Pharmacy> findByCityContainingIgnoreCase(String city);
@@ -19,5 +19,5 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, Long> {
     List<Pharmacy> findByCountryContainingIgnoreCase(String country);
 
     // Find pharmacies by name AND city
-    List<Pharmacy> findByNameContainingIgnoreCaseAndCityContainingIgnoreCase(String name, String city);
+    List<Pharmacy> findByPharmacyNameContainingIgnoreCaseAndCityContainingIgnoreCase(String pharmacyName, String city);
 }

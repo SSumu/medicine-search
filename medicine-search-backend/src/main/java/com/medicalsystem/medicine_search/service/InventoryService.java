@@ -1,5 +1,6 @@
 package com.medicalsystem.medicine_search.service;
 
+import com.medicalsystem.medicine_search.dto.InventoryRequestDTO;
 import com.medicalsystem.medicine_search.dto.InventoryResponseDTO;
 import com.medicalsystem.medicine_search.entity.Inventory;
 import com.medicalsystem.medicine_search.entity.Medicine;
@@ -13,23 +14,25 @@ public interface InventoryService {
 
     List<InventoryResponseDTO> getByPharmacy(Pharmacy pharmacyId);
 
-    InventoryResponseDTO getByMedicineAndPharmacy(Medicine medicineId, Pharmacy pharmacyId);
+    List<InventoryResponseDTO> searchByPharmacyName(String pharmacyName);
 
-    List<InventoryResponseDTO> searchByMedicineNameSorted(String name);
+//    InventoryResponseDTO getByMedicineAndPharmacy(Medicine medicineId, Pharmacy pharmacyId);
 
-    List<InventoryResponseDTO> getAllInventory();
+    List<InventoryResponseDTO> searchByMedicineNameSorted(String medicineName);
+
+    List<InventoryResponseDTO> getAllInventories();
 
     InventoryResponseDTO getInventoryById(Long id);
 
-    List<InventoryResponseDTO> searchByMedicineName(String name);
+    List<InventoryResponseDTO> searchByMedicineName(String medicineName);
 
     List<InventoryResponseDTO> searchByLocation(String location);
 
     List<InventoryResponseDTO> getAvailableStock();
 
-    InventoryResponseDTO saveInventory(Inventory inventory);
+//    InventoryResponseDTO saveInventory(Inventory inventory);
 
-    InventoryResponseDTO updateInventory(Long id, Inventory inventory);
+    InventoryResponseDTO updateInventory(Long id, InventoryRequestDTO inventoryRequestDTO);
 
     void deleteInventory(Long id);
 }

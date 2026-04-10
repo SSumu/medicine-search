@@ -18,8 +18,8 @@ export class MedicineSearchComponent implements OnInit {
 
   selectedMedicine: Medicine | null = null;
   newMedicineForSearch: Medicine = {
-    id: 0,
-    name: '',
+    medicineId: 0,
+    medicineName: '',
     manufacturer: '',
     quantity: null,
     price: null,
@@ -212,9 +212,9 @@ export class MedicineSearchComponent implements OnInit {
   // UPDATE MEDICINE
   // =====================================================
   updateMedicine(): void {
-    if (!this.selectedMedicine || !this.selectedMedicine.id) return;
+    if (!this.selectedMedicine || !this.selectedMedicine.medicineId) return;
 
-    this.medicineService.updateMedicine(this.selectedMedicine.id, this.selectedMedicine).subscribe({
+    this.medicineService.updateMedicine(this.selectedMedicine.medicineId, this.selectedMedicine).subscribe({
       next: () => {
         this.loadMedicines();
         this.selectedMedicine = null;

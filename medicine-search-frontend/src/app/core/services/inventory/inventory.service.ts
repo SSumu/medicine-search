@@ -2,14 +2,30 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Medicine } from '../../../models/medicine/medicine.model';
+
+export interface PharmacyDTO {
+  pharmacyId: number;
+  pharmacyName: string;
+  pharmacyLocation: string;
+}
+
+export interface MedicineDTO {
+  medicineId: number;
+  medicineName: string;
+}
 
 export interface InventoryResponseDTO {
   id: number;
+  pharmacy: PharmacyDTO;
+  medicine: MedicineDTO;
+  quantity: number;
+  price: number;
+  lastUpdated?: string;
+}
+
+export interface InventoryRequestDTO {
   pharmacyName: string;
   pharmacyLocation: string;
-  medicineName: string;
-  quantity?: Medicine;
 }
 
 @Injectable({
@@ -24,8 +40,8 @@ export class InventoryService {
     return this.http.get<InventoryResponseDTO[]>(this.baseUrl);
   }
 
-  searchByPharmacy(pharmacyName: string): Observable<InventoryResponseDTO> {
-    return this.http.get<InventoryResponseDTO>(`${this.baseUrl}/search/pharmacy?medicineName${pharmacyName}`);
+  searchByPharmacy(pharmacyName: string): Observable<InventoryResponseDTO[]> {
+    return this.http.get<InventoryResponseDTO[]>(`${this.baseUrl}/search/pharmacy?pharmacyName=${pharmacyName}`);
   }
 
   searchByMedicine(medicineName: string): Observable<InventoryResponseDTO[]> {

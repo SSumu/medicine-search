@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
@@ -15,21 +14,24 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     // Search inventory by Medicine
     List<Inventory> findByMedicine(Medicine medicine);
 
-    // Search inventory records by PharmacyComponent
+    // Search inventory records by Pharmacy object
     List<Inventory> findByPharmacy(Pharmacy pharmacy);
 
     // Search specific inventory by Medicine and PharmacyComponent
-    Optional<Inventory> findByMedicineAndPharmacy(Medicine medicine, Pharmacy pharmacy);
+//    Optional<Inventory> findByMedicineAndPharmacy(Medicine medicine, Pharmacy pharmacy);
+
+    // Search inventory by pharmacy name (needed for Angular service)
+    List<Inventory> findByPharmacy_PharmacyNameContainingIgnoreCase(String pharmacyName);
 
     // Search inventory by medicine name (useful for search feature)
-    List<Inventory> findByMedicine_NameContainingIgnoreCase(String name);
+    List<Inventory> findByMedicine_MedicineNameContainingIgnoreCase(String medicineName);
 
     // Search inventory by medicine name and sort by price (ascending)
-    List<Inventory> findByMedicine_NameContainingIgnoreCaseOrderByPriceAsc(String name);
+    List<Inventory> findByMedicine_MedicineNameContainingIgnoreCaseOrderByPriceAsc(String medicineName);
 
     // Find available stock (quantity > 0)
     List<Inventory> findByQuantityGreaterThan(int quantity);
 
     // Find inventory by pharmacy location (if PharmacyComponent has location field)
-    List<Inventory> findByPharmacy_LocationContainingIgnoreCase(String location);
+    List<Inventory> findByPharmacy_PharmacyLocationContainingIgnoreCase(String location);
 }

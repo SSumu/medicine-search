@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
+  InventoryRequestDTO,
   InventoryResponseDTO,
   InventoryService,
 } from '../../core/services/inventory/inventory.service';
@@ -19,7 +20,7 @@ export class PharmacyComponent implements OnInit {
   // ================================
   pharmacies: InventoryResponseDTO[] = [];
 
-  newPharmacy: Partial<InventoryResponseDTO> = {
+  newPharmacy: InventoryRequestDTO = {
     pharmacyName: '',
     pharmacyLocation: '',
   };

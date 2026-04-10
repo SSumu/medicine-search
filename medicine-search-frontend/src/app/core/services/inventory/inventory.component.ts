@@ -120,7 +120,7 @@ export class InventoryComponent implements OnInit {
 
     this.inventoryService
       .searchByPharmacy(this.searchPharmacy)
-      .subscribe((data) => (this.inventories = [data]));
+      .subscribe((data) => (this.inventories = data));
   }
 
   // Available stock
@@ -145,9 +145,9 @@ export class InventoryComponent implements OnInit {
     this.selectedInventory = { ...item };
 
     this.formData = {
-      pharmacyName: item.pharmacyName,
-      pharmacyLocation: item.pharmacyLocation,
-      medicineName: item.medicineName,
+      pharmacyName: item.pharmacy.pharmacyName,
+      pharmacyLocation: item.pharmacy.pharmacyLocation,
+      medicineName: item.medicine.medicineName,
       quantity: item.quantity ?? 0,
     };
   }

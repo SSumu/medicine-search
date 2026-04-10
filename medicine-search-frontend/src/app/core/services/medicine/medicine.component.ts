@@ -21,8 +21,8 @@ export class MedicineComponent implements OnInit {
   selectedMedicine: Medicine | null = null;
 
   newMedicine: Medicine = {
-    id: 0,
-    name: '',
+    medicineId: 0,
+    medicineName: '',
     manufacturer: '',
     quantity: null,
     price: null,
@@ -30,7 +30,7 @@ export class MedicineComponent implements OnInit {
   };
 
   errors = {
-    name: '',
+    medicineName: '',
     manufacturer: '',
     quantity: '',
     price: '',
@@ -133,8 +133,8 @@ export class MedicineComponent implements OnInit {
   // ================================
   clearForm(): void {
     this.newMedicine = {
-      id: 0,
-      name: '',
+      medicineId: 0,
+      medicineName: '',
       manufacturer: '',
       quantity: null,
       price: null,
@@ -152,7 +152,7 @@ export class MedicineComponent implements OnInit {
   validateForm(): boolean {
     // Reset errors
     this.errors = {
-      name: '',
+      medicineName: '',
       manufacturer: '',
       quantity: '',
       price: '',
@@ -163,10 +163,10 @@ export class MedicineComponent implements OnInit {
 
     // ✅ Name validation
     if (
-      !this.newMedicine.name.trim() ||
-      !this.newMedicine.name.trim()
+      !this.newMedicine.medicineName.trim() ||
+      !this.newMedicine.medicineName.trim()
     ) {
-      this.errors.name = 'Medicine name is required';
+      this.errors.medicineName = 'Medicine name is required';
       isValid = false;
     }
 

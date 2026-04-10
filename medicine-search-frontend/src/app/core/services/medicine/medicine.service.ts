@@ -25,11 +25,11 @@ export class MedicineService {
   // GET ALL MEDICINES
   // =====================
   getAllMedicines(): Observable<Medicine[]> {
-    return this.http.get<any>(this.apiUrl).pipe(
+    return this.http.get<Medicine[]>(this.apiUrl).pipe(
       map((res) => {
         if (Array.isArray(res)) return res;
-        if (res?.data) return res.data;
-        if (res?.medicines) return res.medicines;
+        // if (res?.data) return res.data;
+        // if (res?.medicines) return res.medicines;
         return [];
       }),
     );
@@ -39,7 +39,16 @@ export class MedicineService {
   // GET MEDICINE BY ID
   // =====================
   getMedicineById(id: number): Observable<Medicine> {
-    return this.http.get<Medicine>(`${this.apiUrl}/${id}`);
+    return this.http.get<Medicine>(`${this.apiUrl}/${id}`).pipe(
+      map(res => ({
+        medicineId: res.medicineId,
+        medicineName: res.medicineName,
+        manufacturer: res.manufacturer,
+        quantity: res.quantity,
+        price: res.price,
+        description: res.description
+      }))
+    );
   }
 
   // =====================
@@ -66,8 +75,8 @@ export class MedicineService {
   // =====================
   // SEARCH MEDICINES (UPDATED)
   // =====================
-  searchMedicines(name: string): Observable<Medicine[]> {
-    const url = `${this.apiUrl}/search?name=${encodeURIComponent(name)}`;
+  searchMedicines( medicineName: string ): Observable<Medicine[]> {
+    const url = `${this.apiUrl}/searchByName?medicineName=${encodeURIComponent( medicineName )}`;
 
     return this.http.get<any>(url).pipe(
       map((res) => {

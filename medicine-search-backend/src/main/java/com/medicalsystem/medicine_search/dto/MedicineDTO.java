@@ -6,15 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class MedicineRequestDTO {
-
-    private Long id;
+public class MedicineDTO {
+    private Long medicineId;
     private String medicineName;
-    private String description;
-    private String manufacturer;
-    private Integer quantity;
-    private Double price;
 }

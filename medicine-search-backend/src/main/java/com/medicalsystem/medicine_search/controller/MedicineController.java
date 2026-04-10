@@ -27,10 +27,9 @@ public class MedicineController {
     // =====================================================
     // GET MEDICINE BY ID
     // =====================================================
-    @GetMapping("/{id}")
-    public ResponseEntity<MedicineSearchResponseDTO> getMedicineById(@PathVariable Long id) {
-//        Optional<Medicine> medicine = medicineService.getMedicineById(id);
-        return medicineService.getMedicineById(id)
+    @GetMapping("/{medicineId}")
+    public ResponseEntity<MedicineSearchResponseDTO> getMedicineByMedicineId ( @PathVariable Long medicineId ) {
+        return medicineService.getMedicineByMedicineId( medicineId )
                 .map(ResponseEntity::ok)   // if present, return 200 OK
                 .orElseGet(() -> ResponseEntity.notFound().build()); // else return 404
     }
@@ -39,19 +38,19 @@ public class MedicineController {
     // SEARCH BY NAME
     // =====================================================
     @GetMapping("/searchByName")
-    public ResponseEntity<List<MedicineSearchResponseDTO>> searchByName(@RequestParam String name) {
-        return ResponseEntity.ok(medicineService.searchMedicinesByName(name));
+    public ResponseEntity<List<MedicineSearchResponseDTO>> searchByName ( @RequestParam String medicineName ) {
+        return ResponseEntity.ok(medicineService.searchMedicinesByMedicineName( medicineName ));
     }
 
-    // =====================================================
-    // SEARCH BY NAME + PRICE RANGE
-    // =====================================================
-    @GetMapping("/search")
-    public ResponseEntity<List<MedicineSearchResponseDTO>> searchMedicines(@RequestParam String name, @RequestParam double minPrice, @RequestParam double maxPrice) {
-//        List<MedicineSearchResponseDTO> result = medicineService.searchMedicines(name, minPrice, maxPrice);
-//
-//        return ResponseEntity.ok(result);
-
+    // ========================================================
+    // SEARCH BY NAME + PRICE RANGE (OPTIONAL - EXTRA FEATURE)
+    // ========================================================
+    @GetMapping("/searchWithPrice")
+    public ResponseEntity<List<MedicineSearchResponseDTO>> searchMedicines (
+            @RequestParam String name,
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice
+    ) {
         return ResponseEntity.ok(medicineService.searchMedicines(name, minPrice, maxPrice));
     }
 
@@ -59,9 +58,10 @@ public class MedicineController {
     // FILTER BY PRICE RANGE
     // =====================================================
     @GetMapping("/filter")
-    public ResponseEntity<List<MedicineSearchResponseDTO>> filterByPrice(
+    public ResponseEntity<List<MedicineSearchResponseDTO>> filterByPrice (
             @RequestParam double minPrice,
-            @RequestParam double maxPrice) {
+            @RequestParam double maxPrice
+    ) {
 
         return ResponseEntity.ok(
                 medicineService.getMedicinesByPriceRange(minPrice, maxPrice)
@@ -72,7 +72,7 @@ public class MedicineController {
     // CREATE NEW MEDICINE
     // =====================================================
     @PostMapping
-    public ResponseEntity<MedicineSearchResponseDTO> createMedicine(@RequestBody MedicineRequestDTO medicineRequestDTO) {
+    public ResponseEntity<MedicineSearchResponseDTO> createMedicine( @RequestBody MedicineRequestDTO medicineRequestDTO ) {
 
         return ResponseEntity.status(201)
                 .body(medicineService.saveMedicine(medicineRequestDTO));
@@ -81,12 +81,13 @@ public class MedicineController {
     // =====================================================
     // UPDATE MEDICINE
     // =====================================================
-    @PutMapping("/{id}")
+    @PutMapping("/{medicineId}")
     public ResponseEntity<MedicineSearchResponseDTO> updateMedicine(
-            @PathVariable Long id,
-            @RequestBody MedicineRequestDTO medicineRequestDTO) {
+            @PathVariable Long medicineId,
+            @RequestBody MedicineRequestDTO medicineRequestDTO
+    ) {
 
-        return medicineService.updateMedicine(id, medicineRequestDTO)
+        return medicineService.updateMedicine( medicineId, medicineRequestDTO )
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -94,10 +95,10 @@ public class MedicineController {
     // =====================================================
     // DELETE MEDICINE
     // =====================================================
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMedicine(@PathVariable Long id) {
+    @DeleteMapping("/{medicineId}")
+    public ResponseEntity<Void> deleteMedicine( @PathVariable Long medicineId ) {
 
-        medicineService.deleteMedicine(id);
+        medicineService.deleteMedicine(medicineId);
         return ResponseEntity.noContent().build();
     }
 }

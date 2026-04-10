@@ -8,20 +8,43 @@ import java.util.Optional;
 
 public interface MedicineService {
 
-    Optional<MedicineSearchResponseDTO> getMedicineById(Long id);
-
+    // =====================
+    // GET ALL MEDICINES
+    // =====================
     List<MedicineSearchResponseDTO> getAllMedicines();
 
-    List<MedicineSearchResponseDTO> getMedicinesByPriceRange(double minPrice, double maxPrice);
+    // =====================
+    // GET MEDICINE BY ID
+    // =====================
+    Optional<MedicineSearchResponseDTO> getMedicineByMedicineId (Long medicineId );
 
+    // =============================
+    // GET MEDICINES BY PRICE RANGE
+    // =============================
+    List<MedicineSearchResponseDTO> getMedicinesByPriceRange ( double minPrice, double maxPrice );
+
+    // ======================
     // ✅ Save new medicine
-    MedicineSearchResponseDTO saveMedicine(MedicineRequestDTO medicineRequestDTO);
+    // ======================
+    MedicineSearchResponseDTO saveMedicine ( MedicineRequestDTO medicineRequestDTO );
 
-    Optional<MedicineSearchResponseDTO> updateMedicine(Long id, MedicineRequestDTO medicineRequestDTO);
+    // =====================
+    // UPDATE MEDICINE
+    // =====================
+    Optional<MedicineSearchResponseDTO> updateMedicine( Long medicineId, MedicineRequestDTO medicineRequestDTO );
 
-    void deleteMedicine(Long id);
+    // =====================
+    // DELETE MEDICINE
+    // =====================
+    void deleteMedicine( Long medicineId );
 
-    List<MedicineSearchResponseDTO> searchMedicinesByName(String name);
+    // ========================
+    // SEARCH BY MEDICINE NAME
+    // ========================
+    List<MedicineSearchResponseDTO> searchMedicinesByMedicineName( String medicineName );
 
-    List<MedicineSearchResponseDTO> searchMedicines(String name, double minPrice, double maxPrice);
+    // ========================================================
+    // SEARCH BY NAME + PRICE RANGE (OPTIONAL - EXTRA FEATURE)
+    // ========================================================
+    List<MedicineSearchResponseDTO> searchMedicines( String medicineName, double minPrice, double maxPrice );
 }

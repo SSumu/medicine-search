@@ -9,13 +9,25 @@ import java.util.List;
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long> {
 
-    // Find medicines within a price range
-    List<Medicine> findByPriceBetween(double minPrice, double maxPrice);
-
-    // Find medicines by name and price range
-    List<Medicine> findByMedicineNameContainingIgnoreCaseAndPriceBetween(
-            String name, double minPrice, double maxPrice
+    // ====================================
+    // FIND MEDICINES WITHIN A PRICE RANGE
+    // ====================================
+    List<Medicine> findByPriceBetween (
+            double minPrice,
+            double maxPrice
     );
 
-    List<Medicine> findByMedicineNameContainingIgnoreCase(String name);
+    // =====================================================
+    // FIND MEDICINES BY NAME, PRICE RANGE AND PRICE FILTER
+    // =====================================================
+    List<Medicine> findByMedicineNameContainingIgnoreCaseAndPriceBetween (
+            String medicineName,
+            double minPrice,
+            double maxPrice
+    );
+
+    // ========================
+    // SEARCH BY MEDICINE NAME
+    // ========================
+    List<Medicine> findByMedicineNameContainingIgnoreCase( String medicineName );
 }

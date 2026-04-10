@@ -1,9 +1,10 @@
 package com.medicalsystem.medicine_search.controller;
 
+import com.medicalsystem.medicine_search.dto.InventoryRequestDTO;
 import com.medicalsystem.medicine_search.dto.InventoryResponseDTO;
 import com.medicalsystem.medicine_search.entity.Inventory;
-import com.medicalsystem.medicine_search.entity.Medicine;
 import com.medicalsystem.medicine_search.entity.Pharmacy;
+import com.medicalsystem.medicine_search.repository.InventoryRepository;
 import com.medicalsystem.medicine_search.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,116 +14,80 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory")
-//@CrossOrigin(origins = "*") // add your Vercel link here if needed
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    // ✅ Get all inventory
-    @GetMapping("/get-all")
-    public ResponseEntity<List<InventoryResponseDTO>> getAllInventory() {
-
-        List<InventoryResponseDTO> response =
-                inventoryService.getAllInventory();
-
-        return ResponseEntity.ok(response);
+    // ✅ GET ALL INVENTORIES (matches Angular: GET /inventory)
+    @GetMapping
+    public ResponseEntity<List<InventoryResponseDTO>> getAllInventories() {
+        return ResponseEntity.ok(inventoryService.getAllInventories());
     }
 
-    // ✅ Get inventory by ID
-    @GetMapping("/get-by-id/{id}")
-    public ResponseEntity<InventoryResponseDTO> getInventoryById(@PathVariable Long id) {
+    // ✅ SEARCH BY MEDICINE NAME (matches Angular)
+    @GetMapping("/search/medicine")
+    public ResponseEntity<List<InventoryResponseDTO>> searchByMedicineName( @RequestParam String medicineName ) {
 
-        InventoryResponseDTO response =
-                inventoryService.getInventoryById(id);
+        return ResponseEntity.ok( inventoryService.searchByMedicineName ( medicineName ) );
 
-        return ResponseEntity.ok(response);
     }
 
-    // ✅ Search by medicine name
-    @GetMapping("/search/by-medicine")
-    public ResponseEntity<List<InventoryResponseDTO>> searchByMedicine(
-            @RequestParam String name) {
+    // ✅ SEARCH BY LOCATION (matches Angular)
+    @GetMapping("/search/location")
+    public ResponseEntity<List<InventoryResponseDTO>> searchByLocation(@RequestParam String location) {
 
-        List<InventoryResponseDTO> response =
-                inventoryService.searchByMedicineName(name);
+        return ResponseEntity.ok( inventoryService.searchByLocation( location ) );
 
-        return ResponseEntity.ok(response);
     }
 
-    // ✅ Search by location
-    @GetMapping("/search/by-location")
-    public ResponseEntity<List<InventoryResponseDTO>> searchByLocation(
-            @RequestParam String location) {
-
-        List<InventoryResponseDTO> response =
-                inventoryService.searchByLocation(location);
-
-        return ResponseEntity.ok(response);
-    }
-
-    // ✅ Get available stock (quantity > 0)
+    // ✅ GET AVAILABLE STOCK (quantity > 0)
     @GetMapping("/available")
     public ResponseEntity<List<InventoryResponseDTO>> getAvailableStock() {
 
-        List<InventoryResponseDTO> response =
-                inventoryService.getAvailableStock();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok( inventoryService.getAvailableStock() );
     }
 
-    // ✅ Get by medicine
-    @GetMapping("/medicine/{medicineId}")
-    public List<InventoryResponseDTO> getByMedicine(@PathVariable Medicine medicineId) {
-        return inventoryService.getByMedicine(medicineId);
+    // ✅ SEARCH BY PHARMACY NAME
+    @GetMapping("/search/pharmacy")
+    public ResponseEntity<List<InventoryResponseDTO>> searchByPharmacyName(@RequestParam String pharmacyName) {
+
+        return ResponseEntity.ok(inventoryService.searchByPharmacyName(pharmacyName));
+
     }
 
-    // ✅ Get by pharmacy
-    @GetMapping("/pharmacy/{pharmacyId}")
-    public List<InventoryResponseDTO> getByPharmacy(@PathVariable Pharmacy pharmacyId) {
-        return inventoryService.getByPharmacy(pharmacyId);
+    // ✅ SEARCH BY MEDICINE AND PHARMACY
+//    @GetMapping("/search/medicine-pharmacy")
+//    public InventoryResponseDTO searchByMedicineAndPharmacy(
+//            @RequestParam Medicine medicineName,
+//            @RequestParam Pharmacy pharmacyName) {
+//        return inventoryService.getByMedicineAndPharmacy(medicineName, pharmacyName);
+//    }
+
+    // ✅ SEARCH BY MEDICINE NAME SORTED
+    @GetMapping("/search/medicineNameSorted")
+    public ResponseEntity<List<InventoryResponseDTO>> searchByMedicineNameSorted(@RequestParam String medicineName) {
+
+        return ResponseEntity.ok(inventoryService.searchByMedicineNameSorted(medicineName));
     }
 
-    // ✅ Get by medicine and pharmacy
-    @GetMapping("/search/medicine-pharmacy")
-    public InventoryResponseDTO getByMedicineAndPharmacy(
-            @RequestParam Medicine medicineId,
-            @RequestParam Pharmacy pharmacyId) {
-        return inventoryService.getByMedicineAndPharmacy(medicineId, pharmacyId);
-    }
+//    @GetMapping("/search/pharmacy")
+//    public List<Inventory> searchByPharmacy(@RequestParam String pharmacyName) {
+//        return inventoryRepository
+//    }
 
-    // ✅ Search by medicine name sorted
-    @GetMapping("/search/sorted")
-    public List<InventoryResponseDTO> searchByMedicineNameSorted(
-            @RequestParam String name) {
-        return inventoryService.searchByMedicineNameSorted(name);
-    }
-
-    // ✅ Create new inventory
-    @PostMapping("/create")
-    public ResponseEntity<InventoryResponseDTO> createInventory(
-            @RequestBody Inventory inventory) {
-
-        InventoryResponseDTO response =
-                inventoryService.saveInventory(inventory);
-
-        return ResponseEntity.ok(response);
-    }
-
-    // ✅ Update inventory
-    @PutMapping("update/{id}")
+    // ✅ UPDATE INVENTORY
+    @PutMapping("/{id}")
     public ResponseEntity<InventoryResponseDTO> updateInventory(
             @PathVariable Long id,
-            @RequestBody Inventory inventory) {
+            @RequestBody InventoryRequestDTO inventoryRequestDTO) {
 
-        InventoryResponseDTO response =
-                inventoryService.updateInventory(id, inventory);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(inventoryService.updateInventory(id, inventoryRequestDTO));
     }
 
     // ✅ Delete inventory
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInventory(@PathVariable Long id) {
 
         inventoryService.deleteInventory(id);

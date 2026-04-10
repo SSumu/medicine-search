@@ -15,11 +15,11 @@
     <input
       type="text"
       placeholder="Medicine name"
-      [(ngModel)]="newMedicine.name"
+      [(ngModel)]="newMedicine.medicineName"
       name="name"
     />
-    @if (submitted && errors.name) {
-      <div class="medicine-error">{{ errors.name }}</div>
+    @if (submitted && errors.medicineName) {
+      <div class="medicine-error">{{ errors.medicineName }}</div>
     }
 
     <!-- MANUFACTURER -->

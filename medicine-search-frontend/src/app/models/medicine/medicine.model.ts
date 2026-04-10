@@ -1,6 +1,6 @@
 export interface Medicine {
-  id: number;
-  name: string;
+  medicineId: number;
+  medicineName: string;
   manufacturer: string;
   quantity: number | null;
   price: number | null;

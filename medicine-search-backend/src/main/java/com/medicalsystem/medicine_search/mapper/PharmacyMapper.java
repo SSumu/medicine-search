@@ -13,9 +13,9 @@ public class PharmacyMapper {
         }
 
         return PharmacySearchResponseDTO.builder()
-                .id(pharmacy.getId())
-                .name(pharmacy.getName())
-                .location(pharmacy.getLocation())
+                .id(pharmacy.getPharmacyId())
+                .name(pharmacy.getPharmacyName())
+                .location(pharmacy.getPharmacyLocation())
                 .city(pharmacy.getCity())
                 .country(pharmacy.getCountry())
                 .contactNumber(pharmacy.getContactNumber())
