@@ -35,11 +35,12 @@ export class MedicineService {
     // 🚨 prevents repeated API calls (popup open/close will NOT re-hit backend)
     if (!this.medicineCache$) {
       this.medicineCache$ = this.http.get<Medicine[]>(this.apiUrl).pipe(
-        map((res) => {
-          if (Array.isArray(res)) return res;
-          return [];
-        }),
-        shareReplay(1),
+        // map((res) => {
+        //   if (Array.isArray(res)) return res;
+        //   return [];
+        // }),
+        map((res) => Array.isArray(res) ? res : []),
+        shareReplay({ bufferSize: 1, refCount: false }),
       );
     }
 
@@ -68,7 +69,7 @@ export class MedicineService {
         price: res.price,
         description: res.description,
       })),
-      shareReplay(1), // prevents duplicate calls if reused
+      shareReplay({ bufferSize: 1, refCount: false }), // prevents duplicate calls if reused
     );
   }
 

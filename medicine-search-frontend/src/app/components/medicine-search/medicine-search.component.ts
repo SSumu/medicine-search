@@ -38,12 +38,14 @@ export class MedicineSearchComponent implements OnInit {
   ngOnInit(): void {
     const nav = history.state;
 
-    this.refreshMedicines();
+    // Putting this in here caused for the recursion on the console of the backend.
+    // this.refreshMedicines();
 
     if (nav && nav.medicine) {
       this.selectedMedicine = nav.medicine;
     }
 
+    // ✅ Only ONE initial API call
     this.loadMedicines();
   }
 
@@ -89,11 +91,13 @@ export class MedicineSearchComponent implements OnInit {
   // =====================================================
   get paginatedMedicines() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.medicines.slice(start, start + this.pageSize);
+    // return this.medicines.slice(start, start + this.pageSize);
+    return (this.filteredMedicines ?? []).slice(start, start + this.pageSize);
   }
 
   get totalPages() {
-    return Math.ceil(this.medicines.length / this.pageSize);
+    // return Math.ceil(this.medicines.length / this.pageSize);
+    return Math.ceil((this.filteredMedicines ?? []).length / this.pageSize);
   }
 
   // =====================================================
@@ -105,9 +109,14 @@ export class MedicineSearchComponent implements OnInit {
     this.medicineService.getAllMedicines().subscribe({
       next: (data: Medicine[]) => {
         this.medicines = data ?? [];
-        this.loadMedicines();
-        this.refreshMedicines();
         this.filteredMedicines = data ?? [];
+
+        // ❌ REMOVED infinite recursion
+        // this.loadMedicines();
+
+        // ❌ REMOVED unnecessary duplicate API call
+        // this.refreshMedicines();
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -150,8 +159,9 @@ export class MedicineSearchComponent implements OnInit {
   deleteMedicine(id: number): void {
     this.medicineService.deleteMedicine(id).subscribe({
       next: () => {
+        // ✅ Only ONE reload call
         this.loadMedicines();
-        this.refreshMedicines();
+        // this.refreshMedicines();
       },
       error: (err) => {
         console.error('Delete error:', err);

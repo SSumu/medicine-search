@@ -115,12 +115,18 @@ export class MedicineComponent implements OnInit {
         // ✅ Clear cache BEFORE reloading
         this.medicineService.clearCache();
 
-        this.showPopupMessage('Medicine added successfully!', 'success');
-
+        // ✅ Clear immediately (better UX)
         this.clearForm();
 
-        // ✅ Reload fresh data (will hit API because cache cleared)
+        this.showPopupMessage('Medicine added successfully!', 'success');
+
+        // Reload fresh data
         this.loadMedicines();
+
+        // ✅ Reload fresh data (will hit API because cache cleared)
+        // setTimeout(() => {
+        //   this.loadMedicines();
+        // }, 0);
       },
       error: () => {
         this.showPopupMessage('Failed to add medicine!', 'error');
@@ -136,8 +142,9 @@ export class MedicineComponent implements OnInit {
     this.popupType = type;
     this.popupVisible = true;
 
-    // Auto close after 3 seconds
+    // ✅ Auto close after 3 seconds
     setTimeout(() => {
+      // this.popupVisible = true; // This causes for unexpected UI behavior.
       this.closePopup();
     }, 3000);
   }
