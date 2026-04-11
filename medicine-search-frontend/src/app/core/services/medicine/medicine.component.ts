@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Medicine } from '../../../models/medicine/medicine.model';
 import { MedicineService } from './medicine.service';
 import { PopupComponent } from '../../../components/popup/popup.component';
+import { MedicineRequestModel } from '../../../models/medicine-request.model/medicine-request.model';
 
 @Component({
   selector: 'app-medicine',
@@ -14,6 +15,7 @@ import { PopupComponent } from '../../../components/popup/popup.component';
   styleUrls: ['./medicine.component.scss'],
 })
 export class MedicineComponent implements OnInit {
+
   // ================================
   // PROPERTIES
   // ================================
@@ -67,6 +69,9 @@ export class MedicineComponent implements OnInit {
       this.selectedMedicine = nav.medicine;
     }
 
+    console.log('MedicineComponent INIT');
+
+    // ✅ ONLY ONE CALL — service handles caching
     this.loadMedicines();
   }
 
@@ -95,14 +100,27 @@ export class MedicineComponent implements OnInit {
       return;
     }
 
-    // ✅ Convert string → number before sending
-    this.newMedicine.price = parseFloat(this.priceInput);
+    const payload: MedicineRequestModel = {
+      medicineName: this.newMedicine.medicineName,
+      manufacturer: this.newMedicine.manufacturer,
+      quantity: this.newMedicine.quantity,
+      price: parseFloat(this.priceInput),
+      description: this.newMedicine.description
+    };
 
-    this.medicineService.addMedicine(this.newMedicine).subscribe({
-      next: () => {
+    this.medicineService.addMedicine(payload).subscribe({
+      next: (res: Medicine) => {
+        console.log('Medicine was added', res);
+
+        // ✅ Clear cache BEFORE reloading
+        this.medicineService.clearCache();
+
         this.showPopupMessage('Medicine added successfully!', 'success');
-        this.loadMedicines();
+
         this.clearForm();
+
+        // ✅ Reload fresh data (will hit API because cache cleared)
+        this.loadMedicines();
       },
       error: () => {
         this.showPopupMessage('Failed to add medicine!', 'error');
@@ -150,6 +168,7 @@ export class MedicineComponent implements OnInit {
   // VALIDATION
   // ================================
   validateForm(): boolean {
+
     // Reset errors
     this.errors = {
       medicineName: '',
@@ -162,19 +181,13 @@ export class MedicineComponent implements OnInit {
     let isValid = true;
 
     // ✅ Name validation
-    if (
-      !this.newMedicine.medicineName.trim() ||
-      !this.newMedicine.medicineName.trim()
-    ) {
+    if (!this.newMedicine.medicineName.trim()) {
       this.errors.medicineName = 'Medicine name is required';
       isValid = false;
     }
 
     // ✅ Manufacturer validation
-    if (
-      !this.newMedicine.manufacturer ||
-      !this.newMedicine.manufacturer.trim()
-    ) {
+    if (!this.newMedicine.manufacturer?.trim()) {
       this.errors.manufacturer = 'Manufacturer is required';
       isValid = false;
     }
@@ -201,9 +214,7 @@ export class MedicineComponent implements OnInit {
     }
 
     // ✅ Description validation
-    if (
-      !this.newMedicine.description?.trim()
-    ) {
+    if (!this.newMedicine.description?.trim()) {
       this.errors.description = 'Description is required';
       isValid = false;
     }

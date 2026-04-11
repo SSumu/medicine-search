@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Medicine } from '../../../models/medicine/medicine.model';
+import { MedicineRequestModel } from '../../../models/medicine-request.model/medicine-request.model';
 
 // =====================
 // API CONFIG
@@ -19,20 +20,39 @@ export class MedicineService {
   // Base endpoint
   private apiUrl = `${API_CONFIG.BASE_URL}/medicine`;
 
+  // ======
+  // CACHE
+  // ======
+  private medicineCache$?: Observable<Medicine[]>;
+
   constructor(private http: HttpClient) {}
 
-  // =====================
-  // GET ALL MEDICINES
-  // =====================
+  // ===========================
+  // GET ALL MEDICINES (CACHED)
+  // ===========================
   getAllMedicines(): Observable<Medicine[]> {
-    return this.http.get<Medicine[]>(this.apiUrl).pipe(
-      map((res) => {
-        if (Array.isArray(res)) return res;
-        // if (res?.data) return res.data;
-        // if (res?.medicines) return res.medicines;
-        return [];
-      }),
-    );
+
+    // 🚨 prevents repeated API calls (popup open/close will NOT re-hit backend)
+    if (!this.medicineCache$) {
+      this.medicineCache$ = this.http.get<Medicine[]>(this.apiUrl).pipe(
+        map((res) => {
+          if (Array.isArray(res)) return res;
+          return [];
+        }),
+        shareReplay(1),
+      );
+    }
+
+    return this.medicineCache$;
+
+    // return this.http.get<Medicine[]>(this.apiUrl).pipe(
+    //   map((res) => {
+    //     if (Array.isArray(res)) return res;
+    //     // if (res?.data) return res.data;
+    //     // if (res?.medicines) return res.medicines;
+    //     return [];
+    //   }),
+    // );
   }
 
   // =====================
@@ -46,22 +66,23 @@ export class MedicineService {
         manufacturer: res.manufacturer,
         quantity: res.quantity,
         price: res.price,
-        description: res.description
-      }))
+        description: res.description,
+      })),
+      shareReplay(1), // prevents duplicate calls if reused
     );
   }
 
   // =====================
   // ADD MEDICINE
   // =====================
-  addMedicine(medicine: Medicine): Observable<Medicine> {
+  addMedicine(medicine: MedicineRequestModel): Observable<Medicine> {
     return this.http.post<Medicine>(this.apiUrl, medicine);
   }
 
   // =====================
   // UPDATE MEDICINE
   // =====================
-  updateMedicine(id: number, medicine: Medicine): Observable<Medicine> {
+  updateMedicine(id: number, medicine: MedicineRequestModel): Observable<Medicine> {
     return this.http.put<Medicine>(`${this.apiUrl}/${id}`, medicine);
   }
 
@@ -73,7 +94,7 @@ export class MedicineService {
   }
 
   // =====================
-  // SEARCH MEDICINES (UPDATED)
+  // SEARCH MEDICINES
   // =====================
   searchMedicines( medicineName: string ): Observable<Medicine[]> {
     const url = `${this.apiUrl}/searchByName?medicineName=${encodeURIComponent( medicineName )}`;
@@ -88,10 +109,15 @@ export class MedicineService {
     );
   }
 
-  // =====================
-  // REFRESH MEDICINES
-  // =====================
+  // ================================
+  // REFRESH MEDICINES / RESET CACHE
+  // ================================
   refreshMedicines(): Observable<Medicine[]> {
+    this.medicineCache$ = undefined;
     return this.getAllMedicines();
+  }
+
+  clearCache(): void {
+    this.medicineCache$ = undefined;
   }
 }
