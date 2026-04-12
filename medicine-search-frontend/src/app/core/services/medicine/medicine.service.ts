@@ -35,25 +35,13 @@ export class MedicineService {
     // 🚨 prevents repeated API calls (popup open/close will NOT re-hit backend)
     if (!this.medicineCache$) {
       this.medicineCache$ = this.http.get<Medicine[]>(this.apiUrl).pipe(
-        // map((res) => {
-        //   if (Array.isArray(res)) return res;
-        //   return [];
-        // }),
-        map((res) => Array.isArray(res) ? res : []),
+        map((res) => (Array.isArray(res) ? res : [])),
         shareReplay({ bufferSize: 1, refCount: false }),
       );
     }
 
     return this.medicineCache$;
 
-    // return this.http.get<Medicine[]>(this.apiUrl).pipe(
-    //   map((res) => {
-    //     if (Array.isArray(res)) return res;
-    //     // if (res?.data) return res.data;
-    //     // if (res?.medicines) return res.medicines;
-    //     return [];
-    //   }),
-    // );
   }
 
   // =====================
@@ -61,7 +49,7 @@ export class MedicineService {
   // =====================
   getMedicineById(id: number): Observable<Medicine> {
     return this.http.get<Medicine>(`${this.apiUrl}/${id}`).pipe(
-      map(res => ({
+      map((res) => ({
         medicineId: res.medicineId,
         medicineName: res.medicineName,
         manufacturer: res.manufacturer,
@@ -69,7 +57,6 @@ export class MedicineService {
         price: res.price,
         description: res.description,
       })),
-      shareReplay({ bufferSize: 1, refCount: false }), // prevents duplicate calls if reused
     );
   }
 

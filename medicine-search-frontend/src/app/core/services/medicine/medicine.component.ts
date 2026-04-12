@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 import { Medicine } from '../../../models/medicine/medicine.model';
 import { MedicineService } from './medicine.service';
@@ -72,7 +72,7 @@ export class MedicineComponent implements OnInit {
     console.log('MedicineComponent INIT');
 
     // ✅ ONLY ONE CALL — service handles caching
-    // this.loadMedicines();
+    this.loadMedicines();
   }
 
   // ================================
@@ -92,7 +92,7 @@ export class MedicineComponent implements OnInit {
   // =====================================================
   // ADD MEDICINE
   // =====================================================
-  addMedicine(): void {
+  addMedicine(form: NgForm): void {
     this.submitted = true;
     this.validatePrice();
 
@@ -115,6 +115,9 @@ export class MedicineComponent implements OnInit {
         // ✅ Clear cache BEFORE reloading
         this.medicineService.clearCache();
 
+        // ✅ Proper fix
+        form.resetForm();
+
         // ✅ Clear immediately (better UX)
         this.clearForm();
 
@@ -123,10 +126,6 @@ export class MedicineComponent implements OnInit {
         // Reload fresh data
         this.loadMedicines();
 
-        // ✅ Reload fresh data (will hit API because cache cleared)
-        // setTimeout(() => {
-        //   this.loadMedicines();
-        // }, 0);
       },
       error: () => {
         this.showPopupMessage('Failed to add medicine!', 'error');
@@ -287,4 +286,6 @@ export class MedicineComponent implements OnInit {
     const price = parseFloat(this.priceInput);
     this.isValidPrice = !isNaN(price) && price > 0;
   }
+
+  // protected readonly NgForm = NgForm;
 }

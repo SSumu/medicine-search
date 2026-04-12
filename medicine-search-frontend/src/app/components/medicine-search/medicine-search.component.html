@@ -52,7 +52,7 @@
       </thead>
 
       <tbody>
-        @if (medicines.length > 0) {
+        @if ((filteredMedicines ?? []).length > 0) {
           @for (med of paginatedMedicines; track med.medicineId) {
             <tr>
               <td>{{ med.medicineId }}</td>
@@ -75,7 +75,7 @@
           }
         } @else {
           <tr>
-            <td colspan="6" class="empty-state">
+            <td colspan="7" class="empty-state">
               No medicines found.
             </td>
           </tr>
@@ -88,7 +88,7 @@
     ===================================================== -->
     @if (medicines.length > pageSize) {
       <div class="pagination">
-        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Prev</button>
+        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>
 
         <span>Page {{ currentPage }} / {{ totalPages }}</span>
 

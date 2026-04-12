@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {Medicine} from '../../models/medicine/medicine.model';
 import {MedicineService} from '../../core/services/medicine/medicine.service';
@@ -33,6 +33,7 @@ export class MedicineSearchComponent implements OnInit {
   constructor(
     private medicineService: MedicineService,
     private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -134,7 +135,11 @@ export class MedicineSearchComponent implements OnInit {
   getMedicineById(id: number): void {
     this.medicineService.getMedicineById(id).subscribe({
       next: (data: Medicine) => {
+        // 🔥 Force Angular to detect change
         this.selectedMedicine = data;
+
+        // ✅ FORCE UI UPDATE
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching medicine by ID:', err);

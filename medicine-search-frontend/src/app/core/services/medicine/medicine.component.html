@@ -1,82 +1,88 @@
 <div class="medicine-container">
 
   <!-- =====================================================
-       TITLE
-  ===================================================== -->
+                            TITLE
+       ===================================================== -->
   <h2 class="medicine-title">Medicine Management</h2>
 
+
   <!-- =====================================================
-       ADD MEDICINE FORM
-  ===================================================== -->
+                         ADD MEDICINE FORM
+       ===================================================== -->
   <div class="medicine-form">
-    <h3>Add Medicine</h3>
+    <form #medicineForm="ngForm">
 
-    <!-- NAME -->
-    <input
-      type="text"
-      placeholder="Medicine name"
-      [(ngModel)]="newMedicine.medicineName"
-      name="name"
-    />
-    @if (submitted && errors.medicineName) {
-      <div class="medicine-error">{{ errors.medicineName }}</div>
-    }
+      <h3>Add Medicine</h3>
 
-    <!-- MANUFACTURER -->
-    <input
-      type="text"
-      placeholder="Manufacturer"
-      [(ngModel)]="newMedicine.manufacturer"
-      name="manufacturer"
-    />
-    @if (submitted && errors.manufacturer) {
-      <div class="medicine-error">{{ errors.manufacturer }}</div>
-    }
+        <!-- NAME -->
+        <input
+          type="text"
+          placeholder="Medicine name"
+          [(ngModel)]="newMedicine.medicineName"
+          name="name"
+        />
+        @if (submitted && errors.medicineName) {
+          <div class="medicine-error">{{ errors.medicineName }}</div>
+        }
 
-    <!-- QUANTITY -->
-    <input
-      type="number"
-      [(ngModel)]="newMedicine.quantity"
-      name="quantity"
-      placeholder="Quantity"
-      min="1"
-      step="1"
-      required
-    />
-    @if (submitted && errors.quantity) {
-      <div class="medicine-error">{{ errors.quantity }}</div>
-    }
+        <!-- MANUFACTURER -->
+        <input
+          type="text"
+          placeholder="Manufacturer"
+          [(ngModel)]="newMedicine.manufacturer"
+          name="manufacturer"
+        />
+        @if (submitted && errors.manufacturer) {
+          <div class="medicine-error">{{ errors.manufacturer }}</div>
+        }
 
-    <!-- PRICE -->
-    <input
-      type="text"
-      placeholder="Price (Rs.)"
-      [(ngModel)]="priceInput"
-      name="price"
-      (keydown)="onlyPriceInput($event)"
-      (input)="formatPriceInput($event)"
-    />
-    @if (submitted && errors.price) {
-      <div class="medicine-error">{{ errors.price }}</div>
-    }
+        <!-- QUANTITY -->
+        <input
+          type="number"
+          [(ngModel)]="newMedicine.quantity"
+          name="quantity"
+          placeholder="Quantity"
+          min="1"
+          step="1"
+          required
+        />
+        @if (submitted && errors.quantity) {
+          <div class="medicine-error">{{ errors.quantity }}</div>
+        }
 
-    <!-- DESCRIPTION -->
-    <textarea
-      placeholder="Description"
-      [(ngModel)]="newMedicine.description"
-      name="description"
-    ></textarea>
-    @if (submitted && errors.description) {
-      <div class="medicine-error">{{ errors.description }}</div>
-    }
+        <!-- PRICE -->
+        <input
+          type="text"
+          placeholder="Price (Rs.)"
+          [(ngModel)]="priceInput"
+          name="price"
+          (keydown)="onlyPriceInput($event)"
+          (input)="formatPriceInput($event)"
+        />
+        @if (submitted && errors.price) {
+          <div class="medicine-error">{{ errors.price }}</div>
+        }
 
-    <!-- BUTTONS -->
-    <div class="form-actions">
-      <div>
-        <button class="add-btn" (click)="addMedicine()">Add Medicine</button>
+        <!-- DESCRIPTION -->
+        <textarea
+          placeholder="Description"
+          [(ngModel)]="newMedicine.description"
+          name="description"
+        ></textarea>
+        @if (submitted && errors.description) {
+          <div class="medicine-error">{{ errors.description }}</div>
+        }
+
+      <!-- BUTTONS -->
+      <div class="form-actions">
+        <div>
+          <button class="add-btn" (click)="addMedicine(medicineForm)">Add Medicine</button>
+        </div>
+        <button class="clear-btn" (click)="clearForm()">Clear</button>
       </div>
-      <button class="clear-btn" (click)="clearForm()">Clear</button>
-    </div>
+
+    </form>
+
   </div>
 
   <!-- POPUP DIALOG BOX -->

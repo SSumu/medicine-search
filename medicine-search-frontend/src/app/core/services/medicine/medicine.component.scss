@@ -55,7 +55,7 @@
 .medicine-form {
   display: flex;                                // Enable layout
   flex-direction: column;                       // Stack items vertically
-  align-items: center;                         // center: ✅ THIS centers all inputs. Center content horizontally. // ✅ FIXED for stretch
+  align-items: stretch;                         // center: ✅ THIS centers all inputs. Center content horizontally. // ✅ FIXED for stretch
   justify-content: center;                      // vertical center
   width: 60%;                                   // control form width
   margin: 0 auto 20px auto;                     // center the whole form
@@ -80,7 +80,8 @@
 .medicine-form .form-actions {
   display: flex;
   gap: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
+  justify-content: center; // Center the buttons horizontally.
 }
 
 .medicine-form .form-actions button {
@@ -127,7 +128,8 @@
   border: 1px solid #dcdfe6;
   font-size: 14px;
   transition: all 0.2s ease;
-  margin-top: 5px;
+  margin: 5px auto;
+  display: block;
 }
 
 /* DEFAULT FOCUS (BLUE) */
@@ -171,6 +173,7 @@
   color: red;
   font-size: 12px;
   margin-bottom: 8px;
+  text-align: center;
 }
 
 /* ================================
