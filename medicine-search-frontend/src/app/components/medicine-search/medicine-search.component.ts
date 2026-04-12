@@ -56,6 +56,9 @@ export class MedicineSearchComponent implements OnInit {
   search(): void {
     const keyword = this.searchText.trim();
 
+    // 🔥 RESET PAGINATION HERE
+    this.currentPage = 1;
+
     if (!keyword) {
       this.filteredMedicines = [...this.medicines];
       this.cdr.detectChanges();
@@ -65,11 +68,19 @@ export class MedicineSearchComponent implements OnInit {
     this.medicineService.searchMedicines(keyword).subscribe({
       next: (data: Medicine[]) => {
         this.filteredMedicines = data ?? [];
+
+        // 🔥 RESET PAGINATION AGAIN AFTER DATA LOAD
+        this.currentPage = 1;
+
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Search error:', err);
         this.filteredMedicines = [];
+
+        // 🔥 RESET PAGINATION ON ERROR TOO
+        this.currentPage = 1;
+
         this.cdr.detectChanges();
       },
     });
@@ -122,6 +133,8 @@ export class MedicineSearchComponent implements OnInit {
 
         // ❌ REMOVED unnecessary duplicate API call
         // this.refreshMedicines();
+
+        this.currentPage = 1;
 
         this.isLoading = false;
       },
