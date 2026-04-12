@@ -1,12 +1,9 @@
 <div class="container">
 
-  <h2>Medicine Inventory System</h2>
+  <h2>Pharmacy Search System</h2>
 
   <!-- 🔍 SEARCH SECTION -->
   <div class="search-box">
-
-    <input [(ngModel)]="searchMedicine" placeholder="Search Medicine" />
-    <button (click)="searchMedicineFn()">Search</button>
 
     <input [(ngModel)]="searchLocation" placeholder="Search Location" />
     <button (click)="searchLocationFn()">Search</button>
@@ -14,7 +11,7 @@
     <input [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
     <button (click)="searchPharmacyFn()">Search</button>
 
-    <button (click)="loadInventories()">Reset</button>
+    <button (click)="loadPharmacies()">Reset</button>
     <button (click)="loadAvailable()">Available Stock</button>
 
   </div>
@@ -23,29 +20,31 @@
        LOADING INVENTORIES
   ===================================================== -->
   @if (isLoading) {
-    <div class="inventory-loader">Loading inventories...</div>
+    <div class="pharmacy-loader">Loading pharmacies...</div>
   }
 
   <!-- =====================================================
        INVENTORY LIST TABLE
   ===================================================== -->
   @if (!isLoading) {
-    <table class="inventory-table">
+    <table class="pharmacy-table">
       <thead>
         <tr>
           <th>ID</th>
           <th>Pharmacy</th>
           <th>Location</th>
-          <th>Medicine</th>
-          <th>Quantity</th>
+          <th>City</th>
+          <th>Country</th>
+          <th>Contact Number</th>
+          <th>Email</th>
           <th>Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        @if (inventories.length > 0) {
-          @for (item of paginatedInventories; track item.id) {
-            <tr (click)="selectInventory(item)">
+        @if (pharmacies.length > 0) {
+          @for (item of paginatedPharmacies; track item.id) {
+            <tr (click)="selectPharmacy(item)">
               <td>{{ item.id }}</td>
               <td>{{ item.pharmacy.pharmacyName }}</td>
               <td>{{ item.pharmacy.pharmacyLocation }}</td>
@@ -59,8 +58,8 @@
           }
         } @else {
           <tr>
-            <td colspan="6" class="table-body">
-              No inventories found.
+            <td colspan="8" class="table-body">
+              No pharmacies found.
             </td>
           </tr>
         }
@@ -70,7 +69,7 @@
     <!-- ====================================================
        PAGINATION
     ===================================================== -->
-    @if (inventories.length > pageSize) {
+    @if (pharmacies.length > pageSize) {
       <div class="pagination">
         <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>
 
@@ -84,49 +83,49 @@
   <!-- =====================================================
        UPDATE INVENTORY TABLE (SAFE NULL HANDLING)
   ===================================================== -->
-  @if (selectedInventory) {
+  @if (selectedPharmacy) {
 
     <div class="form-section">
       <h3>Update Medicine</h3>
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.pharmacy.pharmacyName"
+        [(ngModel)]="selectedPharmacy.pharmacy.pharmacyName"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.pharmacy.pharmacyLocation"
+        [(ngModel)]="selectedPharmacy.pharmacy.pharmacyLocation"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedInventory.medicine.medicineName"
+        [(ngModel)]="selectedPharmacy.medicine.medicineName"
       />
 
       <input
         type="number"
-        [(ngModel)]="selectedInventory.quantity"
+        [(ngModel)]="selectedPharmacy.quantity"
       />
 
       <button (click)="updateInventory()">Update</button>
-      <button (click)="selectedInventory = null">Cancel</button>
+      <button (click)="selectedPharmacy = null">Cancel</button>
     </div>
   }
 
   <!-- =====================================================
        SELECTED INVENTORY DETAILS (SAFE NULL HANDLING)
   ===================================================== -->
-  @if (selectedInventory) {
+  @if (selectedPharmacy) {
 
     <div class="details-section">
       <h3>Selected Inventory Details</h3>
 
-      <p><strong>ID:</strong> {{ selectedInventory.id }}</p>
-      <p><strong>Pharmacy:</strong> {{ selectedInventory.pharmacy.pharmacyName }}</p>
-      <p><strong>Location:</strong> {{ selectedInventory.pharmacy.pharmacyLocation }}</p>
-      <p><strong>Medicine:</strong> {{ selectedInventory.medicine.medicineName }}</p>
-      <p><strong>Quantity:</strong> {{ selectedInventory.quantity }} </p>
+      <p><strong>ID:</strong> {{ selectedPharmacy.id }}</p>
+      <p><strong>Pharmacy:</strong> {{ selectedPharmacy.pharmacy.pharmacyName }}</p>
+      <p><strong>Location:</strong> {{ selectedPharmacy.pharmacy.pharmacyLocation }}</p>
+      <p><strong>Medicine:</strong> {{ selectedPharmacy.medicine.medicineName }}</p>
+      <p><strong>Quantity:</strong> {{ selectedPharmacy.quantity }} </p>
     </div>
   }
 

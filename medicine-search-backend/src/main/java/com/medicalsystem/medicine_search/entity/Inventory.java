@@ -22,7 +22,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relationship with PharmacyComponent
+    // Relationship with PharmacySearchComponent
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pharmacy_id", nullable = false)
     @JsonIgnore
@@ -45,6 +45,16 @@ public class Inventory {
     // Optional: last updated timestamp
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+
+    @PrePersist
+    protected void onCreate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     // ============================
     // DTO FIELDS (Derived Outputs)

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InventoryService, InventoryResponseDTO } from './inventory.service';
+import { PharmacySearchService, PharmacyResponseDTO } from './pharmacy-search.service';
 // import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,18 +7,17 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-inventory',
   standalone: true,
   imports: [/* CommonModule,*/ FormsModule],
-  templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.scss'],
+  templateUrl: './pharmacy-search.component.html',
+  styleUrls: ['pharmacy-search.component.scss'],
 })
-export class InventoryComponent implements OnInit {
-  inventories: InventoryResponseDTO[] = [];
-  filteredInventories: InventoryResponseDTO[] = [];
+export class PharmacySearchComponent implements OnInit {
+  pharmacies: PharmacyResponseDTO[] = [];
+  filteredPharmacies: PharmacyResponseDTO[] = [];
 
   // ✅ Selected inventory (FIXED TYPE SAFE)
-  selectedInventory: InventoryResponseDTO | null = null;
+  selectedPharmacy: PharmacyResponseDTO | null = null;
 
   // Search fields
-  searchMedicine = '';
   searchLocation = '';
   searchPharmacy = '';
 
@@ -35,22 +34,22 @@ export class InventoryComponent implements OnInit {
   currentPage = 1;
   pageSize = 5;
 
-  constructor(private inventoryService: InventoryService) {}
+  constructor(private pharmacyService: PharmacySearchService) {}
 
   ngOnInit(): void {
     // this.refreshInventories();
 
-    this.loadInventories();
+    // this.loadPharmacies();
   }
 
   // =====================================================
   // REFRESH INVENTORIES
   // =====================================================
-  refreshInventories(): void {
-    this.inventoryService.refreshInventories().subscribe({
-      next: (data: InventoryResponseDTO[]) => {
-        this.inventories = data ?? [];
-        this.filteredInventories = data ?? [];
+  refreshPharmacies(): void {
+    this.pharmacyService.refreshPharmacies().subscribe({
+      next: (data: PharmacyResponseDTO[]) => {
+        this.pharmacies = data ?? [];
+        this.filteredPharmacies = data ?? [];
       },
       error: (err) => {
         console.error('Failed to refresh inventories:', err);
@@ -61,88 +60,76 @@ export class InventoryComponent implements OnInit {
   // =====================================================
   // PAGINATION | LOADING SPINNER
   // =====================================================
-  get paginatedInventories() {
+  get paginatedPharmacies() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.inventories.slice(start, start + this.pageSize);
+    return this.pharmacies.slice(start, start + this.pageSize);
   }
 
   get totalPages() {
-    return Math.ceil(this.inventories.length / this.pageSize);
+    return Math.ceil(this.pharmacies.length / this.pageSize);
   }
 
   // =====================================================
   // LOAD ALL INVENTORIES (FIXED: no recursion | removed infinite loop)
   // =====================================================
-  loadInventories(): void {
+  loadPharmacies(): void {
     this.isLoading = true;
 
-    this.inventoryService.getAllInventories().subscribe({
-      next: (data: InventoryResponseDTO[]) => {
-        this.inventories = data ?? [];
-        this.loadInventories();
-        this.refreshInventories();
-        this.filteredInventories = data ?? [];
+    this.pharmacyService.getAllPharmacies().subscribe({
+      next: (data: PharmacyResponseDTO[]) => {
+        this.pharmacies = data ?? [];
+        this.loadPharmacies();
+        this.refreshPharmacies();
+        this.filteredPharmacies = data ?? [];
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading inventories:', err);
-        this.inventories = [];
-        this.filteredInventories = [];
+        this.pharmacies = [];
+        this.filteredPharmacies = [];
         this.isLoading = false;
       },
     });
-  }
-
-  // =====================================================
-  // SEARCH
-  // =====================================================
-  // Search by medicine
-  searchMedicineFn() {
-    if (!this.searchMedicine) return;
-
-    this.inventoryService
-      .searchByMedicine(this.searchMedicine)
-      .subscribe((data) => (this.inventories = data));
   }
 
   // Search by location
   searchLocationFn() {
     if (!this.searchLocation) return;
 
-    this.inventoryService
+    this.pharmacyService
       .searchByLocation(this.searchLocation)
-      .subscribe((data) => (this.inventories = data));
+      .subscribe((data) => (this.pharmacies = data));
   }
 
-  // Search By PharmacyComponent
+  // Search By PharmacySearchComponent
   searchPharmacyFn() {
     if (!this.searchPharmacy) return;
 
-    this.inventoryService
+    this.pharmacyService
       .searchByPharmacy(this.searchPharmacy)
-      .subscribe((data) => (this.inventories = data));
+      .subscribe((data) => (this.pharmacies = data));
   }
 
   // Available stock
   loadAvailable() {
-    this.inventoryService.getAvailable().subscribe((data) => (this.inventories = data));
+    this.pharmacyService.getAvailable().subscribe((data) => (this.pharmacies = data));
   }
 
   // =====================================================
   // ✅ SELECTED INVENTORY
   // =====================================================
-  selectInventory(nav: any) {
-    this.selectedInventory = nav.inventory;
+  selectPharmacy(nav: any) {
+    this.selectedPharmacy = nav.pharmacy;
   }
 
   // =====================================================
   // EDIT MEDICINES
   // =====================================================
-  editInventory(item: InventoryResponseDTO) {
+  editInventory(item: PharmacyResponseDTO) {
     this.editId = item.id;
 
     // Also set selectedInventory for editing. clone object for editing
-    this.selectedInventory = { ...item };
+    this.selectedPharmacy = { ...item };
 
     this.formData = {
       pharmacyName: item.pharmacy.pharmacyName,
@@ -156,14 +143,14 @@ export class InventoryComponent implements OnInit {
   // UPDATE MEDICINE
   // =====================================================
   updateInventory(): void {
-    if (!this.selectedInventory || !this.selectedInventory.id) return;
+    if (!this.selectedPharmacy || !this.selectedPharmacy.id) return;
 
-    this.inventoryService
-      .updateInventory(this.selectedInventory.id, this.selectedInventory)
+    this.pharmacyService
+      .updatePharmacy(this.selectedPharmacy.id, this.selectedPharmacy)
       .subscribe({
         next: () => {
-          this.loadInventories();
-          this.selectedInventory = null;
+          this.loadPharmacies();
+          this.selectedPharmacy = null;
         },
         error: (err) => {
           console.error('Failed to update inventories:', err);
@@ -175,10 +162,10 @@ export class InventoryComponent implements OnInit {
   // DELETE MEDICINES
   // =====================================================
   deleteInventory(id: number): void {
-    this.inventoryService.deleteInventory(id).subscribe({
+    this.pharmacyService.deletePharmacy(id).subscribe({
       next: () => {
-        this.loadInventories();
-        this.refreshInventories();
+        this.loadPharmacies();
+        this.refreshPharmacies();
       },
       error: (err) => {
         console.error('Failed to delete inventories:', err);

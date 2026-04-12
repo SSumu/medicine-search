@@ -17,7 +17,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     // Search inventory records by Pharmacy object
     List<Inventory> findByPharmacy(Pharmacy pharmacy);
 
-    // Search specific inventory by Medicine and PharmacyComponent
+    // Search specific inventory by Medicine and PharmacySearchComponent
 //    Optional<Inventory> findByMedicineAndPharmacy(Medicine medicine, Pharmacy pharmacy);
 
     // Search inventory by pharmacy name (needed for Angular service)
@@ -32,6 +32,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     // Find available stock (quantity > 0)
     List<Inventory> findByQuantityGreaterThan(int quantity);
 
-    // Find inventory by pharmacy location (if PharmacyComponent has location field)
+    // Find inventory by pharmacy location (if PharmacySearchComponent has location field)
     List<Inventory> findByPharmacy_PharmacyLocationContainingIgnoreCase(String location);
 }

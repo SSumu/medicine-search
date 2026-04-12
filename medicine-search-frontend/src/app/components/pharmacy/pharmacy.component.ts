@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  InventoryRequestDTO,
-  InventoryResponseDTO,
-  InventoryService,
-} from '../../core/services/inventory/inventory.service';
+  PharmacyRequestDTO,
+  PharmacyResponseDTO,
+  PharmacySearchService,
+} from '../../core/services/pharmacy/pharmacy-search.service';
 import {PopupComponent} from "../popup/popup.component";
 
 @Component({
@@ -18,11 +18,15 @@ export class PharmacyComponent implements OnInit {
   // ================================
   // DATA
   // ================================
-  pharmacies: InventoryResponseDTO[] = [];
+  pharmacies: PharmacyResponseDTO[] = [];
 
-  newPharmacy: InventoryRequestDTO = {
+  newPharmacy: PharmacyRequestDTO = {
     pharmacyName: '',
     pharmacyLocation: '',
+    city: '',
+    country: '',
+    contactNumber: null,
+    email: ''
   };
 
   // ================================
@@ -31,6 +35,10 @@ export class PharmacyComponent implements OnInit {
   errors = {
     pharmacyName: '',
     pharmacyLocation: '',
+    city: '',
+    country: '',
+    contactNumber: '',
+    email: ''
   };
 
   submitted = false;
@@ -45,20 +53,20 @@ export class PharmacyComponent implements OnInit {
   // ================================
   // CONSTRUCTOR
   // ================================
-  constructor(private inventoryService: InventoryService) {}
+  constructor(private pharmacyService: PharmacySearchService) {}
 
   // ================================
   // INIT
   // ================================
   ngOnInit(): void {
-    this.loadInventories();
+    // this.loadPharmacies(); // loadPharmacies() must not be in here because it will load the page unnecessarily.
   }
 
   // ================================
   // LOAD ALL MEDICINES
   // ================================
-  loadInventories(): void {
-    this.inventoryService.getAllInventories().subscribe({
+  loadPharmacies(): void {
+    this.pharmacyService.getAllPharmacies().subscribe({
       next: (data) => {
         this.pharmacies = data;
       },
@@ -79,10 +87,10 @@ export class PharmacyComponent implements OnInit {
       return;
     }
 
-    this.inventoryService.createInventory(this.newPharmacy).subscribe({
+    this.pharmacyService.createPharmacy(this.newPharmacy).subscribe({
       next: () => {
         this.showPopupMessage('Pharmacy added successfully!', 'success');
-        this.loadInventories();
+        this.loadPharmacies();
         this.clearForm();
       },
       error: () => {
@@ -98,6 +106,10 @@ export class PharmacyComponent implements OnInit {
     this.newPharmacy = {
       pharmacyName: '',
       pharmacyLocation: '',
+      city: '',
+      country: '',
+      contactNumber: null,
+      email: ''
     };
 
     this.submitted = false;
@@ -111,12 +123,20 @@ export class PharmacyComponent implements OnInit {
     this.errors = {
       pharmacyName: '',
       pharmacyLocation: '',
+      city: '',
+      country: '',
+      contactNumber: '',
+      email: ''
     };
 
     let isValid = true;
 
     const name = this.newPharmacy.pharmacyName?.trim() || '';
     const location = this.newPharmacy.pharmacyLocation?.trim() || '';
+    const city = this.newPharmacy.city?.trim() || '';
+    const country = this.newPharmacy.country?.trim() || '';
+    const contactNumber = this.newPharmacy.contactNumber || null;
+    const email = this.newPharmacy.email?.trim() || '';
 
     if (!name) {
       this.errors.pharmacyName = 'Pharmacy name is required';
@@ -126,6 +146,25 @@ export class PharmacyComponent implements OnInit {
     if (!location) {
       this.errors.pharmacyLocation = 'Pharmacy location is required';
       isValid = false;
+    }
+
+    if (!city) {
+      this.errors.city = 'City is required';
+      isValid = false;
+    }
+
+    if (!country) {
+      this.errors.country = 'Country is required';
+      isValid = false;
+    }
+
+    if (!contactNumber) {
+      this.errors.contactNumber = 'Contact Number is required';
+      isValid = false;
+    }
+
+    if (!email) {
+      this.errors.email = 'Email is required';
     }
 
     return isValid;

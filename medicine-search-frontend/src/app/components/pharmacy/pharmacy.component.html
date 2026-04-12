@@ -27,6 +27,52 @@
     <div class="pharmacy-error">{{ errors.pharmacyLocation }}</div>
   }
 
+   <!-- CITY -->
+  <input
+    type="text"
+    [(ngModel)]="newPharmacy.city"
+    name="city"
+    placeholder="City"
+  />
+  @if (submitted && errors.city) {
+    <div class="pharmacy-error">{{ errors.city }}</div>
+  }
+
+  <!-- COUNTRY -->
+  <input
+    type="text"
+    [(ngModel)]="newPharmacy.country"
+    name="country"
+    placeholder="Country"
+  />
+  @if (submitted && errors.country) {
+    <div class="pharmacy-error">{{ errors.country }}</div>
+  }
+
+  <!-- CONTACT NUMBER -->
+  <input
+    type="tel"
+    [(ngModel)]="newPharmacy.contactNumber"
+    name="contactNumber"
+    placeholder="Contact Number"
+    pattern="[0-9]*"
+    inputmode="numeric"
+  />
+  @if (submitted && errors.contactNumber) {
+    <div class="pharmacy-error">{{ errors.contactNumber }}</div>
+  }
+
+  <!-- EMAIL -->
+  <input
+    type="text"
+    [(ngModel)]="newPharmacy.email"
+    name="email"
+    placeholder="Email"
+  />
+  @if (submitted && errors.email) {
+    <div class="pharmacy-error">{{ errors.email }}</div>
+  }
+
   <div class="pharmacy-form-actions">
     <button class="pharmacy-add-btn" (click)="createPharmacy()">Add Pharmacy</button>
     <button class="pharmacy-clear-btn" (click)="clearForm()">Clear</button>

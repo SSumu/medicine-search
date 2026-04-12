@@ -85,7 +85,7 @@ button {
 /* ==============================
    TABLE STYLING
 ============================== */
-.inventory-table {
+.pharmacy-table {
   width: 100%;
   border-collapse: separate;
   //background-color: #ffffff;
@@ -95,39 +95,39 @@ button {
   //overflow: hidden;
 }
 
-.inventory-table thead {
+.pharmacy-table thead {
   background-color: #1f3a5f;
   color: white;
 }
 
-.inventory-table th,
-.inventory-table td {
+.pharmacy-table th,
+.pharmacy-table td {
   padding: 12px 10px;
   text-align: center;
   border-bottom: 1px solid #eee;
 }
 
-.inventory-table thead th {
+.pharmacy-table thead th {
   border-radius: 12px;
   margin: 10px;
 }
 
-.inventory-table tbody td {
+.pharmacy-table tbody td {
   background: white;
   padding: 10px;
   font-size: 14px;
   border-bottom: 1px solid #dddddd;
 }
 
-.inventory-table tbody tr {
+.pharmacy-table tbody tr {
   transition: 0.2s;
 }
 
-.inventory-table tbody tr:hover td {
+.pharmacy-table tbody tr:hover td {
   background-color: #f4f8ff;
 }
 
-.inventory-loader {
+.pharmacy-loader {
   text-align: center;
   padding: 20px;
   font-weight: bold;
@@ -143,29 +143,29 @@ button {
 /* ==============================
    ACTION BUTTONS (EDIT / DELETE)
 ============================== */
-.inventory-table td button {
+.pharmacy-table td button {
   margin: 2px;
   padding: 6px 10px;
   font-size: 13px;
 }
 
 /* Edit button */
-.inventory-table td button:first-child {
+.pharmacy-table td button:first-child {
   background-color: #f39c12;
   color: white;
 }
 
-.inventory-table td button:first-child:hover {
+.pharmacy-table td button:first-child:hover {
   background-color: #d68910;
 }
 
 /* Delete button */
-.inventory-table td button:last-child {
+.pharmacy-table td button:last-child {
   background-color: #e74c3c;
   color: white;
 }
 
-.inventory-table td button:last-child:hover {
+.pharmacy-table td button:last-child:hover {
   background-color: #c0392b;
 }
 
@@ -183,12 +183,12 @@ button {
     width: 100%;
   }
 
-  .inventory-table {
+  .pharmacy-table {
     font-size: 12px;
   }
 
-  .inventory-table th,
-  .inventory-table td {
+  .pharmacy-table th,
+  .pharmacy-table td {
     padding: 8px;
   }
 }

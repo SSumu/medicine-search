@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,19 +19,5 @@ public class MedicineSearchResponseDTO {
     private Integer quantity;
     private Double price;
     private String description;
-
-//    private Integer quantityAvailable;
-//
-//    // PharmacyComponent Details
-//    private Long pharmacyId;
-//    private String pharmacyName;
-//    private String pharmacyAddress;
-//
-//    // Location (for Google Maps)
-//    private Double latitude;
-//    private Double longitude;
-//
-//    // Availability
-//    private Boolean availableLocally;
-//    private Boolean availableInternationally;
+    private LocalDateTime lastUpdated;
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "pharmacies")
 @Data
@@ -36,4 +38,16 @@ public class Pharmacy {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    protected void onCreate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 }

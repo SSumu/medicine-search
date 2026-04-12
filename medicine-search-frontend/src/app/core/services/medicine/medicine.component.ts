@@ -72,7 +72,7 @@ export class MedicineComponent implements OnInit {
     console.log('MedicineComponent INIT');
 
     // ✅ ONLY ONE CALL — service handles caching
-    this.loadMedicines();
+    // this.loadMedicines();
   }
 
   // ================================

@@ -44,6 +44,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Manufacturer</th>
+        <th>Quantity</th>
         <th>Price</th>
         <th>Description</th>
         <th>Actions</th>
@@ -57,6 +58,7 @@
               <td>{{ med.medicineId }}</td>
               <td>{{ med.medicineName }}</td>
               <td>{{ med.manufacturer }}</td>
+              <td>{{ med.quantity }}</td>
               <td>{{ med.price }}</td>
               <td>{{ med.description }}</td>
               <td>
@@ -120,6 +122,12 @@
         type="text"
         [(ngModel)]="selectedMedicine.manufacturer"
         name="editManufacturer"
+      />
+
+      <input
+        type="number"
+        [(ngModel)]="selectedMedicine.quantity"
+        name="quantity"
       />
 
       <input

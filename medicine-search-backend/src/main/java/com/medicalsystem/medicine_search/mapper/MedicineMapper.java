@@ -23,18 +23,9 @@ public class MedicineMapper {
                 .medicineName(medicine.getMedicineName())
                 .description(medicine.getDescription())
                 .manufacturer(medicine.getManufacturer())
+                .quantity(medicine.getQuantity())
                 .price(medicine.getPrice())
-
-//                .quantityAvailable(0)
-//                .pharmacyId(null)
-//                .pharmacyName(null)
-//                .pharmacyAddress(null)
-//
-//                .latitude(null)
-//                .longitude(null)
-//
-//                .availableLocally(true)
-//                .availableInternationally(false)
+                .lastUpdated(medicine.getLastUpdated())
                 .build();
     }
 
@@ -50,6 +41,7 @@ public class MedicineMapper {
                 .medicineName(dto.getMedicineName())
                 .description(dto.getDescription())
                 .manufacturer(dto.getManufacturer())
+                .quantity(dto.getQuantity())
                 .price(dto.getPrice())
                 .build();
     }
@@ -61,6 +53,7 @@ public class MedicineMapper {
         medicine.setMedicineName(dto.getMedicineName());
         medicine.setDescription(dto.getDescription());
         medicine.setManufacturer(dto.getManufacturer());
+        medicine.setQuantity(dto.getQuantity());
         medicine.setPrice(dto.getPrice());
     }
 }

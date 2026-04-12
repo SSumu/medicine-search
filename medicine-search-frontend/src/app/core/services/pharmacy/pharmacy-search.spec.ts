@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InventoryService } from './inventory.service';
+import { PharmacySearchService } from './pharmacy-search.service';
 
-describe('InventoryService', () => {
-  let component: InventoryService;
-  let fixture: ComponentFixture<InventoryService>;
+describe('PharmacyService', () => {
+  let component: PharmacySearchService;
+  let fixture: ComponentFixture<PharmacySearchService>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InventoryService],
+      imports: [PharmacySearchService],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InventoryService);
+    fixture = TestBed.createComponent(PharmacySearchService);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
