@@ -58,16 +58,19 @@ export class MedicineSearchComponent implements OnInit {
 
     if (!keyword) {
       this.filteredMedicines = [...this.medicines];
+      this.cdr.detectChanges();
       return;
     }
 
     this.medicineService.searchMedicines(keyword).subscribe({
       next: (data: Medicine[]) => {
         this.filteredMedicines = data ?? [];
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Search error:', err);
         this.filteredMedicines = [];
+        this.cdr.detectChanges();
       },
     });
   }
@@ -80,9 +83,11 @@ export class MedicineSearchComponent implements OnInit {
       next: (data: Medicine[]) => {
         this.medicines = data ?? [];
         this.filteredMedicines = data ?? [];
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Refresh medicines error:', err);
+        this.cdr.detectChanges();
       },
     });
   }

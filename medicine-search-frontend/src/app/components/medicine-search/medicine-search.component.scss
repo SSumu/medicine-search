@@ -147,6 +147,14 @@
   border-bottom: 1px solid #ddd;
 }
 
+td {
+  text-align: center;
+}
+
+td:nth-child(6) {
+  text-align: justify;
+}
+
 .medicine-table tbody tr {
   transition: 0.2s;
 }
