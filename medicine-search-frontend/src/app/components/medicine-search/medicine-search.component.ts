@@ -85,6 +85,8 @@ export class MedicineSearchComponent implements OnInit {
   search(): void {
     const keyword = this.searchText.trim();
 
+    if (!keyword) return; // ✅ Do nothing if empty
+
     // ✅ SAVE current page before resetting. STILL OK (redundant but safe)
     this.previousPageBeforeSearch = this.currentPage;
 
@@ -125,6 +127,7 @@ export class MedicineSearchComponent implements OnInit {
   // REFRESH MEDICINES
   // =====================================================
   refreshMedicines(): void {
+    if (!this.searchText.trim()) return; // ✅ Do nothing if input empty
 
     // ✅ USE previous page instead of currentPage (which became 1 after search). USE search result page instead of previous page
     this.tempPage = this.searchResultPage || this.previousPageBeforeSearch;
