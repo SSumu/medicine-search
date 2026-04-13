@@ -3,7 +3,7 @@ import { DetailsPage, HomePage } from './app';
 import { MedicineComponent } from './core/services/medicine/medicine.component';
 import { MedicineSearchComponent } from './components/medicine-search/medicine-search.component';
 import { PharmacyComponent } from './components/pharmacy/pharmacy.component';
-import { PharmacySearchComponent } from './core/services/pharmacy/pharmacy-search.component';
+import { PharmacySearchComponent } from './core/services/pharmacy-search/pharmacy-search.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomePage },

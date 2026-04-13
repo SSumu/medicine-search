@@ -4,7 +4,7 @@ import {
   PharmacyRequestDTO,
   PharmacyResponseDTO,
   PharmacySearchService,
-} from '../../core/services/pharmacy/pharmacy-search.service';
+} from '../../core/services/pharmacy-search/pharmacy-search.service';
 import {PopupComponent} from "../popup/popup.component";
 
 @Component({
