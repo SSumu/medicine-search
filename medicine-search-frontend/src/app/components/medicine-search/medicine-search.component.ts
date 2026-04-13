@@ -30,10 +30,19 @@ export class MedicineSearchComponent implements OnInit {
   currentPage = 1;
   pageSize = 5;
 
+  // TEMP PAGE HOLDER
+  private tempPage: number = 1;
+
+  // Store page before search
+  private previousPageBeforeSearch: number = 1;
+
+  // store correct page of search result
+  private searchResultPage: number = 1;
+
   constructor(
     private medicineService: MedicineService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -51,10 +60,33 @@ export class MedicineSearchComponent implements OnInit {
   }
 
   // =====================================================
+  // 🔥 FIND PAGE WHERE SEARCH RESULT EXISTS
+  // =====================================================
+  private findPageForSearchResult(): number {
+    if (!this.filteredMedicines || this.filteredMedicines.length === 0) {
+      return 1;
+    }
+
+    // If only one result → calculate its page index from full list
+    const result = this.filteredMedicines[0];
+
+    const index = this.medicines.findIndex(
+      (m) => m.medicineId === result.medicineId,
+    );
+
+    if (index === -1) return  1;
+
+    return Math.floor(index / this.pageSize) + 1;
+  }
+
+  // =====================================================
   // SEARCH MEDICINES
   // =====================================================
   search(): void {
     const keyword = this.searchText.trim();
+
+    // ✅ SAVE current page before resetting. STILL OK (redundant but safe)
+    this.previousPageBeforeSearch = this.currentPage;
 
     // 🔥 RESET PAGINATION HERE
     this.currentPage = 1;
@@ -68,6 +100,9 @@ export class MedicineSearchComponent implements OnInit {
     this.medicineService.searchMedicines(keyword).subscribe({
       next: (data: Medicine[]) => {
         this.filteredMedicines = data ?? [];
+
+        // ✅ FIND CORRECT PAGE OF RESULT
+        this.searchResultPage = this.findPageForSearchResult();
 
         // 🔥 RESET PAGINATION AGAIN AFTER DATA LOAD
         this.currentPage = 1;
@@ -90,11 +125,21 @@ export class MedicineSearchComponent implements OnInit {
   // REFRESH MEDICINES
   // =====================================================
   refreshMedicines(): void {
+
+    // ✅ USE previous page instead of currentPage (which became 1 after search). USE search result page instead of previous page
+    this.tempPage = this.searchResultPage || this.previousPageBeforeSearch;
+
     this.medicineService.refreshMedicines().subscribe({
       next: (data: Medicine[]) => {
         this.medicines = data ?? [];
         this.filteredMedicines = data ?? [];
         this.cdr.detectChanges();
+
+        // ✅ RESTORE PAGE SAFELY. Restore correct page. Wait until Angular recalculates totalPages
+        setTimeout(() => {
+          this.currentPage = Math.min(this.tempPage, this.totalPages || 1);
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
         console.error('Refresh medicines error:', err);
@@ -177,6 +222,25 @@ export class MedicineSearchComponent implements OnInit {
   }
 
   // =====================================================
+  // UPDATE MEDICINE
+  // =====================================================
+  updateMedicine(): void {
+    if (!this.selectedMedicine || !this.selectedMedicine.medicineId) return;
+
+    this.medicineService
+      .updateMedicine(this.selectedMedicine.medicineId, this.selectedMedicine)
+      .subscribe({
+        next: () => {
+          this.loadMedicines();
+          this.selectedMedicine = null;
+        },
+        error: (err) => {
+          console.error('Medicine update error:', err);
+        },
+      });
+  }
+
+  // =====================================================
   // DELETE MEDICINE
   // =====================================================
   deleteMedicine(id: number): void {
@@ -239,22 +303,5 @@ export class MedicineSearchComponent implements OnInit {
 
     event.target.value = valueForSearch;
     this.newMedicineForSearch.price = valueForSearch;
-  }
-
-  // =====================================================
-  // UPDATE MEDICINE
-  // =====================================================
-  updateMedicine(): void {
-    if (!this.selectedMedicine || !this.selectedMedicine.medicineId) return;
-
-    this.medicineService.updateMedicine(this.selectedMedicine.medicineId, this.selectedMedicine).subscribe({
-      next: () => {
-        this.loadMedicines();
-        this.selectedMedicine = null;
-      },
-      error: (err) => {
-        console.error('Medicine update error:', err);
-      },
-    });
   }
 }

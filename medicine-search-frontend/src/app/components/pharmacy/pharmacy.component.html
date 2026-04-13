@@ -55,7 +55,7 @@
     [(ngModel)]="newPharmacy.contactNumber"
     name="contactNumber"
     placeholder="Contact Number"
-    pattern="[0-9]*"
+    (input)="onNumberInput($event)"
     inputmode="numeric"
   />
   @if (submitted && errors.contactNumber) {

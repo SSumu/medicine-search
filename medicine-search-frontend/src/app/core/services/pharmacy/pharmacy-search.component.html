@@ -6,12 +6,11 @@
   <div class="search-box">
 
     <input [(ngModel)]="searchLocation" placeholder="Search Location" />
-    <button (click)="searchLocationFn()">Search</button>
 
     <input [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
-    <button (click)="searchPharmacyFn()">Search</button>
 
-    <button (click)="loadPharmacies()">Reset</button>
+    <button (click)="search()">Search</button>
+    <button (click)="refreshPharmacies()">Reset</button>
     <button (click)="loadAvailable()">Available Stock</button>
 
   </div>

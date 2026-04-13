@@ -42,6 +42,55 @@ export class PharmacySearchComponent implements OnInit {
     // this.loadPharmacies();
   }
 
+  /* ===============================
+      SEARCH
+  * ================================ */
+  search(): void {
+    const location = this.searchLocation.trim();
+    const pharmacy = this.searchPharmacy.trim();
+
+    // Case 1: nothing entered → load all
+    if (!location && !pharmacy) {
+      this.loadPharmacies();
+      return;
+    }
+
+    // Case 2: only location
+    if (location && !pharmacy) {
+      this.pharmacyService.searchByLocation(location).subscribe({
+        next: (data) => {
+          this.pharmacies = data ?? [];
+        },
+        error: (err) => console.error('Location search failed: ', err),
+      });
+      return;
+    }
+
+    // Case 3: only pharmacy name
+    if (!location && pharmacy) {
+      this.pharmacyService.searchByPharmacy(pharmacy).subscribe({
+        next: (data) => {
+          this.pharmacies = data ?? [];
+        },
+        error: (err) => console.error('Pharmacy search failed: ', err),
+      });
+      return;
+    }
+
+    // Case 4: BOTH location + pharmacy
+    this.pharmacyService.searchByLocation(location).subscribe({
+      next: (data) => {
+        // filter the location result by pharmacy name (frontend filtering)
+        this.pharmacies = (data ?? [])
+          .filter(item =>
+          item.pharmacy?.pharmacyName?.toLowerCase()
+            .includes(pharmacy.toLowerCase())
+        );
+      },
+      error: (err) => console.error('Combined search failed: ', err),
+    });
+  }
+
   // =====================================================
   // REFRESH INVENTORIES
   // =====================================================
@@ -90,24 +139,6 @@ export class PharmacySearchComponent implements OnInit {
         this.isLoading = false;
       },
     });
-  }
-
-  // Search by location
-  searchLocationFn() {
-    if (!this.searchLocation) return;
-
-    this.pharmacyService
-      .searchByLocation(this.searchLocation)
-      .subscribe((data) => (this.pharmacies = data));
-  }
-
-  // Search By PharmacySearchComponent
-  searchPharmacyFn() {
-    if (!this.searchPharmacy) return;
-
-    this.pharmacyService
-      .searchByPharmacy(this.searchPharmacy)
-      .subscribe((data) => (this.pharmacies = data));
   }
 
   // Available stock
