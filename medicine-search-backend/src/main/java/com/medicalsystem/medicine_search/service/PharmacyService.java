@@ -3,7 +3,7 @@ package com.medicalsystem.medicine_search.service;
 import com.medicalsystem.medicine_search.dto.PaginatedResponse;
 import com.medicalsystem.medicine_search.dto.PharmacyRequestDTO;
 import com.medicalsystem.medicine_search.dto.PharmacySearchResponseDTO;
-import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
