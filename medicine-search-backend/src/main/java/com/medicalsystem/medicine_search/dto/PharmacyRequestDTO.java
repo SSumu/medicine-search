@@ -5,23 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class PharmacySearchResponseDTO {
+public class PharmacyRequestDTO {
 
-    private Long id;
-    private String name;
-    private String location;
+    private String pharmacyName;
+    private String pharmacyLocation;
     private String city;
     private String country;
     private String contactNumber;
     private String email;
-    private LocalDateTime lastUpdated;
-
-    private List<PharmacyScheduleDTO> schedule;
+    private Boolean available;
 }

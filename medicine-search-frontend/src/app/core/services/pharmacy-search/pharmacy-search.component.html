@@ -4,83 +4,96 @@
 
   <!-- 🔍 SEARCH SECTION -->
   <div class="search-box">
+<!--    <input type="text" [(ngModel)]="searchLocation" placeholder="Search Location" />-->
+    <input [(ngModel)]="searchLocation" (ngModelChange)="onSearchInput()" placeholder="Search Location" />
+<!--    <input type="text" [(ngModel)]="searchCity" placeholder="Search City" />-->
+    <input [(ngModel)]="searchCity" (ngModelChange)="onSearchInput()" placeholder="Search City" />
+<!--    <input type="text" [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />-->
+    <input [(ngModel)]="searchPharmacy" (ngModelChange)="onSearchInput()" placeholder="Search Pharmacy" />
 
-    <input [(ngModel)]="searchLocation" placeholder="Search Location" />
-
-    <input [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />
-
-    <button (click)="search()">Search</button>
+    <button (click)="onSearchInput()">Search</button>
     <button (click)="refreshPharmacies()">Reset</button>
-    <button (click)="loadAvailable()">Available Stock</button>
-
+    <button (click)="showAvailableOnly()">Available Stock</button>
   </div>
 
   <!-- =====================================================
-       LOADING INVENTORIES
+       LOADING PHARMACIES
   ===================================================== -->
   @if (isLoading) {
     <div class="pharmacy-loader">Loading pharmacies...</div>
   }
 
   <!-- =====================================================
-       INVENTORY LIST TABLE
+       PHARMACY LIST TABLE
   ===================================================== -->
   @if (!isLoading) {
-    <table class="pharmacy-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Pharmacy</th>
-          <th>Location</th>
-          <th>City</th>
-          <th>Country</th>
-          <th>Contact Number</th>
-          <th>Email</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+    <div class="results">
+      <table class="pharmacy-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pharmacy</th>
+            <th>Location</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Contact Number</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        @if (pharmacies.length > 0) {
-          @for (item of paginatedPharmacies; track item.id) {
-            <tr (click)="selectPharmacy(item)">
-              <td>{{ item.id }}</td>
-              <td>{{ item.pharmacy.pharmacyName }}</td>
-              <td>{{ item.pharmacy.pharmacyLocation }}</td>
-              <td>{{ item.medicine.medicineName }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>
-                <button (click)="editInventory(item); $event.stopPropagation()">Edit</button>
-                <button (click)="deleteInventory(item.id); $event.stopPropagation()">Delete</button>
+        <tbody>
+          @if (pharmacies.length > 0) {
+            @for (item of paginatedPharmacies; track item.id) {
+              <tr (click)="selectPharmacy(item)">
+                <td>{{ item.id }}</td>
+                <td>{{ item.pharmacy.pharmacyName }}</td>
+                <td>{{ item.location.pharmacyLocation }}</td>
+                <td>{{ item.city }}</td>
+                <td>{{ item.country }}</td>
+                <td>{{ item.contactNumber }}</td>
+                <td>{{ item.email }}</td>
+                <td>
+                  <button (click)="editPharmacy(item); $event.stopPropagation()">Edit</button>
+                  <button (click)="deletePharmacy(item.pharmacy.pharmacyId); $event.stopPropagation()">Delete</button>
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="8" class="table-body">
+                No pharmacies found.
               </td>
             </tr>
           }
-        } @else {
-          <tr>
-            <td colspan="8" class="table-body">
-              No pharmacies found.
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
 
     <!-- ====================================================
        PAGINATION
     ===================================================== -->
     @if (pharmacies.length > pageSize) {
       <div class="pagination">
-        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>
+<!--        This is the old method for frontend pagination. -->
+<!--        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>-->
+
+<!--        This is the new method for Backend pagination. -->
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
 
         <span>Page {{ currentPage }} / {{ totalPages }}</span>
 
-        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>
+<!--        This is the old method for frontend pagination. -->
+<!--        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>-->
+
+<!--        This is the new method for Backend pagination. -->
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
       </div>
     }
   }
 
   <!-- =====================================================
-       UPDATE INVENTORY TABLE (SAFE NULL HANDLING)
+       UPDATE PHARMACY TABLE (SAFE NULL HANDLING)
   ===================================================== -->
   @if (selectedPharmacy) {
 
@@ -94,37 +107,49 @@
 
       <input
         type="text"
-        [(ngModel)]="selectedPharmacy.pharmacy.pharmacyLocation"
+        [(ngModel)]="selectedPharmacy.location.pharmacyLocation"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedPharmacy.medicine.medicineName"
+        [(ngModel)]="selectedPharmacy.city"
       />
 
       <input
         type="number"
-        [(ngModel)]="selectedPharmacy.quantity"
+        [(ngModel)]="selectedPharmacy.country"
       />
 
-      <button (click)="updateInventory()">Update</button>
+      <input
+        type="number"
+        [(ngModel)]="selectedPharmacy.contactNumber"
+      />
+
+      <input
+        type="text"
+        [(ngModel)]="selectedPharmacy.email"
+      />
+
+      <button (click)="updatePharmacy()">Update</button>
       <button (click)="selectedPharmacy = null">Cancel</button>
     </div>
   }
 
   <!-- =====================================================
-       SELECTED INVENTORY DETAILS (SAFE NULL HANDLING)
+       SELECTED PHARMACY DETAILS (SAFE NULL HANDLING)
   ===================================================== -->
   @if (selectedPharmacy) {
 
     <div class="details-section">
-      <h3>Selected Inventory Details</h3>
+      <h3>Selected Pharmacy Details</h3>
 
       <p><strong>ID:</strong> {{ selectedPharmacy.id }}</p>
       <p><strong>Pharmacy:</strong> {{ selectedPharmacy.pharmacy.pharmacyName }}</p>
-      <p><strong>Location:</strong> {{ selectedPharmacy.pharmacy.pharmacyLocation }}</p>
-      <p><strong>Medicine:</strong> {{ selectedPharmacy.medicine.medicineName }}</p>
-      <p><strong>Quantity:</strong> {{ selectedPharmacy.quantity }} </p>
+      <p><strong>Location:</strong> {{ selectedPharmacy.location.pharmacyLocation }}</p>
+      <p><strong>City:</strong> {{ selectedPharmacy.city }}</p>
+      <p><strong>Country:</strong> {{ selectedPharmacy.country }} </p>
+      <p><strong>Contact Number:</strong> {{ selectedPharmacy.contactNumber }} </p>
+      <p><strong>Email:</strong>{{ selectedPharmacy.email }}</p>
     </div>
   }
 

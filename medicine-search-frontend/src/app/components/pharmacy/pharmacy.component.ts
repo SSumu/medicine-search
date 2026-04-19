@@ -26,7 +26,7 @@ export class PharmacyComponent implements OnInit {
     city: '',
     country: '',
     contactNumber: null,
-    email: ''
+    email: '',
   };
 
   // ================================
@@ -38,7 +38,8 @@ export class PharmacyComponent implements OnInit {
     city: '',
     country: '',
     contactNumber: '',
-    email: ''
+    email: '',
+    schedule: ''
   };
 
   submitted = false;
@@ -49,6 +50,19 @@ export class PharmacyComponent implements OnInit {
   popupVisible: boolean = false;
   popupMessage = '';
   popupType: 'success' | 'error' = 'success';
+
+  // ==================
+  //  WEEKLY SCHEDULE
+  // ==================
+  weekDays = [
+    { name: 'Monday', open: false, openTime: '', closeTime: '' },
+    { name: 'Tuesday', open: false, openTime: '', closeTime: '' },
+    { name: 'Wednesday', open: false, openTime: '', closeTime: '' },
+    { name: 'Thursday', open: false, openTime: '', closeTime: '' },
+    { name: 'Friday', open: false, openTime: '', closeTime: '' },
+    { name: 'Saturday', open: false, openTime: '', closeTime: '' },
+    { name: 'Sunday', open: false, openTime: '', closeTime: '' },
+  ];
 
   // ================================
   // CONSTRUCTOR
@@ -83,15 +97,28 @@ export class PharmacyComponent implements OnInit {
   createPharmacy(): void {
     this.submitted = true;
 
-    if (!this.validateForm()) {
+    const isFormValid = this.validateForm();
+    const isScheduleValid = this.validateSchedule();
+
+    // ➕ Schedule validation
+    if (!isFormValid || !isScheduleValid) {
       return;
     }
 
-    this.pharmacyService.createPharmacy(this.newPharmacy).subscribe({
+    // ➕ attach schedule with newPharmacy
+    const payload = {
+      ...this.newPharmacy,
+      schedule: this.weekDays,
+    };
+
+    this.pharmacyService.createPharmacy(payload).subscribe({
       next: () => {
         this.showPopupMessage('Pharmacy added successfully!', 'success');
         this.loadPharmacies();
-        this.clearForm();
+        // this.clearForm();
+
+        // ➕ reset after success
+        this.resetForm();
       },
       error: () => {
         this.showPopupMessage('Failed to add pharmacy!', 'error');
@@ -102,7 +129,23 @@ export class PharmacyComponent implements OnInit {
   // ================================
   // CLEAR FORM
   // ================================
-  clearForm(): void {
+  // clearForm(): void {
+  //   this.newPharmacy = {
+  //     pharmacyName: '',
+  //     pharmacyLocation: '',
+  //     city: '',
+  //     country: '',
+  //     contactNumber: null,
+  //     email: ''
+  //   };
+  //
+  //   this.submitted = false;
+  // }
+
+  // ================================
+  // CLEAR FORM
+  // ================================
+  resetForm(): void {
     this.newPharmacy = {
       pharmacyName: '',
       pharmacyLocation: '',
@@ -113,6 +156,23 @@ export class PharmacyComponent implements OnInit {
     };
 
     this.submitted = false;
+
+    this.errors = {
+      pharmacyName: '',
+      pharmacyLocation: '',
+      city: '',
+      country: '',
+      contactNumber: '',
+      email: '',
+      schedule: ''
+    }
+
+    this.weekDays = this.weekDays.map(day => ({
+      ...day,
+      open: false,
+      openTime: '',
+      closeTime: ''
+    }));
   }
 
   // ================================
@@ -126,7 +186,8 @@ export class PharmacyComponent implements OnInit {
       city: '',
       country: '',
       contactNumber: '',
-      email: ''
+      email: '',
+      schedule: ''
     };
 
     let isValid = true;
@@ -166,12 +227,56 @@ export class PharmacyComponent implements OnInit {
     if (!email) {
       this.errors.email = 'Email is required';
     }
+    // ➕ Email format validation
+    else if (!this.validateEmail(email)) {
+      this.errors.email = 'Invalid email format';
+      isValid = false;
+    }
 
     return isValid;
   }
 
+  // ================================
+  //      VALIDATION SCHEDULE
+  // ================================
+  validateSchedule(): boolean {
+    const hasAtLeastOneDay = this.weekDays.some(day => day.open);
+
+    if (!hasAtLeastOneDay) {
+      this.errors.schedule = 'Opening Schedule is required';
+      return false;
+    }
+
+    this.errors.schedule = '';
+
+    for (let day of this.weekDays) {
+      if (day.open) {
+        if (!day.openTime || !day.closeTime) {
+          this.showPopupMessage(`Please enter time for ${day.name}`, 'error');
+          return false;
+        }
+
+        if (day.openTime >= day.closeTime) {
+          this.showPopupMessage(`Invalid time range for ${day.name}`, 'error');
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // ================================
+  //      VALIDATION EMAIL
+  // ================================
+  validateEmail(email: string): boolean {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+  }
+
   onNumberInput(event: any) {
-    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    const input = event.target.value.replace(/[^0-9]/g, '');
+    event.target.value = input;
+    this.newPharmacy.contactNumber = input;
   }
 
   // ================================

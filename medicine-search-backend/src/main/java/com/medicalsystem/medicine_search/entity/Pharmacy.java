@@ -38,6 +38,9 @@ public class Pharmacy {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private Boolean available;
+
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
