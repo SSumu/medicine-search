@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   PharmacyRequestDTO,
@@ -16,7 +16,7 @@ import {PopupComponent} from "../popup/popup.component";
 })
 export class PharmacyComponent implements OnInit {
   // ================================
-  // DATA
+  //              DATA
   // ================================
   pharmacies: PharmacyResponseDTO[] = [];
 
@@ -27,10 +27,11 @@ export class PharmacyComponent implements OnInit {
     country: '',
     contactNumber: null,
     email: '',
+    available: false,
   };
 
   // ================================
-  // VALIDATION ERRORS
+  //        VALIDATION ERRORS
   // ================================
   errors = {
     pharmacyName: '',
@@ -45,7 +46,7 @@ export class PharmacyComponent implements OnInit {
   submitted = false;
 
   // ================================
-  // ✅ POPUP STATE
+  //          ✅ POPUP STATE
   // ================================
   popupVisible: boolean = false;
   popupMessage = '';
@@ -55,19 +56,22 @@ export class PharmacyComponent implements OnInit {
   //  WEEKLY SCHEDULE
   // ==================
   weekDays = [
-    { name: 'Monday', open: false, openTime: '', closeTime: '' },
-    { name: 'Tuesday', open: false, openTime: '', closeTime: '' },
-    { name: 'Wednesday', open: false, openTime: '', closeTime: '' },
-    { name: 'Thursday', open: false, openTime: '', closeTime: '' },
-    { name: 'Friday', open: false, openTime: '', closeTime: '' },
-    { name: 'Saturday', open: false, openTime: '', closeTime: '' },
-    { name: 'Sunday', open: false, openTime: '', closeTime: '' },
+    { day: 'Monday', open: false, openTime: '', closeTime: '' },
+    { day: 'Tuesday', open: false, openTime: '', closeTime: '' },
+    { day: 'Wednesday', open: false, openTime: '', closeTime: '' },
+    { day: 'Thursday', open: false, openTime: '', closeTime: '' },
+    { day: 'Friday', open: false, openTime: '', closeTime: '' },
+    { day: 'Saturday', open: false, openTime: '', closeTime: '' },
+    { day: 'Sunday', open: false, openTime: '', closeTime: '' },
   ];
 
   // ================================
-  // CONSTRUCTOR
+  //            CONSTRUCTOR
   // ================================
-  constructor(private pharmacyService: PharmacySearchService) {}
+  constructor(
+      private pharmacyService: PharmacySearchService,
+      private cdr: ChangeDetectorRef
+  ) {}
 
   // ================================
   // INIT
@@ -77,12 +81,12 @@ export class PharmacyComponent implements OnInit {
   }
 
   // ================================
-  // LOAD ALL MEDICINES
+  //        LOAD ALL MEDICINES
   // ================================
   loadPharmacies(): void {
     this.pharmacyService.getAllPharmacies().subscribe({
       next: (data) => {
-        this.pharmacies = data;
+        this.pharmacies = data.content;
       },
       error: (err) => {
         console.error('Error loading pharmacies', err);
@@ -92,10 +96,13 @@ export class PharmacyComponent implements OnInit {
   }
 
   // =====================================================
-  // CREATE PHARMACY
+  //                  CREATE PHARMACY
   // =====================================================
   createPharmacy(): void {
     this.submitted = true;
+
+    // optional early update
+    this.cdr.detectChanges();
 
     const isFormValid = this.validateForm();
     const isScheduleValid = this.validateSchedule();
@@ -108,6 +115,8 @@ export class PharmacyComponent implements OnInit {
     // ➕ attach schedule with newPharmacy
     const payload = {
       ...this.newPharmacy,
+      contactNumber: this.newPharmacy.contactNumber || '', // ✅ prevent null
+      available: true,
       schedule: this.weekDays,
     };
 
@@ -119,6 +128,9 @@ export class PharmacyComponent implements OnInit {
 
         // ➕ reset after success
         this.resetForm();
+
+        // ✅ optional safety fix
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showPopupMessage('Failed to add pharmacy!', 'error');
@@ -143,7 +155,7 @@ export class PharmacyComponent implements OnInit {
   // }
 
   // ================================
-  // CLEAR FORM
+  //            CLEAR FORM
   // ================================
   resetForm(): void {
     this.newPharmacy = {
@@ -152,7 +164,8 @@ export class PharmacyComponent implements OnInit {
       city: '',
       country: '',
       contactNumber: null,
-      email: ''
+      email: '',
+      available: false,
     };
 
     this.submitted = false;
@@ -176,7 +189,7 @@ export class PharmacyComponent implements OnInit {
   }
 
   // ================================
-  // VALIDATION
+  //            VALIDATION
   // ================================
   validateForm(): boolean {
     // Reset errors
@@ -226,6 +239,7 @@ export class PharmacyComponent implements OnInit {
 
     if (!email) {
       this.errors.email = 'Email is required';
+      isValid = false;
     }
     // ➕ Email format validation
     else if (!this.validateEmail(email)) {
@@ -252,12 +266,12 @@ export class PharmacyComponent implements OnInit {
     for (let day of this.weekDays) {
       if (day.open) {
         if (!day.openTime || !day.closeTime) {
-          this.showPopupMessage(`Please enter time for ${day.name}`, 'error');
+          this.showPopupMessage(`Please enter time for ${day.day}`, 'error');
           return false;
         }
 
         if (day.openTime >= day.closeTime) {
-          this.showPopupMessage(`Invalid time range for ${day.name}`, 'error');
+          this.showPopupMessage(`Invalid time range for ${day.day}`, 'error');
           return false;
         }
       }
@@ -280,12 +294,14 @@ export class PharmacyComponent implements OnInit {
   }
 
   // ================================
-  // POPUP METHODS
+  //          POPUP METHODS
   // ================================
   showPopupMessage(message: string, type: 'success' | 'error'): void {
     this.popupMessage = message;
     this.popupType = type;
     this.popupVisible = true;
+
+    this.cdr.detectChanges();
 
     // Auto close after 3 seconds
     setTimeout(() => {

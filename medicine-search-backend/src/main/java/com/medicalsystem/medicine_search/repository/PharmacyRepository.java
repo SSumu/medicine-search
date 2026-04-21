@@ -52,4 +52,7 @@ AND (:pharmacyName IS NULL OR :pharmacyName = ''
 //
 //    // ✅ GET ONLY AVAILABLE PHARMACIES (LIST VERSION)
 //    // (Optional but useful if you want direct DB filtering instead of stream)
+
+    @Query(value = "SELECT DISTINCT p FROM Pharmacy p LEFT JOIN FETCH p.schedule", countQuery = "SELECT COUNT(p) FROM Pharmacy p")
+    Page<Pharmacy> findAllWithSchedule(Pageable pageable);
 }

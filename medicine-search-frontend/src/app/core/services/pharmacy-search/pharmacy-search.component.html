@@ -14,18 +14,39 @@
     <button (click)="onSearchInput()">Search</button>
     <button (click)="refreshPharmacies()">Reset</button>
     <button (click)="showAvailableOnly()">Available Stock</button>
+
+    <!-- ✅ FILTER BUTTONS MOVED HERE -->
+    <div class="filter-group">
+      <button
+        [class.active]="filterMode === 'ALL'"
+        (click)="setFilterMode('ALL')">
+        All
+      </button>
+
+      <button
+        [class.active]="filterMode === 'AVAILABLE'"
+        (click)="setFilterMode('AVAILABLE')">
+        Available
+      </button>
+
+      <button
+        [class.active]="filterMode === 'OPEN_NOW'"
+        (click)="setFilterMode('OPEN_NOW')">
+        Open Now
+      </button>
+    </div>
   </div>
 
   <!-- =====================================================
-       LOADING PHARMACIES
-  ===================================================== -->
+                        LOADING PHARMACIES
+       ===================================================== -->
   @if (isLoading) {
     <div class="pharmacy-loader">Loading pharmacies...</div>
   }
 
   <!-- =====================================================
-       PHARMACY LIST TABLE
-  ===================================================== -->
+                        PHARMACY LIST TABLE
+       ===================================================== -->
   @if (!isLoading) {
     <div class="results">
       <table class="pharmacy-table">
@@ -38,6 +59,7 @@
             <th>Country</th>
             <th>Contact Number</th>
             <th>Email</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -47,21 +69,50 @@
             @for (item of paginatedPharmacies; track item.id) {
               <tr (click)="selectPharmacy(item)">
                 <td>{{ item.id }}</td>
-                <td>{{ item.pharmacy.pharmacyName }}</td>
-                <td>{{ item.location.pharmacyLocation }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.location }}</td>
                 <td>{{ item.city }}</td>
                 <td>{{ item.country }}</td>
                 <td>{{ item.contactNumber }}</td>
                 <td>{{ item.email }}</td>
+
+                <!-- ✅ NEW Availability Column -->
+                <td
+                  [class.open]="getPharmacyStatus(item.schedule) === 'OPEN'"
+                  [class.closed]="getPharmacyStatus(item.schedule) === 'CLOSED'"
+                >
+                  {{ getPharmacyStatus(item.schedule) }}
+                </td>
+
+                <!-- ✅ Actions Column (fixed position) -->
                 <td>
                   <button (click)="editPharmacy(item); $event.stopPropagation()">Edit</button>
-                  <button (click)="deletePharmacy(item.pharmacy.pharmacyId); $event.stopPropagation()">Delete</button>
+                  <button (click)="deletePharmacy(item.id); $event.stopPropagation()">Delete</button>
+                  <button (click)="toggleSchedule(item); $event.stopPropagation()">Schedule</button>
                 </td>
               </tr>
+
+              <!-- ✅ Optional: Expandable Schedule Row -->
+              @if (item.showSchedule) {
+                <tr class="schedule-row">
+                  <td colspan="9">
+                    <div class="schedule-box">
+                      <h4>Schedule</h4>
+
+                      @for (sch of item.schedule; track sch.day) {
+                        <div>
+                          <strong>{{ sch.day }}</strong>
+                          {{ sch.openTime }} - {{ sch.closeTime }}
+                        </div>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
             }
           } @else {
             <tr>
-              <td colspan="8" class="table-body">
+              <td colspan="9" class="table-body">
                 No pharmacies found.
               </td>
             </tr>
@@ -71,8 +122,8 @@
     </div>
 
     <!-- ====================================================
-       PAGINATION
-    ===================================================== -->
+                              PAGINATION
+         ===================================================== -->
     @if (pharmacies.length > pageSize) {
       <div class="pagination">
 <!--        This is the old method for frontend pagination. -->
@@ -93,21 +144,21 @@
   }
 
   <!-- =====================================================
-       UPDATE PHARMACY TABLE (SAFE NULL HANDLING)
-  ===================================================== -->
-  @if (selectedPharmacy) {
+            UPDATE PHARMACY TABLE (SAFE NULL HANDLING)
+       ===================================================== -->
+  @if (selectedPharmacy && selectedPharmacy.id) {
 
     <div class="form-section">
       <h3>Update Medicine</h3>
 
       <input
         type="text"
-        [(ngModel)]="selectedPharmacy.pharmacy.pharmacyName"
+        [(ngModel)]="selectedPharmacy.name"
       />
 
       <input
         type="text"
-        [(ngModel)]="selectedPharmacy.location.pharmacyLocation"
+        [(ngModel)]="selectedPharmacy.location"
       />
 
       <input
@@ -116,7 +167,7 @@
       />
 
       <input
-        type="number"
+        type="text"
         [(ngModel)]="selectedPharmacy.country"
       />
 
@@ -136,16 +187,16 @@
   }
 
   <!-- =====================================================
-       SELECTED PHARMACY DETAILS (SAFE NULL HANDLING)
-  ===================================================== -->
-  @if (selectedPharmacy) {
+           SELECTED PHARMACY DETAILS (SAFE NULL HANDLING)
+       ===================================================== -->
+  @if (selectedPharmacy && selectedPharmacy.id) {
 
     <div class="details-section">
       <h3>Selected Pharmacy Details</h3>
 
       <p><strong>ID:</strong> {{ selectedPharmacy.id }}</p>
-      <p><strong>Pharmacy:</strong> {{ selectedPharmacy.pharmacy.pharmacyName }}</p>
-      <p><strong>Location:</strong> {{ selectedPharmacy.location.pharmacyLocation }}</p>
+      <p><strong>Pharmacy:</strong> {{ selectedPharmacy.name }}</p>
+      <p><strong>Location:</strong> {{ selectedPharmacy.location }}</p>
       <p><strong>City:</strong> {{ selectedPharmacy.city }}</p>
       <p><strong>Country:</strong> {{ selectedPharmacy.country }} </p>
       <p><strong>Contact Number:</strong> {{ selectedPharmacy.contactNumber }} </p>

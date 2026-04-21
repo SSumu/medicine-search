@@ -38,9 +38,27 @@ public class PharmacyServiceImpl implements PharmacyService {
     // ✅ GET ALL WITH PAGINATION
     @Override
     public PaginatedResponse<PharmacySearchResponseDTO> getAllPharmacies(Pageable pageable) {
-        Page<Pharmacy> pageResult = pharmacyRepository.findAll(pageable);
-        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
-        return PaginatedResponse.from(dtoPage);
+
+        Page<Pharmacy> pharmacyPage = pharmacyRepository.findAllWithSchedule(pageable);
+
+        List<PharmacySearchResponseDTO> dtoList = pharmacyPage
+                .getContent()
+                .stream()
+                .map(pharmacyMapper::toDto)
+                .toList();
+
+//        This is the old method for the previous condition.
+//        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//        return PaginatedResponse.from(dtoPage);
+
+//        This is the new method for the new conditions.
+        return new PaginatedResponse<>(
+                dtoList,
+                pharmacyPage.getNumber(),
+                pharmacyPage.getSize(),
+                pharmacyPage.getTotalElements(),
+                pharmacyPage.getTotalPages()
+        );
     }
 
     // ✅ GET PHARMACY BY ID
@@ -142,7 +160,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 //        Page<PharmacySearchResponseDTO> dtoPage =filteredPage.map(pharmacyMapper::toDto);
 
 //        These are for the new current method.
-        Page<Pharmacy> pageResult = pharmacyRepository.findByAvailableTrue(pageable);
+        Page<Pharmacy> pageResult = pharmacyRepository. findByAvailableTrue(pageable);
 
         Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
 

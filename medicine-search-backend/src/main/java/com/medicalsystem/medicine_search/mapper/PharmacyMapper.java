@@ -25,6 +25,7 @@ public class PharmacyMapper {
                 .contactNumber(pharmacy.getContactNumber())
                 .email(pharmacy.getEmail())
                 .lastUpdated(pharmacy.getLastUpdated())
+                .schedule(pharmacy.getSchedule())
                 .build();
     }
 
@@ -39,8 +40,10 @@ public class PharmacyMapper {
                 .pharmacyLocation(pharmacyRequestDTO.getPharmacyLocation())
                 .city(pharmacyRequestDTO.getCity())
                 .country(pharmacyRequestDTO.getCountry())
+                .contactNumber(pharmacyRequestDTO.getContactNumber())
                 .email(pharmacyRequestDTO.getEmail())
                 .available(pharmacyRequestDTO.getAvailable())
+                .schedule(pharmacyRequestDTO.getSchedule())
                 .lastUpdated(LocalDateTime.now())
                 .build();
     }

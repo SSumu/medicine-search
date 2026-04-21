@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +20,6 @@ public class PharmacyRequestDTO {
     private String contactNumber;
     private String email;
     private Boolean available;
+
+    private List<PharmacyScheduleDTO> schedule;
 }

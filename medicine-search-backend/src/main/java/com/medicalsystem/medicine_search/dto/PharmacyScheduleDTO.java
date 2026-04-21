@@ -1,10 +1,12 @@
 package com.medicalsystem.medicine_search.dto;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,6 +1,6 @@
 <div>
 
-  <form (ngSubmit)="createPharmacy()" #pharmacyForm="ngForm" class="pharmacy-container">
+  <form (ngSubmit)="createPharmacy()" #pharmacyForm="ngForm" (keydown.enter)="$event.preventDefault()" class="pharmacy-container">
     <!-- =====================================================
                                 TITLE
          ===================================================== -->
@@ -32,16 +32,16 @@
     <div class="pharmacy-schedule">
       <h3>Opening Schedule</h3>
 
-      @for (day of weekDays; track day.name) {
+      @for (day of weekDays; track day.day) {
         <div class="day-row">
 
           <label>
             <input
               type="checkbox"
               [(ngModel)]="day.open"
-              name="{{ day.name }}Open"
+              name="{{ day.day }}Open"
             />
-            {{ day.name }}
+            {{ day.day }}
           </label>
 
           @if (day.open) {
@@ -49,7 +49,7 @@
               <input
                 type="time"
                 [(ngModel)]="day.openTime"
-                name="{{ day.name }}OpenTime"
+                name="{{ day.day }}OpenTime"
               />
 
               <span> to </span>
@@ -57,7 +57,7 @@
               <input
                 type="time"
                 [(ngModel)]="day.closeTime"
-                name="{{ day.name }}CloseTime"
+                name="{{ day.day }}CloseTime"
               />
             </div>
           }
@@ -115,7 +115,7 @@
     }
 
     <div class="pharmacy-form-actions">
-      <button class="pharmacy-add-btn" [disabled]="pharmacyForm.invalid" type="submit">Add Pharmacy</button>
+      <button class="pharmacy-add-btn" type="submit">Add Pharmacy</button>
       <button class="pharmacy-clear-btn" type="button" (click)="pharmacyForm.resetForm()">Clear</button>
     </div>
   </form>

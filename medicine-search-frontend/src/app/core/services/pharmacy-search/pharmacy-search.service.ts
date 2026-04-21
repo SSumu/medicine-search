@@ -8,28 +8,22 @@ import { environment } from '../../../../environments/environment';
 ======================= */
 
 // Pharmacy basic details
-export interface PharmacyDTO {
-  pharmacyId: number;
-  pharmacyName: string;
-  pharmacyLocation: string;
-}
-
-// This was required when this page has medicines column in the old model of this page.
-// export interface MedicineDTO {
-//   medicineId: number;
-//   medicineName: string;
+// export interface PharmacyDTO {
+//   pharmacyId: number;
+//   pharmacyName: string;
+//   pharmacyLocation: string;
 // }
 
 // Main response DTO
 export interface PharmacyResponseDTO {
-  id: PharmacyDTO;
-  pharmacy: PharmacyDTO;
-  location: PharmacyDTO;
-  // medicine: MedicineDTO; // This was required when this page has medicines column in the old page of this.
+  id: number;
+  name: string;
+  location: string;
   city: string;
   country: string;
-  contactNumber: number | null;
+  contactNumber: string | null;
   email: string;
+  available: boolean;
   lastUpdated?: string;
 
   schedule?: PharmacySchedule[];
@@ -41,8 +35,9 @@ export interface PharmacyRequestDTO {
   pharmacyLocation: string;
   city: string;
   country: string;
-  contactNumber: number | null;
+  contactNumber: string | null;
   email: string;
+  available: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -53,7 +48,7 @@ export interface PaginatedResponse<T> {
 }
 
 export interface PharmacySchedule {
-  name: string;
+  day: string;
   open: boolean;
   openTime: string;
   closeTime: string;
@@ -73,8 +68,8 @@ export class PharmacySearchService {
   /* =========================
       GET ALL (Non-paginated)
      ========================= */
-  getAllPharmacies(): Observable<PharmacyResponseDTO[]> {
-    return this.http.get<PharmacyResponseDTO[]>(`${this.baseUrl}/get-all`);
+  getAllPharmacies(): Observable<PaginatedResponse<PharmacyResponseDTO>> {
+    return this.http.get<PaginatedResponse<PharmacyResponseDTO>>(`${this.baseUrl}/get-all`);
   }
 
   // This is for the old method of the search method.
@@ -126,22 +121,14 @@ export class PharmacySearchService {
     location?: string,
     city?: string,
     pharmacyName?: string,
-  ): Observable<PharmacyResponseDTO[]> {
+  ): Observable<PaginatedResponse<PharmacyResponseDTO>> {
     let params = new HttpParams();
 
-    if (location) {
-      params = params.set('location', location);
-    }
+    if (location) params = params.set('location', location);
+    if (city) params = params.set('city', city);
+    if (pharmacyName) params = params.set('pharmacyName', pharmacyName);
 
-    if (city) {
-      params = params.set('city', city);
-    }
-
-    if (pharmacyName) {
-      params = params.set('pharmacyName', pharmacyName);
-    }
-
-    return this.http.get<PharmacyResponseDTO[]>(`${this.baseUrl}/search`, { params });
+    return this.http.get<PaginatedResponse<PharmacyResponseDTO>>(`${this.baseUrl}/search`, { params });
   }
 
   /* =======================
@@ -175,9 +162,9 @@ export class PharmacySearchService {
   /* ===========================================
       AVAILABLE DATA 🔹 Get available medicines
      =========================================== */
-  getAvailablePharmacies(): Observable<PharmacyResponseDTO[]> {
-    return this.http.get<PharmacyResponseDTO[]>(`${this.baseUrl}/available`);
-  }
+  // getAvailablePharmacies(): Observable<PharmacyResponseDTO[]> {
+  //   return this.http.get<PharmacyResponseDTO[]>(`${this.baseUrl}/available`);
+  // }
 
   /* =====================================================
       AVAILABLE PAGINATED DATA 🔹 Get available medicines
@@ -204,7 +191,7 @@ export class PharmacySearchService {
   /* =================================
       UPDATE 🔹 Update pharmacy entry
      ================================= */
-  updatePharmacy(id: number, data: PharmacyResponseDTO): Observable<PharmacyResponseDTO> {
+  updatePharmacy(id: number, data: PharmacyRequestDTO): Observable<PharmacyResponseDTO> {
     return this.http.put<PharmacyResponseDTO>(`${this.baseUrl}/${id}`, data);
   }
 
@@ -256,7 +243,7 @@ export class PharmacySearchService {
 
     const today = this.getCurrentDayName();
 
-    const todaySchedule = schedule.find((day) => day.name === today);
+    const todaySchedule = schedule.find((day) => day.day === today);
 
     if (!todaySchedule || !todaySchedule.open) {
       return false;

@@ -1,5 +1,6 @@
 package com.medicalsystem.medicine_search.entity;
 
+import com.medicalsystem.medicine_search.dto.PharmacyScheduleDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "pharmacies")
@@ -39,7 +41,7 @@ public class Pharmacy {
     private String email;
 
     @Column(nullable = false)
-    private Boolean available;
+    private Boolean available = true;
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
@@ -53,4 +55,9 @@ public class Pharmacy {
     protected void onUpdate() {
         this.lastUpdated = LocalDateTime.now();
     }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "pharmacy_schedule", joinColumns = @JoinColumn(name = "pharmacy_id"))
+    private List<PharmacyScheduleDTO> schedule;
+
 }
