@@ -4,16 +4,11 @@
 
   <!-- 🔍 SEARCH SECTION -->
   <div class="search-box">
-<!--    <input type="text" [(ngModel)]="searchLocation" placeholder="Search Location" />-->
     <input [(ngModel)]="searchLocation" (ngModelChange)="onSearchInput()" placeholder="Search Location" />
-<!--    <input type="text" [(ngModel)]="searchCity" placeholder="Search City" />-->
     <input [(ngModel)]="searchCity" (ngModelChange)="onSearchInput()" placeholder="Search City" />
-<!--    <input type="text" [(ngModel)]="searchPharmacy" placeholder="Search Pharmacy" />-->
     <input [(ngModel)]="searchPharmacy" (ngModelChange)="onSearchInput()" placeholder="Search Pharmacy" />
 
-    <button (click)="onSearchInput()">Search</button>
-    <button (click)="refreshPharmacies()">Reset</button>
-    <button (click)="showAvailableOnly()">Available Stock</button>
+    <button (click)="resetFilter()">Reset</button>
 
     <!-- ✅ FILTER BUTTONS MOVED HERE -->
     <div class="filter-group">
@@ -37,17 +32,13 @@
     </div>
   </div>
 
-  <!-- =====================================================
-                        LOADING PHARMACIES
-       ===================================================== -->
+  <!-- LOADING PHARMACIES -->
   @if (isLoading) {
     <div class="pharmacy-loader">Loading pharmacies...</div>
   }
 
-  <!-- =====================================================
-                        PHARMACY LIST TABLE
-       ===================================================== -->
-  @if (!isLoading) {
+  @else if (paginatedPharmacies.length > 0){ <!-- PHARMACY LIST TABLE -->
+
     <div class="results">
       <table class="pharmacy-table">
         <thead>
@@ -65,7 +56,6 @@
         </thead>
 
         <tbody>
-          @if (pharmacies.length > 0) {
             @for (item of paginatedPharmacies; track item.id) {
               <tr (click)="selectPharmacy(item)">
                 <td>{{ item.id }}</td>
@@ -78,10 +68,13 @@
 
                 <!-- ✅ NEW Availability Column -->
                 <td
-                  [class.open]="getPharmacyStatus(item.schedule) === 'OPEN'"
-                  [class.closed]="getPharmacyStatus(item.schedule) === 'CLOSED'"
+                  [class.open]="item.status === 'OPEN'"
+                  [class.closed]="item.status === 'CLOSED'"
                 >
-                  {{ getPharmacyStatus(item.schedule) }}
+                  {{ item.status }}
+                  @if (item.closingSoon) {
+                    <small>(Closing Soon)</small>
+                  }
                 </td>
 
                 <!-- ✅ Actions Column (fixed position) -->
@@ -110,97 +103,54 @@
                 </tr>
               }
             }
-          } @else {
-            <tr>
-              <td colspan="9" class="table-body">
-                No pharmacies found.
-              </td>
-            </tr>
-          }
         </tbody>
       </table>
     </div>
-
-    <!-- ====================================================
-                              PAGINATION
-         ===================================================== -->
-    @if (pharmacies.length > pageSize) {
-      <div class="pagination">
-<!--        This is the old method for frontend pagination. -->
-<!--        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Previous</button>-->
-
-<!--        This is the new method for Backend pagination. -->
-        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-
-        <span>Page {{ currentPage }} / {{ totalPages }}</span>
-
-<!--        This is the old method for frontend pagination. -->
-<!--        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>-->
-
-<!--        This is the new method for Backend pagination. -->
-        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-      </div>
-    }
+  }
+  @else {
+    <tr>
+      <td colspan="9" class="table-body">
+        No pharmacies found.
+      </td>
+    </tr>
   }
 
-  <!-- =====================================================
-            UPDATE PHARMACY TABLE (SAFE NULL HANDLING)
-       ===================================================== -->
+  <!-- PAGINATION -->
+  @if (totalPages > 1) {
+    <div class="pagination">
+      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} / {{ totalPages }}</span>
+      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  }
+
+  <!-- UPDATE PHARMACY TABLE (SAFE NULL HANDLING) -->
   @if (selectedPharmacy && selectedPharmacy.id) {
 
     <div class="form-section">
       <h3>Update Medicine</h3>
 
-      <input
-        type="text"
-        [(ngModel)]="selectedPharmacy.name"
-      />
-
-      <input
-        type="text"
-        [(ngModel)]="selectedPharmacy.location"
-      />
-
-      <input
-        type="text"
-        [(ngModel)]="selectedPharmacy.city"
-      />
-
-      <input
-        type="text"
-        [(ngModel)]="selectedPharmacy.country"
-      />
-
-      <input
-        type="number"
-        [(ngModel)]="selectedPharmacy.contactNumber"
-      />
-
-      <input
-        type="text"
-        [(ngModel)]="selectedPharmacy.email"
-      />
+      <input type="text" [(ngModel)]="selectedPharmacy.name" placeholder="Pharmacy Name" />
+      <input type="text" [(ngModel)]="selectedPharmacy.location" placeholder="Location"/>
+      <input type="text" [(ngModel)]="selectedPharmacy.city" placeholder="City"/>
+      <input type="text" [(ngModel)]="selectedPharmacy.country" placeholder="Country"/>
+      <input type="number" [(ngModel)]="selectedPharmacy.contactNumber" placeholder="Contact Number"/>
+      <input type="text" [(ngModel)]="selectedPharmacy.email" placeholder="Email"/>
 
       <button (click)="updatePharmacy()">Update</button>
       <button (click)="selectedPharmacy = null">Cancel</button>
     </div>
-  }
-
-  <!-- =====================================================
-           SELECTED PHARMACY DETAILS (SAFE NULL HANDLING)
-       ===================================================== -->
-  @if (selectedPharmacy && selectedPharmacy.id) {
 
     <div class="details-section">
       <h3>Selected Pharmacy Details</h3>
 
-      <p><strong>ID:</strong> {{ selectedPharmacy.id }}</p>
-      <p><strong>Pharmacy:</strong> {{ selectedPharmacy.name }}</p>
-      <p><strong>Location:</strong> {{ selectedPharmacy.location }}</p>
-      <p><strong>City:</strong> {{ selectedPharmacy.city }}</p>
-      <p><strong>Country:</strong> {{ selectedPharmacy.country }} </p>
-      <p><strong>Contact Number:</strong> {{ selectedPharmacy.contactNumber }} </p>
-      <p><strong>Email:</strong>{{ selectedPharmacy.email }}</p>
+      <p><strong>ID:</strong> {{ selectedPharmacy!.id }}</p>
+      <p><strong>Pharmacy:</strong> {{ selectedPharmacy!.name }}</p>
+      <p><strong>Location:</strong> {{ selectedPharmacy!.location }}</p>
+      <p><strong>City:</strong> {{ selectedPharmacy!.city }}</p>
+      <p><strong>Country:</strong> {{ selectedPharmacy!.country }} </p>
+      <p><strong>Contact Number:</strong> {{ selectedPharmacy!.contactNumber }} </p>
+      <p><strong>Email:</strong>{{ selectedPharmacy!.email }}</p>
     </div>
   }
 
