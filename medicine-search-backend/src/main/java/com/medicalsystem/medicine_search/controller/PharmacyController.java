@@ -5,7 +5,6 @@ import com.medicalsystem.medicine_search.dto.PharmacyRequestDTO;
 import com.medicalsystem.medicine_search.dto.PharmacySearchResponseDTO;
 import com.medicalsystem.medicine_search.service.PharmacyService;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
