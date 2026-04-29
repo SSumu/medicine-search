@@ -33,7 +33,7 @@ export interface PaginatedResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
-  currentPage: number;
+  page: number;
 }
 
 export interface PharmacySchedule {
@@ -72,15 +72,26 @@ export class PharmacySearchService {
     size: number = 5
   ): Observable<PaginatedResponse<PharmacyResponseDTO>> {
 
+    let params: any = {
+      page: page,
+      size: size,
+    };
+
+    if (location?.trim()) params.location = location.trim();
+    if (city?.trim()) params.city = city.trim();
+    if (pharmacyName?.trim()) params.pharmacyName = pharmacyName.trim();
+
     return this.http.get<PaginatedResponse<PharmacyResponseDTO>>(`${this.baseUrl}/search`,
       {
-        params: {
-          location: location || '',
-          city: city || '',
-          pharmacyName: pharmacyName || '',
-          page: page.toString(),
-          size: size.toString(),
-        },
+        // params: {
+        //   location: location || '',
+        //   city: city || '',
+        //   pharmacyName: pharmacyName || '',
+        //   page: page.toString(),
+        //   size: size.toString(),
+        // },
+
+        params
       }
     );
   }

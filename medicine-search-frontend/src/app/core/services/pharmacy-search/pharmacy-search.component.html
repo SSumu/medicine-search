@@ -37,7 +37,7 @@
     <div class="pharmacy-loader">Loading pharmacies...</div>
   }
 
-  @else if (paginatedPharmacies.length > 0){ <!-- PHARMACY LIST TABLE -->
+  @else { <!-- PHARMACY LIST TABLE -->
 
     <div class="results">
       <table class="pharmacy-table">
@@ -56,6 +56,9 @@
         </thead>
 
         <tbody>
+          <!-- ✅ IF DATA EXISTS -->
+          <!-- PHARMACY LIST TABLE -->
+          @if (!isLoading && paginatedPharmacies.length > 0) {
             @for (item of paginatedPharmacies; track item.id) {
               <tr>
                 <td>{{ item.id }}</td>
@@ -103,24 +106,25 @@
                 </tr>
               }
             }
+          }
+          @else { <!-- ❌ NO DATA -->
+            <tr>
+              <td colspan="9" class="table-body">
+                No pharmacies found.
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
-  }
-  @else {
-    <tr>
-      <td colspan="9" class="table-body">
-        No pharmacies found.
-      </td>
-    </tr>
   }
 
   <!-- PAGINATION -->
   @if (totalPages > 1) {
     <div class="pagination">
-      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} / {{ totalPages }}</span>
-      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
+      <span> Page {{ currentPage + 1 }} / {{ totalPages }} </span>
+      <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Next</button>
     </div>
   }
 

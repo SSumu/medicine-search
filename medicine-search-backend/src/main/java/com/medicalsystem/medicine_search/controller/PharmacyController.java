@@ -20,48 +20,13 @@ public class PharmacyController {
 
     private final PharmacyService pharmacyService;
 
-//    Previous type of this method is List.
     // ✅ Get all pharmacies
     @GetMapping("/get-all")
     public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> getAllPharmacies(Pageable pageable) {
-//        This matches for the old frontend.
-//        List<PharmacySearchResponseDTO> pharmacies = pharmacyService.getAllPharmacies();
-//        return ResponseEntity.ok(pharmacies);
-
 //        This is for the new frontend.
         return ResponseEntity.ok(pharmacyService.getAllPharmacies(pageable));
     }
 
-//    This is for the old frontend.
-
-//    // ✅ Search pharmacies by name
-//    @GetMapping("/search/by-name")
-//    public ResponseEntity<List<PharmacySearchResponseDTO>> searchByName(@RequestParam String name) {
-//        return ResponseEntity.ok(pharmacyService.searchPharmaciesByName(name));
-//    }
-//
-//    // ✅ Search pharmacies by city
-//    @GetMapping("/search/by-city")
-//    public ResponseEntity<List<PharmacySearchResponseDTO>> searchByCity(@RequestParam String city) {
-//        return ResponseEntity.ok(pharmacyService.searchPharmaciesByCity(city));
-//    }
-//
-//    // ✅ Search pharmacies by country
-//    @GetMapping("/search/by-country")
-//    public ResponseEntity<List<PharmacySearchResponseDTO>> searchByCountry(@RequestParam String country) {
-//        return ResponseEntity.ok(pharmacyService.searchPharmaciesByCountry(country));
-//    }
-//
-//    // ✅ Search pharmacies by name AND city
-//    @GetMapping("/search/by-name-city")
-//    public ResponseEntity<List<PharmacySearchResponseDTO>> searchByNameAndCity(
-//            @RequestParam String name,
-//            @RequestParam String city) {
-//        return ResponseEntity.ok(pharmacyService.searchPharmaciesByNameAndCity(name, city));
-//    }
-
-//    This is for the new frontend.
-//    Previously the type of this method is Page.
     // ✅ PAGINATION (matches Angular getPharmaciesPaginated)
     @GetMapping
     public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> getPaginatedPharmacies(
@@ -85,7 +50,6 @@ public class PharmacyController {
         return ResponseEntity.ok(pharmacy);
     }
 
-//    The Previous type of this method is List.
     // ✅ MAIN SEARCH (IMPORTANT - matches Angular searchPharmacies)
     @GetMapping("/search")
     public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> searchPharmacies(

@@ -29,20 +29,24 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         Page<Pharmacy> pharmacyPage = pharmacyRepository.findAllWithSchedule(pageable);
 
-        List<PharmacySearchResponseDTO> dtoList = pharmacyPage
-                .getContent()
-                .stream()
-                .map(pharmacyMapper::toDto)
-                .toList();
+        //        This is the old method for the old conditions.
+//        List<PharmacySearchResponseDTO> dtoList = pharmacyPage
+//                .getContent()
+//                .stream()
+//                .map(pharmacyMapper::toDto)
+//                .toList();
 
-//        This is the new method for the new conditions.
-        return new PaginatedResponse<>(
-                dtoList,
-                pharmacyPage.getNumber(),
-                pharmacyPage.getSize(),
-                pharmacyPage.getTotalElements(),
-                pharmacyPage.getTotalPages()
-        );
+//        This is the old method for the old conditions.
+//        return new PaginatedResponse<>(
+//                dtoList,
+//                pharmacyPage.getNumber(),
+////                pharmacyPage.getSize(),
+//                pharmacyPage.getTotalElements(),
+//                pharmacyPage.getTotalPages()
+//        );
+
+        //        This is the new method for the new conditions ( Frontend conditions ).
+        return PaginatedResponse.from(pharmacyPage.map(pharmacyMapper::toDto));
     }
 
     // ✅ GET PHARMACY BY ID
