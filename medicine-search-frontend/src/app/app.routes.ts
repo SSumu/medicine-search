@@ -4,13 +4,15 @@ import { MedicineComponent } from './core/services/medicine/medicine.component';
 import { MedicineSearchComponent } from './components/medicine-search/medicine-search.component';
 import { PharmacyComponent } from './components/pharmacy/pharmacy.component';
 import { PharmacySearchComponent } from './core/services/pharmacy-search/pharmacy-search.component';
+import { PharmacySearchUserComponent } from './components/pharmacy-search-user/pharmacy-search-user.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomePage },
   { path: 'medicine-search', component: MedicineSearchComponent },
   { path: 'details', component: DetailsPage },
   { path: 'medicine', component: MedicineComponent },
-  { path: 'pharmacy-search', component: PharmacySearchComponent },
+  { path: 'pharmacy-search', component: PharmacySearchUserComponent },
+  { path: 'pharmacy-search-admin', component: PharmacySearchComponent },
   { path: 'pharmacy', component: PharmacyComponent},
 
   // Optional: redirect unknown routes

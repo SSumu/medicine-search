@@ -1,6 +1,6 @@
 package com.medicalsystem.medicine_search.service.impl;
 
-import com.medicalsystem.medicine_search.dto.PaginatedResponse;
+import com.medicalsystem.medicine_search.dto.PaginatedResponseDTO;
 import com.medicalsystem.medicine_search.dto.PharmacyRequestDTO;
 import com.medicalsystem.medicine_search.dto.PharmacySearchResponseDTO;
 import com.medicalsystem.medicine_search.entity.Pharmacy;
@@ -25,7 +25,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     // ✅ GET ALL WITH PAGINATION
     @Override
-    public PaginatedResponse<PharmacySearchResponseDTO> getAllPharmacies(Pageable pageable) {
+    public PaginatedResponseDTO<PharmacySearchResponseDTO> getAllPharmacies(Pageable pageable) {
 
         Page<Pharmacy> pharmacyPage = pharmacyRepository.findAllWithSchedule(pageable);
 
@@ -46,7 +46,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 //        );
 
         //        This is the new method for the new conditions ( Frontend conditions ).
-        return PaginatedResponse.from(pharmacyPage.map(pharmacyMapper::toDto));
+        return PaginatedResponseDTO.from(pharmacyPage.map(pharmacyMapper::toDto));
     }
 
     // ✅ GET PHARMACY BY ID
@@ -59,14 +59,14 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     // ✅ PAGINATION USING PAGE & SIZE (INTERFACE METHOD)
     @Override
-    public PaginatedResponse<PharmacySearchResponseDTO> getPaginatedPharmacies(int page, int size) {
+    public PaginatedResponseDTO<PharmacySearchResponseDTO> getPaginatedPharmacies(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Pharmacy> pageResult = pharmacyRepository.findAll(pageable);
 
         Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
 
-        return PaginatedResponse.from(dtoPage);
+        return PaginatedResponseDTO.from(dtoPage);
     }
 
     // ✅ GET AVAILABLE PHARMACIES (LIST VERSION)
@@ -81,20 +81,20 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     // ✅ GET AVAILABLE PHARMACIES (PAGINATED VERSION)
     @Override
-    public PaginatedResponse<PharmacySearchResponseDTO> getAvailablePharmaciesPaginated(Pageable pageable) {
+    public PaginatedResponseDTO<PharmacySearchResponseDTO> getAvailablePharmaciesPaginated(Pageable pageable) {
 
 //        These are for the new current method.
         Page<Pharmacy> pageResult = pharmacyRepository. findByAvailableTrue(pageable);
 
         Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
 
-        return PaginatedResponse.from(dtoPage);
+        return PaginatedResponseDTO.from(dtoPage);
     }
 
     // ✅ SEARCH (DYNAMIC)
     // ✅ SEARCH WITH PAGINATION
     @Override
-    public PaginatedResponse<PharmacySearchResponseDTO> searchPharmacies(
+    public PaginatedResponseDTO<PharmacySearchResponseDTO> searchPharmacies(
             String location,
             String city,
             String pharmacyName,
@@ -119,7 +119,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
 
-        return PaginatedResponse.from(dtoPage);
+        return PaginatedResponseDTO.from(dtoPage);
     }
 
     // ✅ CREATE

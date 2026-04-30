@@ -1,6 +1,6 @@
 package com.medicalsystem.medicine_search.controller;
 
-import com.medicalsystem.medicine_search.dto.PaginatedResponse;
+import com.medicalsystem.medicine_search.dto.PaginatedResponseDTO;
 import com.medicalsystem.medicine_search.dto.PharmacyRequestDTO;
 import com.medicalsystem.medicine_search.dto.PharmacySearchResponseDTO;
 import com.medicalsystem.medicine_search.service.PharmacyService;
@@ -22,14 +22,14 @@ public class PharmacyController {
 
     // ✅ Get all pharmacies
     @GetMapping("/get-all")
-    public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> getAllPharmacies(Pageable pageable) {
+    public ResponseEntity<PaginatedResponseDTO<PharmacySearchResponseDTO>> getAllPharmacies(Pageable pageable) {
 //        This is for the new frontend.
         return ResponseEntity.ok(pharmacyService.getAllPharmacies(pageable));
     }
 
     // ✅ PAGINATION (matches Angular getPharmaciesPaginated)
     @GetMapping
-    public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> getPaginatedPharmacies(
+    public ResponseEntity<PaginatedResponseDTO<PharmacySearchResponseDTO>> getPaginatedPharmacies(
             @RequestParam int page,
             @RequestParam int size
     ) {
@@ -52,7 +52,7 @@ public class PharmacyController {
 
     // ✅ MAIN SEARCH (IMPORTANT - matches Angular searchPharmacies)
     @GetMapping("/search")
-    public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> searchPharmacies(
+    public ResponseEntity<PaginatedResponseDTO<PharmacySearchResponseDTO>> searchPharmacies(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String pharmacyName,
@@ -70,9 +70,9 @@ public class PharmacyController {
 
     // ✅ AVAILABLE PHARMACIES (PAGINATED VERSION)
     @GetMapping("/paginated/available")
-    public ResponseEntity<PaginatedResponse<PharmacySearchResponseDTO>> getAvailablePharmaciesPaginated(Pageable pageable) {
+    public ResponseEntity<PaginatedResponseDTO<PharmacySearchResponseDTO>> getAvailablePharmaciesPaginated(Pageable pageable) {
 
-        PaginatedResponse<PharmacySearchResponseDTO> response = pharmacyService.getAvailablePharmaciesPaginated(pageable);
+        PaginatedResponseDTO<PharmacySearchResponseDTO> response = pharmacyService.getAvailablePharmaciesPaginated(pageable);
 
         return ResponseEntity.ok(response);
     }

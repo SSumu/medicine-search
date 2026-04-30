@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
         <a routerLink="/details">Details</a> |
         <a routerLink="/medicine">Medicine</a> |
         <a routerLink="/pharmacy-search">Pharmacy Search</a> |
+        <a routerLink="/pharmacy-search-admin">Pharmacy Search Admin</a> |
         <a routerLink="/pharmacy">Pharmacy</a>
       </nav>
     </header>
