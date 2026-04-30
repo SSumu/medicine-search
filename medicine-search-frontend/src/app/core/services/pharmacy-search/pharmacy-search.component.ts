@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import {
   catchError,
   debounceTime,
-  // distinctUntilChanged,
+  distinctUntilChanged,
   finalize,
   interval,
   of,
@@ -18,7 +18,6 @@ import {
   Subscription,
   switchMap,
 } from 'rxjs';
-import { response } from 'express';
 
 type PharmacyUI = PharmacyResponseDTO & {
   showSchedule?: boolean;
@@ -51,6 +50,8 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
   filterMode: 'ALL' | 'AVAILABLE' | 'OPEN_NOW' = 'ALL';
 
+  editingSchedulePharmacy: PharmacyUI | null = null;
+
   private searchSubject = new Subject<void>();
   private searchSubscription!: Subscription;
   // private refreshSubscription!: Subscription;
@@ -63,55 +64,84 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   }
 
   setupSearch(): void {
-    this.searchSubscription = this.searchSubject.pipe(
-      debounceTime(300),
-      // distinctUntilChanged(),
+    this.searchSubscription = this.searchSubject
+      .pipe(
+        debounceTime(300),
 
-      switchMap(() => {
-        this.isLoading = true;
+        // ✅ Build request key
+        switchMap(() => {
+          const requestKey = JSON.stringify({
+            location: this.searchLocation,
+            city: this.searchCity,
+            pharmacy: this.searchPharmacy,
+            page: this.currentPage,
+            size: this.pageSize,
+          });
 
-        return this.pharmacyService.searchPharmacies(
-          // this.searchLocation.trim(), // This is for the old method.
-          // this.searchCity.trim(), // This is for the old method.
-          // this.searchPharmacy.trim(), // This is for the old method.
-          this.searchLocation,
-          this.searchCity,
-          this.searchPharmacy,
-          this.currentPage, // backend is 0-based
-          this.pageSize,
-        )
-        .pipe(
-          catchError(() =>
-            of/*<PaginatedResponse<PharmacyResponseDTO>>*/({
-              content: [],
-              totalElements: 0,
-              totalPages: 0,
-              page: 0,
-            })
-          ),
-          finalize(() => (this.isLoading = false) /* ✅ALWAYS STOP LOADING */)
-        );
-      })
-    )
-    .subscribe((response: any) => {
-      console.log('Backend Page:', response.page);
+          return of(requestKey);
+        }),
 
-      // ✅ SAFE MAPPING
-      this.pharmacies = (response.content || []).map((p: any) => ({
-        ...p,
-        showSchedule: false,
-        status: "CLOSED",
-        closingSoon: false
-      }));
-      // this.filteredPharmacies = [...this.pharmacies];
+        // ✅ Prevent duplicate requests
+        distinctUntilChanged(),
 
-      this.totalElements = response.totalElements || 0;
-      this.totalPages = response.totalPages || 0;
+        // ✅ Call API only if changed
+        switchMap(() => {
+          let loaderTimer: any;
 
-      console.log('UI Page (after update):', this.currentPage);
+          // ⏳ show loader ONLY if slow
+          loaderTimer = setTimeout(() => {
+            this.isLoading = true;
+          }, 300); // show only if request takes > 300ms
 
-      this.applyFilter(); // ✅ APPLY AFTER SAFE MAP
-    });
+          return this.pharmacyService
+            .searchPharmacies(
+              // this.searchLocation.trim(), // This is for the old method.
+              // this.searchCity.trim(), // This is for the old method.
+              // this.searchPharmacy.trim(), // This is for the old method.
+              this.searchLocation,
+              this.searchCity,
+              this.searchPharmacy,
+              this.currentPage, // backend is 0-based
+              this.pageSize,
+            )
+            .pipe(
+              catchError(() =>
+                of({
+                  content: [],
+                  totalElements: 0,
+                  totalPages: 0,
+                  page: 0,
+                }),
+              ),
+              finalize(() => {
+                clearTimeout(loaderTimer); // 🧹 stop timer
+                this.isLoading = false; // ✅ALWAYS STOP LOADING | ✅ hide loader
+              }),
+            );
+        }),
+      )
+      .subscribe((response: any) => {
+        console.log('Backend Page:', response.page);
+
+        // ✅ Sync page with backend
+        this.currentPage = response.page ?? this.currentPage;
+
+        // ✅ SAFE MAPPING
+        this.pharmacies = (response.content || []).map((p: any) => ({
+          ...p,
+          showSchedule: false,
+          status: 'CLOSED',
+          closingSoon: false,
+        }));
+        // this.filteredPharmacies = [...this.pharmacies];
+
+        this.totalElements = response.totalElements || 0;
+        this.totalPages = response.totalPages || 0;
+
+        console.log('UI Page (after update):', this.currentPage);
+
+        this.applyFilter(); // ✅ APPLY AFTER SAFE MAP
+      });
 
     // ✅ ONLY ONE TRIGGER
     // this.triggerSearch();
@@ -154,7 +184,9 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
   // SEARCH
   onSearchInput(): void {
-    this.currentPage = 0; // ✅ reset to first page when searching
+    if (this.currentPage !== 0) {
+      this.currentPage = 0; // ✅ reset to first page when searching
+    }
     this.triggerSearch();
     // this.searchSubject.next();
   }
@@ -197,9 +229,7 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
   // FILTER LOGIC
   applyFilter(): void {
-
     let temp: PharmacyUI[] = this.pharmacies.map((p) => {
-
       const isOpen = this.isPharmacyOpen(p.schedule);
 
       // const status: 'OPEN' | 'CLOSED' = isOpen ? 'OPEN' : 'CLOSED';
@@ -296,9 +326,10 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   //   ];
   // }
 
-  // STATUS LOGIC
+  // ⏰ STATUS LOGIC
   isPharmacyOpen(schedule?: PharmacySchedule[]): boolean {
-    if (!schedule || schedule.length === 0) return false;
+    // if (!schedule || schedule.length === 0) return false;
+    if (!schedule?.length) return false;
 
     const now = new Date();
     const today = now.toLocaleDateString('en-US', { weekday: 'long' });
@@ -338,7 +369,7 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   //   return Math.ceil(this.totalElements / this.pageSize);
   // }
 
-  // PAGINATION
+  // 📄 PAGINATION
   changePage(page: number): void {
     if (page < 0 || page >= this.totalPages) return;
 
@@ -368,13 +399,32 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
     return this.filteredPharmacies;
   }
 
-  // UI ACTIONS
+  // 🎯🧩 UI ACTIONS
   toggleSchedule(pharmacy: PharmacyUI): void {
     pharmacy.showSchedule = !pharmacy.showSchedule;
   }
 
   editPharmacy(pharmacy: PharmacyUI): void {
     this.selectedPharmacy = { ...pharmacy };
+  }
+
+  editSchedule(pharmacy: PharmacyUI): void {
+    this.editingSchedulePharmacy = {
+      ...pharmacy,
+      schedule: pharmacy.schedule ? [...pharmacy.schedule] : []
+    };
+  }
+
+  updateSchedule(): void {
+    if (!this.editingSchedulePharmacy) return;
+
+    this.pharmacyService.updateSchedule(
+      this.editingSchedulePharmacy.id,
+      this.editingSchedulePharmacy.schedule || []
+    ).subscribe(() => {
+      this.editingSchedulePharmacy = null;
+      this.triggerSearch();
+    });
   }
 
   updatePharmacy(): void {

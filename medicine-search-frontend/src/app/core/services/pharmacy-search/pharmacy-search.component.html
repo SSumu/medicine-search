@@ -4,9 +4,9 @@
 
   <!-- 🔍 SEARCH SECTION -->
   <div class="search-box">
-    <input [(ngModel)]="searchLocation" (ngModelChange)="onSearchInput()" placeholder="Search Location" />
-    <input [(ngModel)]="searchCity" (ngModelChange)="onSearchInput()" placeholder="Search City" />
-    <input [(ngModel)]="searchPharmacy" (ngModelChange)="onSearchInput()" placeholder="Search Pharmacy" />
+    <input [(ngModel)]="searchLocation" (input)="onSearchInput()" placeholder="Search Location" />
+    <input [(ngModel)]="searchCity" (input)="onSearchInput()" placeholder="Search City" />
+    <input [(ngModel)]="searchPharmacy" (input)="onSearchInput()" placeholder="Search Pharmacy" />
 
     <button (click)="resetFilter()">Reset</button>
 
@@ -85,6 +85,7 @@
                   <button (click)="editPharmacy(item); $event.stopPropagation()">Edit</button>
                   <button (click)="deletePharmacy(item.id); $event.stopPropagation()">Delete</button>
                   <button (click)="toggleSchedule(item); $event.stopPropagation()">Schedule</button>
+                  <button (click)="editSchedule(item); $event.stopPropagation()">Change Schedule</button>
                 </td>
               </tr>
 
@@ -97,7 +98,7 @@
 
                       @for (sch of item.schedule; track sch.day) {
                         <div>
-                          <strong>{{ sch.day }}</strong>
+                          <strong>{{ sch.day }} :</strong>
                           {{ sch.openTime }} - {{ sch.closeTime }}
                         </div>
                       }
@@ -155,6 +156,29 @@
       <p><strong>Country:</strong> {{ selectedPharmacy!.country }} </p>
       <p><strong>Contact Number:</strong> {{ selectedPharmacy!.contactNumber }} </p>
       <p><strong>Email:</strong> {{ selectedPharmacy!.email }} </p>
+    </div>
+  }
+
+  <!-- ✅ SCHEDULE EDIT FORM -->
+  @if (editingSchedulePharmacy) {
+    <div class="form-section">
+      <h3>Edit Schedule</h3>
+
+      @for (sch of editingSchedulePharmacy.schedule; track sch.day) {
+        <div class="schedule-edit-row">
+          <strong>{{ sch.day }}: </strong>
+
+          <input type="time" [(ngModel)]="sch.openTime">
+          <input type="time" [(ngModel)]="sch.closeTime">
+
+          <label>
+            <input type="checkbox" [(ngModel)]="sch.open"> Open
+          </label>
+        </div>
+      }
+
+      <button (click)="updateSchedule()">Save </button>
+      <button (click)="editingSchedulePharmacy = null"> Cancel</button>
     </div>
   }
 

@@ -211,17 +211,21 @@ td:nth-child(6) {
 /* Empty State */
 .empty-state {
   text-align: center;
+  align-items: center;
   padding: 20px;
   color: #888;
   font-style: italic;
 }
 
 .pagination {
+  display: flex;
+  justify-content: center;
   margin-top: 15px;
   text-align: center;
 }
 
 .pagination button {
+  cursor: pointer;
   margin: 0 5px;
   padding: 5px 12px;
 }

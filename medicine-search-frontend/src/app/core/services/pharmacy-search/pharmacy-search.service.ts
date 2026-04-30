@@ -69,9 +69,8 @@ export class PharmacySearchService {
     city?: string,
     pharmacyName?: string,
     page: number = 0,
-    size: number = 5
+    size: number = 5,
   ): Observable<PaginatedResponse<PharmacyResponseDTO>> {
-
     let params: any = {
       page: page,
       size: size,
@@ -81,19 +80,17 @@ export class PharmacySearchService {
     if (city?.trim()) params.city = city.trim();
     if (pharmacyName?.trim()) params.pharmacyName = pharmacyName.trim();
 
-    return this.http.get<PaginatedResponse<PharmacyResponseDTO>>(`${this.baseUrl}/search`,
-      {
-        // params: {
-        //   location: location || '',
-        //   city: city || '',
-        //   pharmacyName: pharmacyName || '',
-        //   page: page.toString(),
-        //   size: size.toString(),
-        // },
+    return this.http.get<PaginatedResponse<PharmacyResponseDTO>>(`${this.baseUrl}/search`, {
+      // params: {
+      //   location: location || '',
+      //   city: city || '',
+      //   pharmacyName: pharmacyName || '',
+      //   page: page.toString(),
+      //   size: size.toString(),
+      // },
 
-        params
-      }
-    );
+      params,
+    });
   }
 
   /* =====================================
@@ -108,6 +105,13 @@ export class PharmacySearchService {
      ================================= */
   updatePharmacy(id: number, data: PharmacyRequestDTO): Observable<PharmacyResponseDTO> {
     return this.http.put<PharmacyResponseDTO>(`${this.baseUrl}/${id}`, data);
+  }
+
+  /* =================================
+      UPDATE 🔹 Update schedule
+     ================================= */
+  updateSchedule(id: number, schedule: PharmacySchedule[]) {
+    return this.http.put(`${this.baseUrl}/pharmacies/${id}/schedule`, schedule);
   }
 
   /* =================================
