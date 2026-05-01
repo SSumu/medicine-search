@@ -3,7 +3,7 @@
   <h2>Pharmacy Search System</h2>
 
   <!-- 🔍 SEARCH SECTION -->
-  <div class="search-box">
+  <div class="user-search-box">
     <input [(ngModel)]="searchLocation" (input)="onSearchInput()" placeholder="Search Location" />
     <input [(ngModel)]="searchCity" (input)="onSearchInput()" placeholder="Search City" />
     <input [(ngModel)]="searchPharmacy" (input)="onSearchInput()" placeholder="Search Pharmacy" />
@@ -11,7 +11,7 @@
     <button (click)="resetFilter()">Reset</button>
 
     <!-- ✅ FILTER BUTTONS MOVED HERE -->
-    <div class="filter-group">
+    <div class="user-filter-group">
       <button
         [class.active]="filterMode === 'ALL'"
         (click)="setFilterMode('ALL')">
@@ -34,13 +34,13 @@
 
   <!-- LOADING PHARMACIES -->
   @if (isLoading) {
-    <div class="pharmacy-loader">Loading pharmacies...</div>
+    <div class="user-pharmacy-loader">Loading pharmacies...</div>
   }
 
   @else { <!-- PHARMACY LIST TABLE -->
 
     <div class="results">
-      <table class="pharmacy-table">
+      <table class="user-pharmacy-table">
         <thead>
         <tr>
           <th>ID</th>
@@ -105,7 +105,7 @@
           }
           @else { <!-- ❌ NO DATA -->
             <tr>
-              <td colspan="9" class="table-body">
+              <td colspan="9" class="user-table-body">
                 No pharmacies found.
               </td>
             </tr>
