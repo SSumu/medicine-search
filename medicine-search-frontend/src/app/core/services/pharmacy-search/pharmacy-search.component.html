@@ -199,10 +199,28 @@
           {{ mapFullScreen ? '🗗 Restore' : '🗖 Fullscreen' }}
         </button>
 
+        <button (click)="goToUserLocation()" [disabled]="!userLocation">
+          📍 My Location
+        </button>
+
+        <!-- OPTIONAL DEBUG BUTTONS -->
+        <button (click)="getUserLocation()">
+          📡 Get Current Location
+        </button>
+
+        <button (click)="watchUserLocation()">
+          ▶ Track
+        </button>
+
+        <button (click)="stopTracking()">
+          ⏹ Stop
+        </button>
+
         <button (click)="closeMap()">✖ Close</button>
       </div>
     </div>
 
+    <!-- MAP -->
     <div class="map-container" [class.fullscreen]="mapFullScreen">
 
       <!-- GOOGLE MAP -->
@@ -212,7 +230,36 @@
         [center]="mapCenter"
         [zoom]="mapZoom">
 
-        <map-marker [position]="mapCenter"></map-marker>
+        <!-- PHARMACY MARKER -->
+        <map-marker
+          [position]="mapCenter"
+          [label]="'P'">
+        </map-marker>
+
+        <!-- USER BLUE DOT -->
+        @if (userLocation) {
+          <map-marker
+            [position]="userLocation"
+            [icon]="userIcon">
+          </map-marker>
+        }
+
+        <!-- USER ACCURACY RADIUS -->
+        @if (userLocation?.accuracy) {
+          <map-circle
+            [options]="getAccuracyCircle()">
+          </map-circle>
+        }
+
+        <!-- USER MARKER -->
+        @if (userLocation) {
+          <map-marker
+            [position]="userLocation"
+            [label]="'You'">
+          </map-marker>
+        }
+
+<!--        <map-marker [position]="mapCenter"></map-marker>-->
       </google-map>
     </div>
   </div>

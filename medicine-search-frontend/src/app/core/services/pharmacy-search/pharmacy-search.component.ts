@@ -34,7 +34,6 @@ type PharmacyUI = PharmacyResponseDTO & {
   styleUrls: ['./pharmacy-search.component.scss'],
 })
 export class PharmacySearchComponent implements OnInit, OnDestroy {
-
   // ================= MAP VIEW CHILD =================
   @ViewChild(GoogleMap) map!: GoogleMap;
 
@@ -65,6 +64,24 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
   mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
   mapZoom = 15;
+
+  // 👤 USER LOCATION (Google Maps style)
+  userLocation: {
+    lat: number;
+    lng: number;
+    accuracy?: number;
+  } | null = null;
+
+  userIcon = {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: '1a73e8',
+    fillOpacity: 1,
+    strokeColor: '#ffffff',
+    strokeWeight: 2,
+    scale: 8,
+  };
+
+  private watchId: number | null = null;
 
   // ================= SEARCH =================
   private searchSubject = new Subject<void>();
@@ -454,7 +471,6 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
     // 2️ Wait for Angular to render dialog
     setTimeout(async () => {
-
       const address = `${pharmacy.location}, ${pharmacy.city}, ${pharmacy.country}`;
       const geocoder = new google.maps.Geocoder();
 
@@ -502,10 +518,77 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   }
 
   resizeMap(): void {
-    if (this.map && this.map.googleMap){
+    if (this.map && this.map.googleMap) {
       google.maps.event.trigger(this.map.googleMap, 'resize');
       this.map.googleMap.setCenter(this.mapCenter);
     }
+  }
+
+  // =========== ACCURACY CIRCLE ============
+  getAccuracyCircle(): google.maps.CircleOptions {
+    if (!this.userLocation?.accuracy) {
+      return {
+        center: this.userLocation ?? { lat: 0, lng: 0 },
+        radius: 0,
+      };
+    }
+
+    return {
+      center: this.userLocation,
+      radius: this.userLocation.accuracy,
+      fillColor: '#1a73e8',
+      fillOpacity: 0.15,
+      strokeColor: '#1a73e8',
+      strokeOpacity: 0.3,
+      strokeWeight: 1,
+    };
+  };
+
+  // =========== MAP + USER LOCATION ===================
+  getUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+          };
+        },
+        (err) => console.error(err),
+        { enableHighAccuracy: true }
+    );
+  }
+
+  watchUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    this.watchId = navigator.geolocation.watchPosition((position) => {
+      this.userLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+      };
+    });
+  }
+
+  stopTracking(): void {
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+    }
+  }
+
+  goToUserLocation(): void {
+    if (!this.userLocation) return;
+
+    this.mapCenter = {
+      lat: this.userLocation.lat,
+      lng: this.userLocation.lng,
+    };
+
+    this.resizeMap();
   }
 
   // ================= 🎯🧩 UI ACTIONS =================
