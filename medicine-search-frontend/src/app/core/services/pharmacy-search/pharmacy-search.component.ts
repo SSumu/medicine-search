@@ -450,35 +450,44 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   async openMap(pharmacy: PharmacyUI): Promise<void> {
     this.selectedMapPharmacy = pharmacy;
 
-    const address = `${pharmacy.location}, ${pharmacy.city}, ${pharmacy.country}`;
-    const geocoder = new google.maps.Geocoder();
+    // 1️ Open map immediately
+    this.showMapDialog = true;
 
-    try {
-      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
-        geocoder.geocode({ address }, (res, status) => {
-          if (status === 'OK' && res) {
-            resolve(res);
-          } else {
-            reject(status);
-          }
+    // 2️ Wait for Angular to render dialog
+    setTimeout(async () => {
+
+      const address = `${pharmacy.location}, ${pharmacy.city}, ${pharmacy.country}`;
+      const geocoder = new google.maps.Geocoder();
+
+      try {
+        const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+          geocoder.geocode({ address }, (res, status) => {
+            if (status === 'OK' && res) {
+              resolve(res);
+            } else {
+              reject(status);
+            }
+          });
         });
-      });
 
-      const location = results[0].geometry.location;
+        const location = results[0].geometry.location;
 
-      this.mapCenter = {
-        lat: location.lat(),
-        lng: location.lng(),
-      };
+        this.mapCenter = {
+          lat: location.lat(),
+          lng: location.lng(),
+        };
 
-      this.showMapDialog = true;
+        // 3️ Force map resize AFTER setting center
+        this.resizeMap();
 
-      setTimeout(() => this.resizeMap(), 300);
+        this.showMapDialog = true;
 
-    } catch (error) {
-      console.error('Geocode error:', error);
-      alert('Error fetching location');
-    }
+        setTimeout(() => this.resizeMap(), 300);
+      } catch (error) {
+        console.error('Geocode error:', error);
+        alert('Error fetching location');
+      }
+    }, 0);
   }
 
   closeMap(): void {
@@ -494,7 +503,7 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   }
 
   resizeMap(): void {
-    if (this.map?.googleMap){
+    if (this.map && this.map.googleMap){
       google.maps.event.trigger(this.map.googleMap, 'resize');
       this.map.googleMap.setCenter(this.mapCenter);
     }
