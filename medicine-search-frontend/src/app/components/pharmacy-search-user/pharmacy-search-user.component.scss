@@ -18,8 +18,8 @@ h2 {
 }
 
 /* ==============================
-   SEARCH SECTION
-============================== */
+            SEARCH SECTION
+   ============================== */
 .user-search-box {
   display: flex;
   flex-wrap: wrap;
@@ -190,6 +190,67 @@ button {
 
 .user-pharmacy-table td button:last-child:hover {
   background-color: #c0392b;
+}
+
+/* ==================
+      Google Map
+   ================== */
+.user-map-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  /* 👇 center content */
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER stays fixed on top */
+.user-map-header {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: white;
+  align-items: center;
+}
+
+/* WRAPPER for centering map */
+.user-map-body {
+  flex: 1;
+  display: flex;
+  align-items: center; // Centers the map vertically
+  justify-content: center; // Centers the map horizontally
+}
+
+/* MAP CONTAINER (RESTORE MODE) */
+.user-map-container {
+  width: 80%;
+  height: 70%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* FULLSCREEN MODE overrides centering */
+.user-map-container.fullscreen {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.user-pharmacy-title::after {
+  content: " Pharmacy";
+}
+
+.user-map-actions {
+  justify-self: end;
+  display: flex;
+  gap: 10px;
 }
 
 /* ==============================

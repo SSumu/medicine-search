@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { PharmacyResponseDTO, PharmacySchedule, PharmacySearchService } from '../../core/services/pharmacy-search/pharmacy-search.service';
 import { FormsModule } from '@angular/forms';
 import { catchError, debounceTime, distinctUntilChanged, finalize, of, Subject, Subscription, switchMap } from 'rxjs';
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 
 type PharmacyUI = PharmacyResponseDTO & {
   showSchedule?: boolean;
@@ -12,11 +13,15 @@ type PharmacyUI = PharmacyResponseDTO & {
 @Component({
   selector: 'app-pharmacy-search-user',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, GoogleMapsModule],
   templateUrl: './pharmacy-search-user.component.html',
   styleUrl: './pharmacy-search-user.component.scss',
 })
 export class PharmacySearchUserComponent {
+  // ================= MAP VIEW CHILD =================
+  @ViewChild(GoogleMap) map!: GoogleMap;
+
+  // ================= DATA =================
   pharmacies: PharmacyUI[] = [];
   filteredPharmacies: PharmacyUI[] = [];
 
@@ -33,6 +38,15 @@ export class PharmacySearchUserComponent {
 
   filterMode: 'ALL' | 'AVAILABLE' | 'OPEN_NOW' = 'ALL';
 
+  // ================= MAP STATE =================
+  showUserMapDialog = false;
+  mapFullScreen = false;
+  selectedUserMapPharmacy: PharmacyUI | null = null;
+
+  mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
+  mapZoom = 15;
+
+  // ================= SEARCH =================
   private userSearchSubject = new Subject<void>();
   private userSearchSubscription!: Subscription;
 
@@ -258,9 +272,70 @@ export class PharmacySearchUserComponent {
     return this.filteredPharmacies;
   }
 
+  // ================= MAP FUNCTIONS =================
+  async openUserMap(pharmacy: PharmacyUI): Promise<void> {
+    this.selectedUserMapPharmacy = pharmacy;
+
+    // 1️ Open map immediately
+    this.showUserMapDialog = true;
+
+    // 2️ Wait for Angular to render dialog
+    setTimeout(async () => {
+      const address = `${pharmacy.location}, ${pharmacy.city}, ${pharmacy.country}`;
+      const pharmacy_geocoder = new google.maps.Geocoder();
+
+      try {
+        const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+          pharmacy_geocoder.geocode({ address }, (res, status) => {
+            if (status === 'OK' && res) {
+              resolve(res);
+            } else {
+              reject(status);
+            }
+          });
+        });
+
+        const location = results[0].geometry.location;
+
+        this.mapCenter = {
+          lat: location.lat(),
+          lng: location.lng(),
+        };
+
+        // 3️ Force map resize AFTER setting center
+        this.resizeMap();
+
+        this.showUserMapDialog = true;
+
+        setTimeout(() => this.resizeMap(), 300);
+      } catch (error) {
+        console.error('Geocode error:', error);
+        alert('Error fetching location');
+      }
+    }, 0);
+  }
+
+  closeMap(): void {
+    this.showUserMapDialog = false;
+    this.mapFullScreen = false;
+  }
+
+  toggleMapSize(): void {
+    this.mapFullScreen = !this.mapFullScreen;
+
+    // ✅ critical fix
+    setTimeout(() => this.resizeMap(), 300);
+  }
+
+  resizeMap(): void {
+    if (this.map && this.map.googleMap) {
+      google.maps.event.trigger(this.map.googleMap, 'resize');
+      this.map.googleMap.setCenter(this.mapCenter);
+    }
+  }
+
   // 🎯🧩 UI ACTIONS
   toggleSchedule(pharmacy: PharmacyUI): void {
     pharmacy.showSchedule = !pharmacy.showSchedule;
   }
-
 }

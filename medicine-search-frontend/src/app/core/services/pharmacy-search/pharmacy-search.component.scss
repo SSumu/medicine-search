@@ -229,6 +229,7 @@ button {
 }
 
 .map-container.fullscreen {
+  margin: auto;
   width: 100%;
   height: 100%;
   border-radius: 0;
@@ -239,6 +240,17 @@ button {
   justify-content: space-between;
   padding: 10px;
   background: white;
+  align-items: center;
+}
+
+.pharmacy-title::after {
+  content: " Pharmacy";
+}
+
+.map-actions {
+  justify-self: end;
+  display: flex;
+  gap: 10px; // This creates space between buttons
 }
 
 /* ==============================

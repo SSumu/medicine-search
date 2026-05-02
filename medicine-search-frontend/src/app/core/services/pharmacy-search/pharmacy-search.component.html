@@ -134,7 +134,7 @@
   @if (selectedPharmacy && selectedPharmacy.id) {
 
     <div class="form-section">
-      <h3>Update Medicine</h3>
+      <h3>Update Pharmacy</h3>
 
       <input type="text" [(ngModel)]="selectedPharmacy.name" placeholder="Pharmacy Name" />
       <input type="text" [(ngModel)]="selectedPharmacy.location" placeholder="Location"/>
@@ -192,7 +192,7 @@
 
       <!-- HEADER -->
     <div class="map-header">
-      <h3>{{ selectedMapPharmacy?.name }}</h3>
+      <h3 class="pharmacy-title">{{ selectedMapPharmacy?.name }}</h3>
 
       <div class="map-actions">
         <button (click)="toggleMapSize()">

@@ -67,7 +67,6 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   mapZoom = 15;
 
   // ================= SEARCH =================
-
   private searchSubject = new Subject<void>();
   private searchSubscription!: Subscription;
   // private refreshSubscription!: Subscription;

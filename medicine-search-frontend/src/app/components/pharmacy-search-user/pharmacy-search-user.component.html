@@ -83,6 +83,7 @@
                 <td>
                 <!-- ✅ Actions Column (fixed position) -->
                   <button (click)="toggleSchedule(item); $event.stopPropagation()">Schedule</button>
+                  <button (click)="openUserMap(item); $event.stopPropagation()">Map</button>
                 </td>
               </tr>
 
@@ -127,3 +128,39 @@
   }
 
 </div>
+
+<!-- ================= GOOGLE MAP MODAL | 🗺 MAP MODAL (USING @if) ================= -->
+@if (showUserMapDialog) {
+
+  <div class="user-map-overlay">
+
+    <!-- HEADER -->
+    <div class="user-map-header">
+      <h3 class="user-pharmacy-title">{{ selectedUserMapPharmacy?.name }}</h3>
+
+      <div class="user-map-actions">
+        <button (click)="toggleMapSize()">
+          {{ mapFullScreen ? '🗗 Restore' : '🗖 Fullscreen' }}
+        </button>
+
+        <button (click)="closeMap()">✖ Close</button>
+      </div>
+    </div>
+
+    <!-- BODY (CENTER AREA) -->
+    <div class="user-map-body">
+      <div class="user-map-container" [class.fullscreen]="mapFullScreen">
+
+        <!-- GOOGLE MAP -->
+        <google-map
+          height="100%"
+          width="100%"
+          [center]="mapCenter"
+          [zoom]="mapZoom">
+
+          <map-marker [position]="mapCenter"></map-marker>
+        </google-map>
+      </div>
+    </div>
+  </div>
+}
