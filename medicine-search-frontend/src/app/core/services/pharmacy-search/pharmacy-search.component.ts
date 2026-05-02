@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   PharmacySearchService,
   PharmacyResponseDTO,
@@ -18,6 +18,7 @@ import {
   Subscription,
   switchMap,
 } from 'rxjs';
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 
 type PharmacyUI = PharmacyResponseDTO & {
   showSchedule?: boolean;
@@ -28,11 +29,16 @@ type PharmacyUI = PharmacyResponseDTO & {
 @Component({
   selector: 'app-pharmacy-search',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, GoogleMapsModule],
   templateUrl: './pharmacy-search.component.html',
   styleUrls: ['./pharmacy-search.component.scss'],
 })
 export class PharmacySearchComponent implements OnInit, OnDestroy {
+
+  // ================= MAP VIEW CHILD =================
+  @ViewChild(GoogleMap) map!: GoogleMap;
+
+  // ================= DATA =================
   pharmacies: PharmacyUI[] = [];
   filteredPharmacies: PharmacyUI[] = [];
   selectedPharmacy: PharmacyUI | null = null;
@@ -51,6 +57,16 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   filterMode: 'ALL' | 'AVAILABLE' | 'OPEN_NOW' = 'ALL';
 
   editingSchedulePharmacy: PharmacyUI | null = null;
+
+  // ================= MAP STATE =================
+  showMapDialog = false;
+  mapFullScreen = false;
+  selectedMapPharmacy: PharmacyUI | null = null;
+
+  mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
+  mapZoom = 15;
+
+  // ================= SEARCH =================
 
   private searchSubject = new Subject<void>();
   private searchSubscription!: Subscription;
@@ -117,9 +133,9 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
                 showLoader = false; // ✅ stop loader trigger
                 clearTimeout(loaderTimer); // 🧹 cancel or stop timer | ✅ cancel loader if fast
                 this.isLoading = false; // ✅ALWAYS STOP LOADING | ✅ hide loader
-              })
+              }),
             );
-        })
+        }),
       )
       .subscribe((response) => {
         if (!response) return;
@@ -430,7 +446,61 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
     return this.filteredPharmacies;
   }
 
-  // 🎯🧩 UI ACTIONS
+  // ================= MAP FUNCTIONS =================
+  async openMap(pharmacy: PharmacyUI): Promise<void> {
+    this.selectedMapPharmacy = pharmacy;
+
+    const address = `${pharmacy.location}, ${pharmacy.city}, ${pharmacy.country}`;
+    const geocoder = new google.maps.Geocoder();
+
+    try {
+      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+        geocoder.geocode({ address }, (res, status) => {
+          if (status === 'OK' && res) {
+            resolve(res);
+          } else {
+            reject(status);
+          }
+        });
+      });
+
+      const location = results[0].geometry.location;
+
+      this.mapCenter = {
+        lat: location.lat(),
+        lng: location.lng(),
+      };
+
+      this.showMapDialog = true;
+
+      setTimeout(() => this.resizeMap(), 300);
+
+    } catch (error) {
+      console.error('Geocode error:', error);
+      alert('Error fetching location');
+    }
+  }
+
+  closeMap(): void {
+    this.showMapDialog = false;
+    this.mapFullScreen = false;
+  }
+
+  toggleMapSize(): void {
+    this.mapFullScreen = !this.mapFullScreen;
+
+    // ✅ critical fix
+    setTimeout(() => this.resizeMap(), 300);
+  }
+
+  resizeMap(): void {
+    if (this.map?.googleMap){
+      google.maps.event.trigger(this.map.googleMap, 'resize');
+      this.map.googleMap.setCenter(this.mapCenter);
+    }
+  }
+
+  // ================= 🎯🧩 UI ACTIONS =================
   toggleSchedule(pharmacy: PharmacyUI): void {
     pharmacy.showSchedule = !pharmacy.showSchedule;
   }
@@ -450,7 +520,10 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
     if (!this.editingSchedulePharmacy) return;
 
     this.pharmacyService
-      .updateSchedule(this.editingSchedulePharmacy /*this.editingSchedulePharmacy.id, this.editingSchedulePharmacy.schedule || []*/)
+      .updateSchedule(
+        this
+          .editingSchedulePharmacy /*this.editingSchedulePharmacy.id, this.editingSchedulePharmacy.schedule || []*/,
+      )
       .subscribe(() => {
         this.editingSchedulePharmacy = null;
         this.triggerSearch();

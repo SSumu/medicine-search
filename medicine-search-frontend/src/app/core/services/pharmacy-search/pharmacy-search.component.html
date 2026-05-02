@@ -86,6 +86,7 @@
                   <button (click)="deletePharmacy(item.id); $event.stopPropagation()">Delete</button>
                   <button (click)="toggleSchedule(item); $event.stopPropagation()">Schedule</button>
                   <button (click)="editSchedule(item); $event.stopPropagation()">Change Schedule</button>
+                  <button (click)="openMap(item); $event.stopPropagation()">Map</button>
                 </td>
               </tr>
 
@@ -183,3 +184,36 @@
   }
 
 </div>
+
+<!-- ================= GOOGLE MAP MODAL | 🗺 MAP MODAL (USING @if) ================= -->
+@if (showMapDialog) {
+
+  <div class="map-overlay">
+
+      <!-- HEADER -->
+    <div class="map-header">
+      <h3>{{ selectedMapPharmacy?.name }}</h3>
+
+      <div class="map-actions">
+        <button (click)="toggleMapSize()">
+          {{ mapFullScreen ? '🗗 Restore' : '🗖 Fullscreen' }}
+        </button>
+
+        <button (click)="closeMap()">✖ Close</button>
+      </div>
+    </div>
+
+    <div class="map-container" [class.fullscreen]="mapFullScreen">
+
+      <!-- GOOGLE MAP -->
+      <google-map
+        height="100%"
+        width="100%"
+        [center]="mapCenter"
+        [zoom]="mapZoom">
+
+        <map-marker [position]="mapCenter"></map-marker>
+      </google-map>
+    </div>
+  </div>
+}

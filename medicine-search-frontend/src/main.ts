@@ -3,8 +3,8 @@ import { appConfig } from './app/app.config';
 import { App } from './app/app';
 import { environment } from './environments/environment';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+// bootstrapApplication(App, appConfig)
+//   .catch((err) => console.error(err));
 
 function loadGoogleMaps(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ function loadGoogleMaps(): Promise<void> {
   });
 }
 
-// ✅ Load Maps FIRST, then bootstrap Angular
+// ✅ Load Maps FIRST, then bootstrap Angular (ONLY ONCE)
 loadGoogleMaps()
   .then(() => {
   return bootstrapApplication(App, appConfig);
