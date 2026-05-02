@@ -58,7 +58,7 @@
         <tbody>
           <!-- ✅ IF DATA EXISTS -->
           <!-- PHARMACY LIST TABLE -->
-          @if (!isLoading && paginatedPharmacies.length > 0) {
+          @if (paginatedPharmacies.length > 0) {
             @for (item of paginatedPharmacies; track item.id) {
               <tr>
                 <td>{{ item.id }}</td>

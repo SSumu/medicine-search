@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   PharmacySearchService,
   PharmacyResponseDTO,
-  PaginatedResponse,
+  // PaginatedResponse,
   PharmacySchedule,
   PharmacyRequestDTO,
 } from './pharmacy-search.service';
@@ -10,9 +10,9 @@ import { FormsModule } from '@angular/forms';
 import {
   catchError,
   debounceTime,
-  distinctUntilChanged,
+  // distinctUntilChanged,
   finalize,
-  interval,
+  // interval,
   of,
   Subject,
   Subscription,
@@ -56,11 +56,14 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   private searchSubscription!: Subscription;
   // private refreshSubscription!: Subscription;
 
+  // private lastRequestKey = '';
+
   constructor(private pharmacyService: PharmacySearchService) {}
 
   ngOnInit(): void {
     this.setupSearch();
-    this.triggerSearch(); // ✅ initial load
+    // this.triggerSearch(); // ✅ initial load | ✅ MUST be here
+    setTimeout(() => this.triggerSearch(), 0);
   }
 
   setupSearch(): void {
@@ -68,30 +71,18 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(300),
 
-        // ✅ Build request key
-        switchMap(() => {
-          const requestKey = JSON.stringify({
-            location: this.searchLocation,
-            city: this.searchCity,
-            pharmacy: this.searchPharmacy,
-            page: this.currentPage,
-            size: this.pageSize,
-          });
-
-          return of(requestKey);
-        }),
-
-        // ✅ Prevent duplicate requests
-        distinctUntilChanged(),
-
         // ✅ Call API only if changed
         switchMap(() => {
-          let loaderTimer: any;
+          const requestedPage = this.currentPage; // ✅ capture requested page
 
-          // ⏳ show loader ONLY if slow
+          let loaderTimer: any;
+          let showLoader = true;
+
+          // ⏳ / ⏱ show loader ONLY if slow
           loaderTimer = setTimeout(() => {
-            this.isLoading = true;
-          }, 300); // show only if request takes > 300ms
+            if (showLoader) this.isLoading = true;
+            // this.isLoading = true;
+          }, 300); // show only if request takes > 300ms. show ONLY if slow
 
           return this.pharmacyService
             .searchPharmacies(
@@ -101,12 +92,21 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
               this.searchLocation,
               this.searchCity,
               this.searchPharmacy,
-              this.currentPage, // backend is 0-based
+              requestedPage, // backend is 0-based
               this.pageSize,
             )
             .pipe(
+              // map((response) => ({ response, requestedPage })), // ✅ attach page
               catchError(() =>
                 of({
+                  // response: {
+                  //   content: [],
+                  //   totalElements: 0,
+                  //   totalPages: 0,
+                  //   page: 0,
+                  // },
+                  // requestedPage,
+
                   content: [],
                   totalElements: 0,
                   totalPages: 0,
@@ -114,17 +114,26 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
                 }),
               ),
               finalize(() => {
-                clearTimeout(loaderTimer); // 🧹 stop timer
+                showLoader = false; // ✅ stop loader trigger
+                clearTimeout(loaderTimer); // 🧹 cancel or stop timer | ✅ cancel loader if fast
                 this.isLoading = false; // ✅ALWAYS STOP LOADING | ✅ hide loader
-              }),
+              })
             );
-        }),
+        })
       )
-      .subscribe((response: any) => {
+      .subscribe((response) => {
+        if (!response) return;
+
         console.log('Backend Page:', response.page);
 
         // ✅ Sync page with backend
-        this.currentPage = response.page ?? this.currentPage;
+        // this.currentPage = response.page ?? this.currentPage;
+
+        // ✅ Ignore stale responses
+        // if (requestedPage !== this.currentPage) return;
+
+        // ✅ ALWAYS sync page from backend
+        this.currentPage = response.page;
 
         // ✅ SAFE MAPPING
         this.pharmacies = (response.content || []).map((p: any) => ({
@@ -184,15 +193,33 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
 
   // SEARCH
   onSearchInput(): void {
-    if (this.currentPage !== 0) {
-      this.currentPage = 0; // ✅ reset to first page when searching
-    }
+    // if (this.currentPage !== 0) {
+    //   this.currentPage = 0; // ✅ reset to first page when searching
+    // }
+    this.currentPage = 0;
     this.triggerSearch();
     // this.searchSubject.next();
   }
 
+  // force initial load
   triggerSearch(): void {
     // const key = `${this.searchLocation} - ${this.searchCity} - ${this.searchPharmacy} - ${this.currentPage}`;
+
+    // Prevent duplicate API calls
+    // const requestKey = JSON.stringify({
+    //   location: this.searchLocation,
+    //   city: this.searchCity,
+    //   pharmacy: this.searchPharmacy,
+    //   page: this.currentPage,
+    //   size: this.pageSize,
+    // });
+
+    // Only block duplicate SAME PAGE calls
+    // if (this.lastRequestKey === requestKey) {
+    //   return;
+    // }
+
+    // this.lastRequestKey = requestKey;
     this.searchSubject.next();
   }
 
@@ -370,27 +397,31 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   // }
 
   // 📄 PAGINATION
-  changePage(page: number): void {
-    if (page < 0 || page >= this.totalPages) return;
-
-    this.currentPage = page; // ✅ UI controls page
-    this.triggerSearch();
-  }
+  // changePage(page: number): void {
+  //   if (page < 0 || page >= this.totalPages) return;
+  //
+  //   this.currentPage = page; // ✅ UI controls page
+  //   this.triggerSearch();
+  // }
 
   nextPage(): void {
-    // if (this.currentPage < this.totalPages - 1) {
-    //   this.changePage(this.currentPage + 1);
-    // }
+    if (this.currentPage < this.totalPages - 1) {
+      // this.changePage(this.currentPage + 1);
+      this.currentPage++;
+      this.triggerSearch();
+    }
 
-    this.changePage(this.currentPage + 1);
+    // this.changePage(this.currentPage + 1);
   }
 
   previousPage(): void {
-    // if (this.currentPage > 0) {
-    //   this.changePage(this.currentPage - 1);
-    // }
+    if (this.currentPage > 0) {
+      // this.changePage(this.currentPage - 1);
+      this.currentPage--;
+      this.triggerSearch();
+    }
 
-    this.changePage(this.currentPage - 1);
+    // this.changePage(this.currentPage - 1);
   }
 
   get paginatedPharmacies(): PharmacyUI[] {
@@ -411,20 +442,19 @@ export class PharmacySearchComponent implements OnInit, OnDestroy {
   editSchedule(pharmacy: PharmacyUI): void {
     this.editingSchedulePharmacy = {
       ...pharmacy,
-      schedule: pharmacy.schedule ? [...pharmacy.schedule] : []
+      schedule: pharmacy.schedule ? [...pharmacy.schedule] : [],
     };
   }
 
   updateSchedule(): void {
     if (!this.editingSchedulePharmacy) return;
 
-    this.pharmacyService.updateSchedule(
-      this.editingSchedulePharmacy.id,
-      this.editingSchedulePharmacy.schedule || []
-    ).subscribe(() => {
-      this.editingSchedulePharmacy = null;
-      this.triggerSearch();
-    });
+    this.pharmacyService
+      .updateSchedule(this.editingSchedulePharmacy /*this.editingSchedulePharmacy.id, this.editingSchedulePharmacy.schedule || []*/)
+      .subscribe(() => {
+        this.editingSchedulePharmacy = null;
+        this.triggerSearch();
+      });
   }
 
   updatePharmacy(): void {

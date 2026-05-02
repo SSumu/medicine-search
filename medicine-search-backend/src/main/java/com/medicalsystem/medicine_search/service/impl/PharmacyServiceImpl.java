@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public PaginatedResponseDTO<PharmacySearchResponseDTO> getAllPharmacies(Pageable pageable) {
 
-        Page<Pharmacy> pharmacyPage = pharmacyRepository.findAllWithSchedule(pageable);
+        Page<Pharmacy> pharmacyPage = pharmacyRepository.findAll(pageable);
 
         //        This is the old method for the old conditions.
 //        List<PharmacySearchResponseDTO> dtoList = pharmacyPage
@@ -60,13 +61,15 @@ public class PharmacyServiceImpl implements PharmacyService {
     // ✅ PAGINATION USING PAGE & SIZE (INTERFACE METHOD)
     @Override
     public PaginatedResponseDTO<PharmacySearchResponseDTO> getPaginatedPharmacies(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("pharmacyId").ascending());
 
         Page<Pharmacy> pageResult = pharmacyRepository.findAll(pageable);
 
-        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//
+//        return PaginatedResponseDTO.from(dtoPage);
 
-        return PaginatedResponseDTO.from(dtoPage);
+        return PaginatedResponseDTO.from(pageResult.map(pharmacyMapper::toDto));
     }
 
     // ✅ GET AVAILABLE PHARMACIES (LIST VERSION)
@@ -83,12 +86,20 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public PaginatedResponseDTO<PharmacySearchResponseDTO> getAvailablePharmaciesPaginated(Pageable pageable) {
 
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("pharmacyId").ascending()
+        );
+
 //        These are for the new current method.
-        Page<Pharmacy> pageResult = pharmacyRepository. findByAvailableTrue(pageable);
+        Page<Pharmacy> pageResult = pharmacyRepository. findByAvailableTrue(sortedPageable);
 
-        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//
+//        return PaginatedResponseDTO.from(dtoPage);
 
-        return PaginatedResponseDTO.from(dtoPage);
+        return PaginatedResponseDTO.from(pageResult.map(pharmacyMapper::toDto));
     }
 
     // ✅ SEARCH (DYNAMIC)
@@ -101,25 +112,32 @@ public class PharmacyServiceImpl implements PharmacyService {
             Pageable pageable
     ) {
 
-
 //        ✅ Normalize inputs (convert empty/blank → null)
         location = (location == null || location.isBlank()) ? null : location.trim();
         city = (city == null || city.isBlank()) ? null : city.trim();
         pharmacyName = (pharmacyName == null || pharmacyName.isBlank()) ? null : pharmacyName.trim();
 
+        // ✅ enforce stable sorting
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("pharmacyId").ascending()
+        );
+
         Page<Pharmacy> pageResult;
 
         // ✅ If all are null → return all
         if (location == null && city == null && pharmacyName == null) {
-
-            pageResult = pharmacyRepository.findAll(pageable);
+            pageResult = pharmacyRepository.findAll(sortedPageable);
         } else {
-            pageResult = pharmacyRepository.searchDynamic(location, city, pharmacyName, pageable);
+            pageResult = pharmacyRepository.searchDynamic(location, city, pharmacyName, sortedPageable);
         }
 
-        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//        Page<PharmacySearchResponseDTO> dtoPage = pageResult.map(pharmacyMapper::toDto);
+//
+//        return PaginatedResponseDTO.from(dtoPage);
 
-        return PaginatedResponseDTO.from(dtoPage);
+        return PaginatedResponseDTO.from(pageResult.map(pharmacyMapper::toDto));
     }
 
     // ✅ CREATE

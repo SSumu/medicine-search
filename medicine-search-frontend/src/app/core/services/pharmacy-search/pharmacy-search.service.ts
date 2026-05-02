@@ -27,6 +27,8 @@ export interface PharmacyRequestDTO {
   contactNumber: string | null;
   email: string;
   available: boolean;
+
+  schedule?: PharmacySchedule[];
 }
 
 export interface PaginatedResponse<T> {
@@ -110,9 +112,24 @@ export class PharmacySearchService {
   /* =================================
       UPDATE 🔹 Update schedule
      ================================= */
-  updateSchedule(id: number, schedule: PharmacySchedule[]) {
-    return this.http.put(`${this.baseUrl}/pharmacies/${id}/schedule`, schedule);
-  }
+  // updateSchedule(id: number, schedule: PharmacySchedule[]) {
+  //   return this.http.put(`${this.baseUrl}/pharmacies/${id}/schedule`, schedule);
+  // }
+
+  updateSchedule(pharmacy: PharmacyResponseDTO) {
+    const payload: PharmacyRequestDTO = {
+      pharmacyName: pharmacy.name,
+      pharmacyLocation: pharmacy.location,
+      city: pharmacy.city,
+      country: pharmacy.country,
+      contactNumber: pharmacy.contactNumber,
+      email: pharmacy.email,
+      available: pharmacy.available ?? true,
+      schedule: pharmacy.schedule || []
+    };
+
+    return this.http.put(`${this.baseUrl}/${pharmacy.id}`, payload);
+  };
 
   /* =================================
       DELETE 🔹 Delete pharmacy entry

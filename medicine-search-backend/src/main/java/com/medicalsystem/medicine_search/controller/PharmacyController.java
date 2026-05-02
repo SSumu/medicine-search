@@ -5,6 +5,7 @@ import com.medicalsystem.medicine_search.dto.PharmacyRequestDTO;
 import com.medicalsystem.medicine_search.dto.PharmacySearchResponseDTO;
 import com.medicalsystem.medicine_search.service.PharmacyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,11 @@ public class PharmacyController {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String pharmacyName,
-            Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+            /*Pageable pageable*/) {
+        Pageable pageable = PageRequest.of(page, size);
+
         return ResponseEntity.ok(
                 pharmacyService.searchPharmacies(location, city, pharmacyName, pageable)
         );
