@@ -44,6 +44,6 @@ __screenshots__/
 Thumbs.db
 
 # Environment
-src/environments/
+src/environments
 
 .gitignore
