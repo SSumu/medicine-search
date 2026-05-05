@@ -43,7 +43,4 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Environment
-src/environments
-
-.gitignore
+/src/environments/
